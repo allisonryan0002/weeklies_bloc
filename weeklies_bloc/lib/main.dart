@@ -24,6 +24,7 @@
  *                can be found in AppScreenshots folder.
  */
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -33,21 +34,22 @@ import 'package:weeklies/repository/task_repository.dart';
 import 'package:weeklies/widgets/widgets.dart';
 
 void main() async {
-  //final fileClient = await FileClient.instance;
+  WidgetsFlutterBinding.ensureInitialized();
+  final fileClient = await FileClient.instance;
   runApp(MyApp(
-      //client: fileClient,
-      ));
+    client: fileClient,
+  ));
 }
 
 class MyApp extends StatelessWidget {
-  //final FileClient client;
+  final FileClient client;
 
-  //MyApp({required this.client});
+  MyApp({required this.client});
 
   @override
   Widget build(BuildContext context) {
     return RepositoryProvider(
-      create: (context) => TaskRepository(), //client
+      create: (context) => TaskRepository(client: client), //client
       child: MaterialApp(
         title: 'Weeklies',
         theme: ThemeData(

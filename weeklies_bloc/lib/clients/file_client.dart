@@ -3,28 +3,24 @@ import 'dart:io';
 import 'dart:async';
 
 class FileClient {
-  // static Future<FileClient> instance = _initialize();
-  // final Directory dir;
+  static late Future<FileClient> instance = _initialize();
 
-  // static Future<FileClient> _initialize() async {
-  //   print("Initialized");
-  //   final dir = await getApplicationDocumentsDirectory();
-  //   return FileClient._(dir);
-  // }
+  static Future<FileClient> _initialize() async {
+    return FileClient._(basePath: await getApplicationDocumentsDirectory());
+  }
 
-  // FileClient._(this.dir);
+  FileClient._({required this.basePath});
 
-  //Made static and added top line
+  /// Base path where files are stored.
+  final Directory basePath;
 
-  static Future<String> read(String filename) async {
-    final dir = await getApplicationDocumentsDirectory();
-    final file = File('${dir.path}/$filename');
+  Future<String> read(String filename) async {
+    final file = File('${basePath.path}/$filename');
     return await file.readAsString();
   }
 
-  static Future<File> write(String filename, String contents) async {
-    final dir = await getApplicationDocumentsDirectory();
-    final file = File('${dir.path}/$filename');
+  Future<File> write(String filename, String contents) async {
+    final file = File('${basePath.path}/$filename');
     return file.writeAsString(contents);
   }
 }
