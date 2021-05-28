@@ -1,5 +1,5 @@
-export './customPriorityRadio.dart';
-export './customTimeRadio.dart';
+export 'customPriorityRadio.dart';
+export 'customDayRadio.dart';
 export 'prioritySortButton.dart';
 export 'taskInputWidget.dart';
 export 'taskListView.dart';

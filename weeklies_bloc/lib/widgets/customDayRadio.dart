@@ -2,18 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:weeklies/models/models.dart';
 
-// Time radio model and its properties
-class TimeRadioModel {
-  bool isSelected;
-  String timeText;
-
-  TimeRadioModel(this.isSelected, this.timeText);
-}
-
 // Rounded box UI representing time selection options
-class TimeRadioItem extends StatelessWidget {
-  final TimeRadioModel item;
-  TimeRadioItem(this.item);
+class DayRadioIcon extends StatelessWidget {
+  final DayRadio item;
+  DayRadioIcon(this.item);
 
   @override
   Widget build(BuildContext context) {
@@ -49,10 +41,10 @@ class TimeRadioItem extends StatelessWidget {
   }
 }
 
-// Smaller TimeRadioItem to better fit in the task ListTiles
-class TimeRadioItemTileSize extends StatelessWidget {
-  final TimeRadioModel item;
-  TimeRadioItemTileSize(this.item);
+// Smaller DayRadioIcon to better fit in the task ListTiles
+class DayRadioIconTileSize extends StatelessWidget {
+  final DayRadio item;
+  DayRadioIconTileSize(this.item);
 
   @override
   Widget build(BuildContext context) {
@@ -75,16 +67,16 @@ class TimeRadioItemTileSize extends StatelessWidget {
 }
 
 // Widget containing set of time radio buttons
-class CustomTimeRadio extends StatefulWidget {
+class CustomDayRadio extends StatefulWidget {
   final Function(int) callback;
 
-  CustomTimeRadio(this.callback);
+  CustomDayRadio(this.callback);
   @override
-  _CustomTimeRadioState createState() => _CustomTimeRadioState();
+  _CustomDayRadioState createState() => _CustomDayRadioState();
 }
 
-class _CustomTimeRadioState extends State<CustomTimeRadio> {
-  List<TimeRadioModel> timeChoices = [];
+class _CustomDayRadioState extends State<CustomDayRadio> {
+  List<DayRadio> timeChoices = [];
   List<String> dayList = [];
   late int selectedTime;
 
@@ -96,9 +88,9 @@ class _CustomTimeRadioState extends State<CustomTimeRadio> {
     super.initState();
     dayList = ItemTime(currTime).timeOptions;
     for (String day in dayList.sublist(1, 8)) {
-      timeChoices.add(TimeRadioModel(false, day));
+      timeChoices.add(DayRadio(false, day));
     }
-    timeChoices.add(TimeRadioModel(true, "Someday"));
+    timeChoices.add(DayRadio(true, "Someday"));
     selectedTime = 8;
   }
 
@@ -112,7 +104,7 @@ class _CustomTimeRadioState extends State<CustomTimeRadio> {
             GestureDetector(
               child: Container(
                 padding: EdgeInsets.all(2),
-                child: new TimeRadioItem(timeChoices[i]),
+                child: new DayRadioIcon(timeChoices[i]),
               ),
               onTap: () {
                 setState(() {

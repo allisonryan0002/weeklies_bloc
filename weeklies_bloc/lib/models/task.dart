@@ -4,7 +4,7 @@ import 'package:weeklies/models/models.dart';
 class Task extends Equatable {
   final DateTime timeStamp;
   final String task;
-  final ItemPriority priority;
+  final Priority priority;
   final int day;
 
   Task(this.timeStamp, this.task, this.priority, this.day);
@@ -25,7 +25,7 @@ class Task extends Equatable {
     return Task(
         DateTime.parse(json['timeStamp'].toString()),
         json['task'] as String,
-        ItemPriority.low.fromJson(json["priority"]),
+        Priority.low.fromJson(json["priority"]),
         json["day"] as int);
   }
 }

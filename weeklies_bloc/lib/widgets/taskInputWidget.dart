@@ -17,7 +17,7 @@ class TaskInputWidget extends StatefulWidget {
 
 class _TaskInputWidgetState extends State<TaskInputWidget> {
   // Variables for storing and managing task data
-  ItemPriority priority = ItemPriority.med;
+  Priority priority = Priority.med;
   int time = 8;
   final controller = new TextEditingController();
 
@@ -32,7 +32,7 @@ class _TaskInputWidgetState extends State<TaskInputWidget> {
     controller.dispose();
   }
 
-  void updatePriority(ItemPriority priority) {
+  void updatePriority(Priority priority) {
     setState(() {
       this.priority = priority;
     });
@@ -64,7 +64,7 @@ class _TaskInputWidgetState extends State<TaskInputWidget> {
             Column(
               children: <Widget>[
                 CustomPriorityRadio(this.updatePriority),
-                CustomTimeRadio(this.updateTime),
+                CustomDayRadio(this.updateTime),
                 Container(
                   child: TextField(
                     controller: this.controller,
@@ -115,7 +115,7 @@ class _TaskInputWidgetState extends State<TaskInputWidget> {
       child: GestureDetector(
         onTap: () {
           // Reset priority & time values to match radio defaults
-          priority = ItemPriority.med;
+          priority = Priority.med;
           time = 8;
           createTaskWindow(context);
         },

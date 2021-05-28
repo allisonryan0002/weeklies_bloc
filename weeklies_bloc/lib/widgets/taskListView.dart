@@ -18,7 +18,7 @@ class TaskListView extends StatefulWidget {
 class _TaskListViewState extends State<TaskListView> {
   // Displays SimpleDialog with a priority radio set to change a task's priority
   changePriorityWindow(BuildContext priorityContext, Task item) {
-    updatePriority(ItemPriority p) {
+    updatePriority(Priority p) {
       BlocProvider.of<TasksBloc>(priorityContext)
           .add(TaskUpdated(Task(item.timeStamp, item.task, p, item.day)));
       Navigator.pop(priorityContext);
@@ -63,7 +63,7 @@ class _TaskListViewState extends State<TaskListView> {
           children: <Widget>[
             Column(
               children: <Widget>[
-                CustomTimeRadio(updateDay),
+                CustomDayRadio(updateDay),
               ],
             )
           ],
@@ -223,7 +223,7 @@ class _TaskListViewState extends State<TaskListView> {
                 decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.7),
                     shape: BoxShape.circle),
-                child: PriorityRadioItem(taskItem.priority.radio)),
+                child: PriorityRadioIcon(taskItem.priority.radio)),
           ),
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -236,8 +236,8 @@ class _TaskListViewState extends State<TaskListView> {
                 onTap: () {
                   changeDayWindow(context, taskItem);
                 },
-                child: TimeRadioItemTileSize(
-                  TimeRadioModel(
+                child: DayRadioIconTileSize(
+                  DayRadio(
                       false,
                       ItemTime(DateTime.now().weekday)
                           .timeOptions[taskItem.day]),

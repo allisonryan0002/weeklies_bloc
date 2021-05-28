@@ -15,6 +15,7 @@ dependencies:
   google_fonts: ^2.1.0
   equatable: ^2.0.2
   flutter_bloc: ^7.0.0
+  mocktail: ^0.1.4
 
 
 dev_dependencies:

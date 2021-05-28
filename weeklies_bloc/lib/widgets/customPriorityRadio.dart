@@ -2,19 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:weeklies/models/models.dart';
 
-// Priority radio model and its properties
-class PriorityRadioModel {
-  bool isSelected;
-  String radioNumText;
-  Color color;
-
-  PriorityRadioModel(this.isSelected, this.radioNumText, this.color);
-}
-
 // Circular UI element representing the radio model
-class PriorityRadioItem extends StatelessWidget {
-  final PriorityRadioModel item;
-  PriorityRadioItem(this.item);
+class PriorityRadioIcon extends StatelessWidget {
+  final PriorityRadio item;
+  PriorityRadioIcon(this.item);
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +42,7 @@ class PriorityRadioItem extends StatelessWidget {
 
 // Widget containing set of priority radio buttons (1-5)
 class CustomPriorityRadio extends StatefulWidget {
-  final Function(ItemPriority) callback;
+  final Function(Priority) callback;
 
   CustomPriorityRadio(this.callback);
 
@@ -60,19 +51,19 @@ class CustomPriorityRadio extends StatefulWidget {
 }
 
 class _CustomPriorityRadioState extends State<CustomPriorityRadio> {
-  List<PriorityRadioModel> priorityRadios = [];
-  late ItemPriority priority;
+  List<PriorityRadio> priorityRadios = [];
+  late Priority priority;
 
   // Priority '3' selected by default
   @override
   void initState() {
     super.initState();
-    priorityRadios.add(ItemPriority.high.radio);
-    priorityRadios.add(ItemPriority.med_high.radio);
+    priorityRadios.add(Priority.high.radio);
+    priorityRadios.add(Priority.med_high.radio);
     priorityRadios
-        .add(PriorityRadioModel(true, '3', Color.fromRGBO(254, 203, 93, 1)));
-    priorityRadios.add(ItemPriority.low_med.radio);
-    priorityRadios.add(ItemPriority.low.radio);
+        .add(PriorityRadio(true, '3', Color.fromRGBO(254, 203, 93, 1)));
+    priorityRadios.add(Priority.low_med.radio);
+    priorityRadios.add(Priority.low.radio);
   }
 
   @override
@@ -92,11 +83,11 @@ class _CustomPriorityRadioState extends State<CustomPriorityRadio> {
                   element.isSelected = false;
                 });
                 priorityRadios[index].isSelected = true;
-                priority = ItemPriority.values[index];
+                priority = Priority.values[index];
               });
               widget.callback(priority);
             },
-            icon: new PriorityRadioItem(priorityRadios[index]),
+            icon: new PriorityRadioIcon(priorityRadios[index]),
           );
         },
       ),

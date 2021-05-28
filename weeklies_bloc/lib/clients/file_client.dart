@@ -14,7 +14,6 @@ class FileClient {
   FileClient._(this.dir);
 
   Future<String> read(String filename) async {
-    final dir = await getApplicationDocumentsDirectory();
     final file = File('${dir.path}/$filename');
     if (!await file.exists()) {
       await file.create();
@@ -23,7 +22,6 @@ class FileClient {
   }
 
   Future<File> write(String filename, String contents) async {
-    final dir = await getApplicationDocumentsDirectory();
     final file = File('${dir.path}/$filename');
     if (!await file.exists()) {
       await file.create();
