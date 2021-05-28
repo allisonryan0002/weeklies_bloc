@@ -5,6 +5,8 @@ import 'package:weeklies/blocs/tasks/tasks.dart';
 import 'package:weeklies/widgets/widgets.dart';
 import 'package:weeklies/models/models.dart';
 
+//TODO: implement dayDifference
+
 /* ListView widget displaying all TaskItems
  * Also creates dialog windows for changing an item's priority or time values
  */

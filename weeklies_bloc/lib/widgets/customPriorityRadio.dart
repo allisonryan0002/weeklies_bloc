@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:weeklies/blocs/tasks/tasks.dart';
 import 'package:weeklies/models/models.dart';
 
 // Priority radio model and its properties
