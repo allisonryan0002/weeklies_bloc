@@ -27,7 +27,6 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
   }
 
   Stream<TasksState> _mapTasksLoadedToState() async* {
-    print('Entered tasks loaded - bloc');
     final tasks = await this.tasksRepository.loadTasks();
     final sort = await this.tasksRepository.loadSort();
     yield TasksLoadSuccess(
@@ -39,41 +38,74 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
   //TODO: Sort here
   Stream<TasksState> _mapTaskAddedToState(TaskAdded event) async* {
     if (state is TasksLoadSuccess) {
-      List<Task> updatedTasks = List.from((state as TasksLoadSuccess).tasks)
-        ..add(event.task);
-      yield TasksLoadSuccess(updatedTasks);
-      _saveTasks(updatedTasks);
+      if ((state as TasksLoadSuccess).sort == SortType.priority) {
+        List<Task> updatedTasks = _prioritySort(
+            List.from((state as TasksLoadSuccess).tasks)..add(event.task));
+        yield TasksLoadSuccess(updatedTasks, SortType.priority);
+        _saveTasks(updatedTasks);
+      } else {
+        List<Task> updatedTasks = _prioritySort(
+            List.from((state as TasksLoadSuccess).tasks)..add(event.task));
+        yield TasksLoadSuccess(updatedTasks, SortType.time);
+        _saveTasks(updatedTasks);
+      }
     }
   }
 
   //TODO: Sort here
   Stream<TasksState> _mapTaskUpdatedToState(TaskUpdated event) async* {
     if (state is TasksLoadSuccess) {
-      List<Task> updatedTasks = (state as TasksLoadSuccess).tasks.map((task) {
-        return task.timeStamp == event.updatedTask.timeStamp
-            ? event.updatedTask
-            : task;
-      }).toList();
-      yield TasksLoadSuccess(updatedTasks);
-      _saveTasks(updatedTasks);
+      if ((state as TasksLoadSuccess).sort == SortType.priority) {
+        List<Task> updatedTasks =
+            _prioritySort((state as TasksLoadSuccess).tasks.map((task) {
+          return task.timeStamp == event.updatedTask.timeStamp
+              ? event.updatedTask
+              : task;
+        }).toList());
+        print('Updated tasks: $updatedTasks');
+        yield TasksLoadSuccess(updatedTasks, SortType.priority);
+        _saveTasks(updatedTasks);
+      } else {
+        List<Task> updatedTasks =
+            _prioritySort((state as TasksLoadSuccess).tasks.map((task) {
+          return task.timeStamp == event.updatedTask.timeStamp
+              ? event.updatedTask
+              : task;
+        }).toList());
+        print('Updated tasks time: $updatedTasks');
+        yield TasksLoadSuccess(updatedTasks, SortType.time);
+        _saveTasks(updatedTasks);
+      }
     }
   }
 
   Stream<TasksState> _mapTaskDeletedToState(TaskDeleted event) async* {
     if (state is TasksLoadSuccess) {
-      final List<Task> updatedTasks = (state as TasksLoadSuccess)
-          .tasks
-          .where((task) => task.timeStamp != event.task.timeStamp)
-          .toList();
-      yield TasksLoadSuccess(updatedTasks);
-      _saveTasks(updatedTasks);
+      if ((state as TasksLoadSuccess).sort == SortType.priority) {
+        final List<Task> updatedTasks = (state as TasksLoadSuccess)
+            .tasks
+            .where((task) => task.timeStamp != event.task.timeStamp)
+            .toList();
+        yield TasksLoadSuccess(updatedTasks, SortType.priority);
+        _saveTasks(updatedTasks);
+      } else {
+        final List<Task> updatedTasks = (state as TasksLoadSuccess)
+            .tasks
+            .where((task) => task.timeStamp != event.task.timeStamp)
+            .toList();
+        yield TasksLoadSuccess(updatedTasks, SortType.time);
+        _saveTasks(updatedTasks);
+      }
     }
   }
+
+//TODO: Use these map sorted functions in above functions to reduce redundancy?
+//      Get rid of timeSort b/c tasks are sorted by time in taskListView?
 
   Stream<TasksState> _mapPrioritySortedToState() async* {
     if (state is TasksLoadSuccess) {
       List<Task> sortedTasks = _prioritySort((state as TasksLoadSuccess).tasks);
-      yield TasksLoadSuccess(sortedTasks);
+      yield TasksLoadSuccess(sortedTasks, SortType.priority);
       _saveTasks(sortedTasks);
       _saveSort(SortType.priority);
     }
@@ -82,9 +114,9 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
   Stream<TasksState> _mapTimeSortedToState() async* {
     if (state is TasksLoadSuccess) {
       List<Task> sortedTasks = _timeSort((state as TasksLoadSuccess).tasks);
-      yield TasksLoadSuccess(sortedTasks);
-      _saveTasks(sortedTasks);
+      yield TasksLoadSuccess(sortedTasks, SortType.time);
       _saveSort(SortType.time);
+      _saveTasks(sortedTasks);
     }
   }
 

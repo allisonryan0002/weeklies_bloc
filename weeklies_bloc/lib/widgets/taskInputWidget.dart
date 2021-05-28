@@ -28,8 +28,8 @@ class _TaskInputWidgetState extends State<TaskInputWidget> {
 
   @override
   void dispose() {
-    controller.dispose();
     super.dispose();
+    controller.dispose();
   }
 
   void updatePriority(ItemPriority priority) {
@@ -49,6 +49,7 @@ class _TaskInputWidgetState extends State<TaskInputWidget> {
     BlocProvider.of<TasksBloc>(taskInputContext).add(TaskAdded(
         Task(DateTime.now(), controller.text, this.priority, this.time)));
     Navigator.pop(taskInputContext);
+    controller.clear();
   }
 
   // SimpleDialog window containing priority & time radio sets and a TextField

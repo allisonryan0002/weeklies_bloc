@@ -7,7 +7,6 @@ class FileClient {
   final Directory dir;
 
   static Future<FileClient> _initialize() async {
-    print("Initialized");
     final dir = await getApplicationDocumentsDirectory();
     return FileClient._(dir);
   }
@@ -20,7 +19,6 @@ class FileClient {
     if (!await file.exists()) {
       await file.create();
     }
-    print('Read file');
     return await file.readAsString();
   }
 
@@ -30,7 +28,6 @@ class FileClient {
     if (!await file.exists()) {
       await file.create();
     }
-    print('Wrote to file');
     return file.writeAsString(contents);
   }
 }

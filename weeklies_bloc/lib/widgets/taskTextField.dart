@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 import 'package:weeklies/blocs/tasks/tasks.dart';
 import 'package:weeklies/blocs/tasks/tasks_bloc.dart';
 import 'package:weeklies/models/models.dart';
-import 'package:weeklies/utility/utility.dart';
 
 // Custom TextField used to input tasks and edit existing tasks
 class TaskTextField extends StatefulWidget {
@@ -23,13 +21,6 @@ class _TaskTextFieldState extends State<TaskTextField> {
   void initState() {
     super.initState();
     controller.text = widget.item.task;
-    controller.selection =
-        TextSelection.collapsed(offset: controller.text.length);
-    controller.addListener(() {
-      Task task = Task(widget.item.timeStamp, controller.text,
-          widget.item.priority, widget.item.day);
-      BlocProvider.of<TasksBloc>(context).add(TaskUpdated(task));
-    });
   }
 
   @override
@@ -45,6 +36,11 @@ class _TaskTextFieldState extends State<TaskTextField> {
       key: Key(widget.item.timeStamp.toString()),
       style: Theme.of(context).textTheme.bodyText1,
       textInputAction: TextInputAction.done,
+      onEditingComplete: () {
+        Task task = Task(widget.item.timeStamp, controller.text,
+            widget.item.priority, widget.item.day);
+        BlocProvider.of<TasksBloc>(context).add(TaskUpdated(task));
+      },
       keyboardType: TextInputType.multiline,
       maxLines: null,
       textCapitalization: TextCapitalization.sentences,

@@ -2,7 +2,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weeklies/blocs/tasks/tasks.dart';
-import 'package:weeklies/repository/task_repository.dart';
 import 'package:weeklies/widgets/widgets.dart';
 import 'package:weeklies/models/models.dart';
 
@@ -81,22 +80,16 @@ class _TaskListViewState extends State<TaskListView> {
    */
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => TasksBloc(
-        tasksRepository: RepositoryProvider.of<TaskRepository>(context),
-      ),
-      child: Scaffold(
-        resizeToAvoidBottomInset: true,
-        body: BlocBuilder<TasksBloc, TasksState>(
-          builder: (context, state) {
-            // Load tasks ??????????????????????????????????????????????????????
-            print('ListView state: $state');
-            if (state is TasksLoadInProgress) {
-              BlocProvider.of<TasksBloc>(context).add(TasksLoaded());
-              return Center(child: CircularProgressIndicator());
-            } else if (state is TasksLoadSuccess &&
-                state.sort == SortType.priority) {
-              List<Task> tasks = state.tasks;
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      body: BlocBuilder<TasksBloc, TasksState>(
+        builder: (context, state) {
+          if (state is TasksLoadInProgress) {
+            return Center(child: CircularProgressIndicator());
+          } else if (state is TasksLoadSuccess &&
+              state.sort == SortType.priority) {
+            List<Task> tasks = state.tasks;
+            if (tasks.isNotEmpty) {
               return Container(
                 padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
                 margin: EdgeInsets.fromLTRB(5, 8, 5, 0),
@@ -111,12 +104,21 @@ class _TaskListViewState extends State<TaskListView> {
                     // Last item in list is empty container acting as a buffer to allow
                     // TaskItems to sit above bottom button panel when scrollled
                     if (index == tasks.length) {
+                      // return Visibility(
+                      //   child: Container(
+                      //     height: MediaQuery.of(context).size.height / 6,
+                      //   ),
+                      //   visible: tasks.length > 9,
+                      // );
                       if (tasks.length > 9) {
                         return Container(
                           height: MediaQuery.of(context).size.height / 6,
                         );
                       } else {
-                        return SizedBox.shrink();
+                        return Container(
+                          color: Colors.red,
+                          height: 0,
+                        );
                       }
                     } else {
                       var taskItem = tasks[index];
@@ -126,70 +128,71 @@ class _TaskListViewState extends State<TaskListView> {
                   },
                 ),
               );
-            } else if (state is TasksLoadSuccess &&
-                state.sort == SortType.time) {
-              List<Task> tasks = state.tasks;
-              Map<String, dynamic> taskAndIndex = getDaysAndTasks(tasks);
-
-              return Scaffold(
-                resizeToAvoidBottomInset: true,
-                body: ListView.builder(
-                  itemCount: taskAndIndex.length + 1,
-                  itemBuilder: (context, index) {
-                    // Last item in list is empty container acting as a buffer to allow
-                    // TaskItems to sit above bottom button panel when scrollled
-                    if (index == taskAndIndex.length) {
-                      return Container(
-                        height: MediaQuery.of(context).size.height / 6,
-                      );
-                    } else {
-                      return Container(
-                        padding: EdgeInsets.fromLTRB(8, 8, 8, 5),
-                        margin: EdgeInsets.fromLTRB(5, 8, 5, 0),
-                        decoration: BoxDecoration(
-                          color: Color.fromRGBO(52, 85, 103, 1),
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
-                        child: Column(
-                          children: [
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                taskAndIndex.keys.toList()[index],
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .subtitle1
-                                    ?.copyWith(fontSize: 18),
-                              ),
-                            ),
-                            ListView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount:
-                                  taskAndIndex.values.toList()[index].length,
-                              itemBuilder: (context, indexInner) {
-                                Task taskItem = taskAndIndex.values
-                                    .toList()[index][indexInner][0];
-                                int taskIndex = taskAndIndex.values
-                                    .toList()[index][indexInner][1];
-
-                                // Task is dismissed on top of gradient
-                                return getTaskDismissiblePanel(
-                                    taskItem, taskIndex);
-                              },
-                            ),
-                          ],
-                        ),
-                      );
-                    }
-                  },
-                ),
-              );
             } else {
               return Container();
             }
-          },
-        ),
+          } else if (state is TasksLoadSuccess && state.sort == SortType.time) {
+            List<Task> tasks = state.tasks;
+            Map<String, dynamic> taskAndIndex = getDaysAndTasks(tasks);
+
+            return Scaffold(
+              resizeToAvoidBottomInset: true,
+              body: ListView.builder(
+                itemCount: taskAndIndex.length + 1,
+                itemBuilder: (context, index) {
+                  // Last item in list is empty container acting as a buffer to allow
+                  // TaskItems to sit above bottom button panel when scrollled
+                  if (index == taskAndIndex.length) {
+                    return Container(
+                      height: MediaQuery.of(context).size.height / 6,
+                    );
+                  } else {
+                    return Container(
+                      padding: EdgeInsets.fromLTRB(8, 8, 8, 5),
+                      margin: EdgeInsets.fromLTRB(5, 8, 5, 0),
+                      decoration: BoxDecoration(
+                        color: Color.fromRGBO(52, 85, 103, 1),
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      child: Column(
+                        children: [
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              taskAndIndex.keys.toList()[index],
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle1
+                                  ?.copyWith(fontSize: 18),
+                            ),
+                          ),
+                          ListView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount:
+                                taskAndIndex.values.toList()[index].length,
+                            itemBuilder: (context, indexInner) {
+                              Task taskItem = taskAndIndex.values
+                                  .toList()[index][indexInner][0];
+                              int taskIndex = taskAndIndex.values
+                                  .toList()[index][indexInner][1];
+
+                              // Task is dismissed on top of gradient
+                              return getTaskDismissiblePanel(
+                                  taskItem, taskIndex);
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                },
+              ),
+            );
+          } else {
+            return Container();
+          }
+        },
       ),
     );
   }

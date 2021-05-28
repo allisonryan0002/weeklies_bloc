@@ -136,6 +136,16 @@ class _MyHomePageState extends State<MyHomePage> {
                * This panel sits on top of the taskListView with a white gradient so
                * the task list seamlessly disappears under the button panel
                */
+            // BottomNavigationBar(
+            //   items: [
+            //     BottomNavigationBarItem(icon: PrioritySortButton(), label: '1'),
+            //     BottomNavigationBarItem(icon: TaskInputWidget(), label: '2'),
+            //     BottomNavigationBarItem(icon: TimeSortButton(), label: '3'),
+            //   ],
+            //   showSelectedLabels: false,
+            //   showUnselectedLabels: false,
+            // ),
+            //IgnorePointer(child:
             Positioned(
               bottom: 0,
               child: SizedBox(
@@ -166,6 +176,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
             ),
+            //),
           ],
         ),
         // Prevent keyboard from covering existing task when editing its text

@@ -11,7 +11,6 @@ class TaskRepository {
 
   Future<List<Task>> loadTasks() async {
     final fileContents = await client.read('myTasks.json');
-    print('Read from file - respository');
     if (fileContents.isEmpty) return [];
     final jsonContent = JsonDecoder().convert(fileContents);
     return (jsonContent['tasks'])
@@ -20,7 +19,6 @@ class TaskRepository {
   }
 
   Future<File> saveTasks(List<Task> tasks) async {
-    print('Repository saveTasks');
     final contents = JsonEncoder()
         .convert({'tasks': tasks.map((task) => task.toJson()).toList()});
     //print('\n$contents\n');
