@@ -21,7 +21,6 @@ class TaskRepository {
   Future<File> saveTasks(List<Task> tasks) async {
     final contents = JsonEncoder()
         .convert({'tasks': tasks.map((task) => task.toJson()).toList()});
-    //print('\n$contents\n');
     return client.write('myTasks.json', contents);
   }
 
@@ -30,7 +29,7 @@ class TaskRepository {
     if (fileContents.isEmpty) return SortType.priority;
 
     final jsonContent = JsonDecoder().convert(fileContents);
-    return (SortType.priority.fromJson(jsonContent['sort']));
+    return (SortTypeExtension.fromJson(jsonContent['sort']));
   }
 
   Future<File> saveSort(SortType sort) async {

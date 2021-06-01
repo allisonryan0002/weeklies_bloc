@@ -84,12 +84,10 @@ extension PriorityExtension on Priority {
         return 3;
       case Priority.high:
         return 4;
-      default:
-        return 0;
     }
   }
 
-  Priority fromJson(int val) {
+  static Priority fromJson(int val) {
     switch (val) {
       case 0:
         return Priority.low;
@@ -102,7 +100,7 @@ extension PriorityExtension on Priority {
       case 4:
         return Priority.high;
       default:
-        return Priority.low;
+        return throw ArgumentError('Invalid int value for a priority');
     }
   }
 }

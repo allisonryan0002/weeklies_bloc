@@ -133,7 +133,7 @@ class _TaskListViewState extends State<TaskListView> {
             } else {
               return Container();
             }
-          } else if (state is TasksLoadSuccess && state.sort == SortType.time) {
+          } else if (state is TasksLoadSuccess && state.sort == SortType.day) {
             List<Task> tasks = state.tasks;
             Map<String, dynamic> taskAndIndex = getDaysAndTasks(tasks);
 
@@ -237,10 +237,8 @@ class _TaskListViewState extends State<TaskListView> {
                   changeDayWindow(context, taskItem);
                 },
                 child: DayRadioIconTileSize(
-                  DayRadio(
-                      false,
-                      ItemTime(DateTime.now().weekday)
-                          .timeOptions[taskItem.day]),
+                  DayRadio(false,
+                      Day(DateTime.now().weekday).dayOptions[taskItem.day]),
                 ),
               ),
             ],
@@ -315,7 +313,7 @@ class _TaskListViewState extends State<TaskListView> {
       }
     }
 
-    List<String> dayList = ItemTime(DateTime.now().weekday).timeOptions;
+    List<String> dayList = Day(DateTime.now().weekday).dayOptions;
     List<MapEntry<String, List<dynamic>>> entries = [];
 
     if (zero.isNotEmpty) {

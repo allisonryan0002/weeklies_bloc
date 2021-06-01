@@ -48,4 +48,4 @@ class TaskDeleted extends TasksEvent {
 
 class PrioritySorted extends TasksEvent {}
 
-class TimeSorted extends TasksEvent {}
+class DaySorted extends TasksEvent {}

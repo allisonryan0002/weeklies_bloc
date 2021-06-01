@@ -21,8 +21,8 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
       yield* _mapTaskDeletedToState(event);
     } else if (event is PrioritySorted) {
       yield* _mapPrioritySortedToState();
-    } else if (event is TimeSorted) {
-      yield* _mapTimeSortedToState();
+    } else if (event is DaySorted) {
+      yield* _mapDaySortedToState();
     }
   }
 
@@ -46,7 +46,7 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
       } else {
         List<Task> updatedTasks = _prioritySort(
             List.from((state as TasksLoadSuccess).tasks)..add(event.task));
-        yield TasksLoadSuccess(updatedTasks, SortType.time);
+        yield TasksLoadSuccess(updatedTasks, SortType.day);
         _saveTasks(updatedTasks);
       }
     }
@@ -62,7 +62,6 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
               ? event.updatedTask
               : task;
         }).toList());
-        print('Updated tasks: $updatedTasks');
         yield TasksLoadSuccess(updatedTasks, SortType.priority);
         _saveTasks(updatedTasks);
       } else {
@@ -72,8 +71,7 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
               ? event.updatedTask
               : task;
         }).toList());
-        print('Updated tasks time: $updatedTasks');
-        yield TasksLoadSuccess(updatedTasks, SortType.time);
+        yield TasksLoadSuccess(updatedTasks, SortType.day);
         _saveTasks(updatedTasks);
       }
     }
@@ -93,7 +91,7 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
             .tasks
             .where((task) => task.timeStamp != event.task.timeStamp)
             .toList();
-        yield TasksLoadSuccess(updatedTasks, SortType.time);
+        yield TasksLoadSuccess(updatedTasks, SortType.day);
         _saveTasks(updatedTasks);
       }
     }
@@ -111,11 +109,11 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
     }
   }
 
-  Stream<TasksState> _mapTimeSortedToState() async* {
+  Stream<TasksState> _mapDaySortedToState() async* {
     if (state is TasksLoadSuccess) {
       List<Task> sortedTasks = _timeSort((state as TasksLoadSuccess).tasks);
-      yield TasksLoadSuccess(sortedTasks, SortType.time);
-      _saveSort(SortType.time);
+      yield TasksLoadSuccess(sortedTasks, SortType.day);
+      _saveSort(SortType.day);
       _saveTasks(sortedTasks);
     }
   }

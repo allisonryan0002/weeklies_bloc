@@ -86,7 +86,7 @@ class _CustomDayRadioState extends State<CustomDayRadio> {
   @override
   void initState() {
     super.initState();
-    dayList = ItemTime(currTime).timeOptions;
+    dayList = Day(currTime).dayOptions;
     for (String day in dayList.sublist(1, 8)) {
       timeChoices.add(DayRadio(false, day));
     }

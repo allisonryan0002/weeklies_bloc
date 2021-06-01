@@ -22,10 +22,14 @@ class Task extends Equatable {
   }
 
   static Task fromJson(Map<String, dynamic> json) {
-    return Task(
-        DateTime.parse(json['timeStamp'].toString()),
-        json['task'] as String,
-        Priority.low.fromJson(json["priority"]),
-        json["day"] as int);
+    try {
+      return Task(
+          DateTime.parse(json['timeStamp'].toString()),
+          json['task'] as String,
+          PriorityExtension.fromJson(json["priority"]),
+          json["day"] as int);
+    } catch (e) {
+      return throw e;
+    }
   }
 }

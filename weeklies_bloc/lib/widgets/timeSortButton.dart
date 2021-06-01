@@ -13,7 +13,7 @@ class _TimeSortButtonState extends State<TimeSortButton> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        BlocProvider.of<TasksBloc>(context).add(TimeSorted());
+        BlocProvider.of<TasksBloc>(context).add(DaySorted());
       },
       child: Container(
         child: Icon(
