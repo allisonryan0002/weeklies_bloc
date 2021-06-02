@@ -1,20 +1,15 @@
-import 'package:path_provider/path_provider.dart';
-import 'dart:io';
 import 'dart:async';
+import 'package:file/file.dart' hide Directory;
+import 'dart:io' show Directory;
 
 class FileClient {
-  static late Future<FileClient> instance = _initialize();
   final Directory dir;
+  final FileSystem fileSystem;
 
-  static Future<FileClient> _initialize() async {
-    final dir = await getApplicationDocumentsDirectory();
-    return FileClient._(dir);
-  }
-
-  FileClient._(this.dir);
+  FileClient({required this.dir, required this.fileSystem});
 
   Future<String> read(String filename) async {
-    final file = File('${dir.path}/$filename');
+    final file = fileSystem.file('${dir.path}/$filename');
     if (!await file.exists()) {
       await file.create();
     }
@@ -22,7 +17,7 @@ class FileClient {
   }
 
   Future<File> write(String filename, String contents) async {
-    final file = File('${dir.path}/$filename');
+    final file = fileSystem.file('${dir.path}/$filename');
     if (!await file.exists()) {
       await file.create();
     }

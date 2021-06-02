@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:weeklies/blocs/tasks/tasks.dart';
 import 'package:weeklies/models/models.dart';
-import 'package:weeklies/repository/task_repository.dart';
+import 'package:weeklies/repositories/repositories.dart';
 
 class TasksBloc extends Bloc<TasksEvent, TasksState> {
   final TaskRepository tasksRepository;

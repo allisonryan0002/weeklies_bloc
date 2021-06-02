@@ -1,29 +1,49 @@
 import 'dart:io';
-import 'package:flutter/services.dart';
-import 'package:test/test.dart';
+import 'package:file/file.dart' show FileSystem, File;
+import 'package:file/memory.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:weeklies/clients/clients.dart';
+
+class MockFileSystem extends Mock implements FileSystem {}
+
+class MockFile extends Mock implements File {}
 
 void main() {
   group('FileClient', () {
-    setUpAll(() async {
-      // Create a temporary directory.
-      final directory = await Directory.systemTemp.createTemp();
+    late FileClient client;
+    late FileSystem fileSystem;
+    late String path;
 
-      // Mock out the MethodChannel for the path_provider plugin.
-      const MethodChannel('plugins.flutter.io/path_provider')
-          .setMockMethodCallHandler((MethodCall methodCall) async {
-        // If you're getting the apps documents directory, return the path to the
-        // temp directory on the test environment instead.
-        if (methodCall.method == 'getApplicationDocumentsDirectory') {
-          return directory.path;
+    setUp(() {
+      fileSystem = MemoryFileSystem();
+      client = FileClient(dir: Directory(''), fileSystem: fileSystem);
+      path = '${client.dir.path}/test.json';
+    });
+    group('read', () {
+      test('reads from file system', () async {
+        fileSystem.file(path)..writeAsString('contents');
+        expect(await client.read('test.json'), 'contents');
+      });
+
+      test('handles error', () async {
+        final fileSystem = MockFileSystem();
+        final file = MockFile();
+        when(() => fileSystem.file(path)).thenReturn(file);
+        when(() => file.exists()).thenThrow(Exception());
+        final client = FileClient(dir: Directory(''), fileSystem: fileSystem);
+        try {
+          await client.read('test.json');
+          fail("exception not thrown");
+        } catch (e) {
+          assert(e is Exception);
         }
-        return null;
       });
     });
 
-    test('read....', () {
-      //Need to setup FileClient here with directory from above?
+    test('writes to file system', () async {
+      await client.write('test.json', 'contents');
+      expect(await fileSystem.file(path).readAsString(), 'contents');
     });
-    test('write....', () {});
   });
 }

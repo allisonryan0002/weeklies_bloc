@@ -2,7 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weeklies/blocs/tasks/tasks.dart';
-import 'package:weeklies/repository/task_repository.dart';
+import 'package:weeklies/repositories/repositories.dart';
 import 'package:weeklies/widgets/widgets.dart';
 import 'package:weeklies/models/models.dart';
 

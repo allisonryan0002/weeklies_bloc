@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weeklies/blocs/tasks/tasks.dart';
 
-// Simple button that calls timeTaskItemOrder() when tapped
-class TimeSortButton extends StatefulWidget {
+// Simple button that adds DaySorted() event when tapped
+class DaySortButton extends StatefulWidget {
   @override
-  _TimeSortButtonState createState() => _TimeSortButtonState();
+  _DaySortButtonState createState() => _DaySortButtonState();
 }
 
-class _TimeSortButtonState extends State<TimeSortButton> {
+class _DaySortButtonState extends State<DaySortButton> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

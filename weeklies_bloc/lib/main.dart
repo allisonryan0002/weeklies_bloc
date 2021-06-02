@@ -24,17 +24,20 @@
  *                can be found in AppScreenshots folder.
  */
 
+import 'package:file/local.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:weeklies/blocs/tasks/tasks.dart';
-import 'package:weeklies/clients/file_client.dart';
-import 'package:weeklies/repository/task_repository.dart';
+import 'package:weeklies/clients/clients.dart';
+import 'package:weeklies/repositories/repositories.dart';
 import 'package:weeklies/widgets/widgets.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final fileClient = await FileClient.instance;
+  final dir = await getApplicationDocumentsDirectory();
+  final fileClient = FileClient(dir: dir, fileSystem: LocalFileSystem());
   runApp(MyApp(
     client: fileClient,
   ));
@@ -157,7 +160,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     children: <Widget>[
                       PrioritySortButton(),
                       TaskInputWidget(),
-                      TimeSortButton(),
+                      DaySortButton(),
                     ],
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   ),

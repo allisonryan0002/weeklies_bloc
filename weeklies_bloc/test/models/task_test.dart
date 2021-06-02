@@ -11,7 +11,7 @@ void main() {
     late Map<String, dynamic> json;
 
     setUp(() {
-      timestamp = DateTime(2021, 6, 1);
+      timestamp = DateTime.now();
       text = 'Test';
       priority = Priority.low;
       day = 1;
@@ -29,7 +29,12 @@ void main() {
     });
 
     test('fromJson method produces Task from valid json input', () {
-      expect(Task.fromJson(json), task);
+      Task actual = Task.fromJson(json);
+      DateTime now = DateTime.now();
+      Duration difference = now.difference(actual.timeStamp);
+      assert(difference.inSeconds <= 0);
+      expect([actual.task, actual.priority, actual.day],
+          [task.task, task.priority, task.day]);
     });
 
     test('fromJson method throws error for invalid json input', () {

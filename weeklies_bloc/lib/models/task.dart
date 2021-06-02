@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:weeklies/models/models.dart';
+import 'package:weeklies/utility/adjustedDay.dart';
 
 class Task extends Equatable {
   final DateTime timeStamp;
@@ -23,11 +24,13 @@ class Task extends Equatable {
 
   static Task fromJson(Map<String, dynamic> json) {
     try {
-      return Task(
-          DateTime.parse(json['timeStamp'].toString()),
-          json['task'] as String,
-          PriorityExtension.fromJson(json["priority"]),
-          json["day"] as int);
+      DateTime prevTimeStamp = DateTime.parse(json['timeStamp'].toString());
+      DateTime currTimeStamp = DateTime.now();
+      String taskText = json['task'] as String;
+      Priority priority = PriorityExtension.fromJson(json["priority"]);
+      int day = json["day"] as int;
+      day = adjustedDay(prevTimeStamp, currTimeStamp, day);
+      return Task(currTimeStamp, taskText, priority, day);
     } catch (e) {
       return throw e;
     }
