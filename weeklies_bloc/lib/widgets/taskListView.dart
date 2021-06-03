@@ -5,8 +5,6 @@ import 'package:weeklies/blocs/tasks/tasks.dart';
 import 'package:weeklies/widgets/widgets.dart';
 import 'package:weeklies/models/models.dart';
 
-//TODO: implement dayDifference
-
 /* ListView widget displaying all TaskItems
  * Also creates dialog windows for changing an item's priority or time values
  */
@@ -125,7 +123,7 @@ class _TaskListViewState extends State<TaskListView> {
                     } else {
                       var taskItem = tasks[index];
                       // Task is dismissed on top of gradient
-                      return getTaskDismissiblePanel(taskItem, index);
+                      return getTaskTileDismissible(taskItem, index);
                     }
                   },
                 ),
@@ -140,6 +138,7 @@ class _TaskListViewState extends State<TaskListView> {
             return Scaffold(
               resizeToAvoidBottomInset: true,
               body: ListView.builder(
+                key: Key('day_sort_outer_list_view'),
                 itemCount: taskAndIndex.length + 1,
                 itemBuilder: (context, index) {
                   // Last item in list is empty container acting as a buffer to allow
@@ -169,6 +168,7 @@ class _TaskListViewState extends State<TaskListView> {
                             ),
                           ),
                           ListView.builder(
+                            key: Key('day_sort_inner_list_view'),
                             physics: const NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
                             itemCount:
@@ -180,7 +180,7 @@ class _TaskListViewState extends State<TaskListView> {
                                   .toList()[index][indexInner][1];
 
                               // Task is dismissed on top of gradient
-                              return getTaskDismissiblePanel(
+                              return getTaskTileDismissible(
                                   taskItem, taskIndex);
                             },
                           ),
@@ -199,7 +199,7 @@ class _TaskListViewState extends State<TaskListView> {
     );
   }
 
-  Dismissible getTaskDismissiblePanel(Task taskItem, int index) {
+  Dismissible getTaskTileDismissible(Task taskItem, int index) {
     return Dismissible(
       key: UniqueKey(),
       onDismissed: (direction) {

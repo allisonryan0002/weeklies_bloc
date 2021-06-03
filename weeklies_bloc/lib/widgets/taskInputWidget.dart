@@ -29,7 +29,8 @@ class _TaskInputWidgetState extends State<TaskInputWidget> {
   @override
   void dispose() {
     super.dispose();
-    controller.dispose();
+    //TODO: everything works without this... delete it?
+    //controller.dispose();
   }
 
   void updatePriority(Priority priority) {

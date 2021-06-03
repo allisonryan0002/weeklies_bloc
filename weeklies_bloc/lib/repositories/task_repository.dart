@@ -18,10 +18,10 @@ class TaskRepository {
         .toList();
   }
 
-  Future<File> saveTasks(List<Task> tasks) async {
+  void saveTasks(List<Task> tasks) async {
     final contents = JsonEncoder()
         .convert({'tasks': tasks.map((task) => task.toJson()).toList()});
-    return client.write('myTasks.json', contents);
+    client.write('myTasks.json', contents);
   }
 
   Future<SortType> loadSort() async {
@@ -32,8 +32,8 @@ class TaskRepository {
     return (SortTypeExtension.fromJson(jsonContent['sort']));
   }
 
-  Future<File> saveSort(SortType sort) async {
+  void saveSort(SortType sort) async {
     final contents = JsonEncoder().convert({'sort': sort.toJson()});
-    return client.write('mySort.json', contents);
+    client.write('mySort.json', contents);
   }
 }

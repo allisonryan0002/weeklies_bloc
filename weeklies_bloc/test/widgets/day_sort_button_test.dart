@@ -4,14 +4,22 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:weeklies/blocs/tasks/tasks.dart';
-import 'package:weeklies/models/sort.dart';
 import 'package:weeklies/widgets/widgets.dart';
 
 class MockTaskBloc extends MockBloc<TasksEvent, TasksState>
     implements TasksBloc {}
 
+class FakeTasksEvent extends Fake implements TasksEvent {}
+
+class FakeTasksState extends Fake implements TasksState {}
+
 void main() {
   late TasksBloc tasksBloc;
+
+  setUpAll(() {
+    registerFallbackValue<TasksEvent>(FakeTasksEvent());
+    registerFallbackValue<TasksState>(FakeTasksState());
+  });
 
   setUp(() {
     tasksBloc = MockTaskBloc();
@@ -25,16 +33,12 @@ void main() {
             body: DaySortButton(),
           ),
         ),
-        Duration(seconds: 1),
       );
       expect(find.widgetWithIcon(DaySortButton, Icons.access_time_rounded),
           findsOneWidget);
     });
 
     testWidgets('triggers sorting by day', (WidgetTester tester) async {
-      when(() => tasksBloc.state).thenAnswer(
-        (_) => TasksLoadSuccess([], SortType.day),
-      );
       await tester.pumpWidget(
         BlocProvider<TasksBloc>.value(
           value: tasksBloc,
@@ -45,12 +49,10 @@ void main() {
           ),
         ),
       );
-      await tester.pumpAndSettle();
       var daySortButtonFinder =
           find.widgetWithIcon(DaySortButton, Icons.access_time_rounded);
       expect(daySortButtonFinder, findsOneWidget);
       await tester.tap(daySortButtonFinder);
-      await tester.pumpAndSettle();
       verify(() => tasksBloc.add(DaySorted())).called(1);
       //TODO: is this test needed? what else should be tested for?
     });

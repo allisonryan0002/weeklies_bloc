@@ -16,6 +16,12 @@ import './models/task_test.dart' as task;
 import './widgets/day_sort_button_test.dart' as day_sort_button;
 import './widgets/priority_sort_button_test.dart' as priority_sort_button;
 import './widgets/custom_priority_radio_test.dart' as custom_priority_radio;
+import './widgets/custom_day_radio_test.dart' as custom_day_radio;
+import './widgets/task_text_field_test.dart' as task_text_field;
+import './widgets/task_input_widget_test.dart' as task_input_widget;
+import './widgets/task_list_view_test.dart' as task_list_view;
+
+import 'adjusted_day_test.dart' as adjusted_day;
 
 void main() {
   // Clients
@@ -41,4 +47,11 @@ void main() {
   day_sort_button.main();
   priority_sort_button.main();
   custom_priority_radio.main();
+  custom_day_radio.main();
+  task_text_field.main();
+  task_input_widget.main();
+  task_list_view.main();
+
+  //Other
+  adjusted_day.main();
 }

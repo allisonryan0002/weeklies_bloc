@@ -15,7 +15,7 @@ import 'package:weeklies/widgets/widgets.dart';
 //TODO: should the actual Mock be used instead?
 class MockCallback {
   int _callCounter = 0;
-  void call(Priority p) {
+  void call(int i) {
     _callCounter += 1;
   }
 
@@ -34,36 +34,53 @@ void main() {
   //   registerFallbackValue<TasksEvent>(FakeTasksEvent());
   //   registerFallbackValue<TasksState>(FakeTasksState());
   // });
-  group('CustomPriorityRadio', () {
-    group('PriorityRadioIcon', () {
+  group('CustomDayRadio', () {
+    group('DayRadioIcon', () {
       testWidgets(
         "renders correctly",
         (WidgetTester tester) async {
           await tester.pumpWidget(
             MaterialApp(
               home: Scaffold(
-                body: PriorityRadioIcon(Priority.low.radio),
+                body: DayRadioIcon(DayRadio(true, 'Today')),
               ),
             ),
           );
-          expect(find.byType(PriorityRadioIcon), findsOneWidget);
-          expect(find.text('5'), findsOneWidget);
+          expect(find.byType(DayRadioIcon), findsOneWidget);
+          expect(find.text('Today'), findsOneWidget);
         },
       );
     });
 
-    group('CustomPriorityRadioWidget', () {
+    group('DayRadioIconTileSize', () {
+      testWidgets(
+        "renders correctly",
+        (WidgetTester tester) async {
+          await tester.pumpWidget(
+            MaterialApp(
+              home: Scaffold(
+                body: DayRadioIconTileSize(DayRadio(true, 'Today')),
+              ),
+            ),
+          );
+          expect(find.byType(DayRadioIconTileSize), findsOneWidget);
+          expect(find.text('Today'), findsOneWidget);
+        },
+      );
+    });
+
+    group('CustomDayRadioWidget', () {
       testWidgets("renders correctly", (WidgetTester tester) async {
         final mockedCallback = MockCallback();
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
-              body: CustomPriorityRadio(mockedCallback),
+              body: CustomDayRadio(mockedCallback),
             ),
           ),
         );
-        expect(find.byType(CustomPriorityRadio), findsOneWidget);
-        expect(find.byType(PriorityRadioIcon), findsNWidgets(5));
+        expect(find.byType(CustomDayRadio), findsOneWidget);
+        expect(find.byType(DayRadioIcon), findsNWidgets(8));
       });
 
       testWidgets("callback function is called on tap",
@@ -72,11 +89,11 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
-              body: CustomPriorityRadio(mockedCallback),
+              body: CustomDayRadio(mockedCallback),
             ),
           ),
         );
-        final radioIconFinder = find.widgetWithText(PriorityRadioIcon, '1');
+        final radioIconFinder = find.widgetWithText(DayRadioIcon, 'Today');
         await tester.tap(radioIconFinder);
         //verify(() => mockedCallback.call(Priority.high)).called(1);
         expect(mockedCallback.called(1), true);

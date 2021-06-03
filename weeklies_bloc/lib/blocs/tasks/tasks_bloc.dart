@@ -119,6 +119,7 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
   }
 
   List<Task> _prioritySort(List<Task> tasks) {
+    if (tasks.isEmpty) return [];
     tasks.sort((a, b) => a.priority.compareTo(b.priority));
     List<Task> finalSort = [];
     List<Task> intermedSort = [];
@@ -152,11 +153,11 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
     return sortedTasks;
   }
 
-  Future _saveTasks(List<Task> tasks) {
-    return tasksRepository.saveTasks(tasks);
+  void _saveTasks(List<Task> tasks) {
+    tasksRepository.saveTasks(tasks);
   }
 
-  Future _saveSort(SortType sort) {
-    return tasksRepository.saveSort(sort);
+  void _saveSort(SortType sort) {
+    tasksRepository.saveSort(sort);
   }
 }

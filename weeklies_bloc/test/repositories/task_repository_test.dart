@@ -42,7 +42,7 @@ void main() {
         () async {
       when(() => client.write('myTasks.json', '{"tasks":[]}'))
           .thenAnswer((_) => Future.value(MockFile()));
-      await repository.saveTasks([]);
+      repository.saveTasks([]);
       //TODO: check the file contents??
       verify(() => client.write('myTasks.json', '{"tasks":[]}')).called(1);
     });
@@ -64,7 +64,7 @@ void main() {
     test('saveSort method stores SortType appropriately in file', () async {
       when(() => client.write('mySort.json', '{"sort":1}'))
           .thenAnswer((_) => Future.value(MockFile()));
-      await repository.saveSort(SortType.day);
+      repository.saveSort(SortType.day);
       //TODO: check the file contents??
       verify(() => client.write('mySort.json', '{"sort":1}')).called(1);
     });
