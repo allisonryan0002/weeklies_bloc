@@ -54,12 +54,12 @@ class _HomePageState extends State<HomePage> {
                   ),
                   Padding(
                     padding: EdgeInsets.only(
-                        bottom: MediaQuery.of(context).size.height / 55),
+                        bottom: MediaQuery.of(context).size.height / 50),
                   )
                 ],
               ),
               centerTitle: true,
-              backgroundColor: (state as TasksLoadSuccess).theme.colorTheme.low,
+              backgroundColor: state.theme.colorTheme.low,
               shape: ContinuousRectangleBorder(
                   borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(1000),

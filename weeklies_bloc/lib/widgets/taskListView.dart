@@ -17,9 +17,9 @@ class _TaskListViewState extends State<TaskListView> {
   // Displays SimpleDialog with a priority radio set to change a task's priority
   changePriorityWindow(BuildContext priorityContext, Task item) {
     updatePriority(Priority p) {
+      Navigator.pop(priorityContext);
       BlocProvider.of<TasksBloc>(priorityContext)
           .add(TaskUpdated(Task(item.timeStamp, item.task, p, item.day)));
-      Navigator.pop(priorityContext);
     }
 
     return showDialog(
@@ -47,9 +47,9 @@ class _TaskListViewState extends State<TaskListView> {
   // Displays SimpleDialog with a time radio set to change a task's time
   changeDayWindow(BuildContext dayContext, Task item) {
     updateDay(int day) {
+      Navigator.pop(dayContext);
       BlocProvider.of<TasksBloc>(dayContext).add(
           TaskUpdated(Task(item.timeStamp, item.task, item.priority, day)));
-      Navigator.pop(dayContext);
     }
 
     return showDialog(
@@ -81,6 +81,7 @@ class _TaskListViewState extends State<TaskListView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //TODO: does this resize actually do anything?
       resizeToAvoidBottomInset: true,
       body: BlocBuilder<TasksBloc, TasksState>(
         builder: (context, state) {
@@ -90,39 +91,32 @@ class _TaskListViewState extends State<TaskListView> {
               state.sort == SortType.priority) {
             List<Task> tasks = state.tasks;
             if (tasks.isNotEmpty) {
-              return Container(
-                padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
-                margin: EdgeInsets.fromLTRB(5, 8, 5, 0),
-                decoration: BoxDecoration(
-                  color: state.theme.colorTheme.accent,
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: tasks.length + 1,
-                  itemBuilder: (context, index) {
-                    // Last item in list is empty container acting as a buffer to allow
-                    // TaskItems to sit above bottom button panel when scrollled
-                    if (index == tasks.length) {
-                      // return Visibility(
-                      //   child: Container(
-                      //     height: MediaQuery.of(context).size.height / 6,
-                      //   ),
-                      //   visible: tasks.length > 9,
-                      // );
-                      if (tasks.length > 9) {
-                        return Container(
-                          height: MediaQuery.of(context).size.height / 6,
-                        );
-                      } else {
-                        return Container();
-                      }
-                    } else {
-                      var taskItem = tasks[index];
-                      // Task is dismissed on top of gradient
-                      return getTaskTileDismissible(taskItem, index);
-                    }
-                  },
+              return SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.fromLTRB(8, 5, 8, 0),
+                      margin: EdgeInsets.fromLTRB(5, 8, 5, 0),
+                      decoration: BoxDecoration(
+                        color: state.theme.colorTheme.accent,
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      child: ListView.builder(
+                        padding: EdgeInsets.only(bottom: 5),
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: tasks.length,
+                        itemBuilder: (context, index) {
+                          var taskItem = tasks[index];
+                          return getTaskTileDismissible(
+                              taskItem, index, state.theme.colorTheme);
+                        },
+                      ),
+                    ),
+                    Container(
+                      height: MediaQuery.of(context).size.height / 5.5,
+                    ),
+                  ],
                 ),
               );
             } else {
@@ -178,7 +172,7 @@ class _TaskListViewState extends State<TaskListView> {
 
                               // Task is dismissed on top of gradient
                               return getTaskTileDismissible(
-                                  taskItem, taskIndex);
+                                  taskItem, taskIndex, state.theme.colorTheme);
                             },
                           ),
                         ],
@@ -196,7 +190,8 @@ class _TaskListViewState extends State<TaskListView> {
     );
   }
 
-  Dismissible getTaskTileDismissible(Task taskItem, int index) {
+  Dismissible getTaskTileDismissible(
+      Task taskItem, int index, ColorTheme theme) {
     //TODO: issue with time change giving task.day is 9??
     //print('TaskItem day : ${taskItem.day}');
     return Dismissible(
@@ -204,58 +199,46 @@ class _TaskListViewState extends State<TaskListView> {
       onDismissed: (direction) {
         BlocProvider.of<TasksBloc>(context).add(TaskDeleted(taskItem));
       },
-      child: BlocBuilder<TasksBloc, TasksState>(
-        builder: (context, state) {
-          if (state is TasksLoadSuccess) {
-            return Container(
-              margin: EdgeInsets.fromLTRB(0, 2.5, 0, 2.5),
-              padding: EdgeInsets.fromLTRB(0, 2, 0, 2),
+      child: Container(
+        margin: EdgeInsets.fromLTRB(0, 2.5, 0, 2.5),
+        padding: EdgeInsets.fromLTRB(0, 2, 0, 2),
+        decoration: BoxDecoration(
+          color: taskItem.priority.color(theme),
+          borderRadius: BorderRadius.all(Radius.circular(6)),
+        ),
+        child: ListTile(
+          visualDensity: VisualDensity(horizontal: -2),
+          // Priority radio button
+          leading: GestureDetector(
+            onTap: () {
+              changePriorityWindow(context, taskItem);
+            },
+            child: Container(
               decoration: BoxDecoration(
-                color: taskItem.priority.color(state.theme.colorTheme),
-                borderRadius: BorderRadius.all(Radius.circular(6)),
-              ),
-              child: ListTile(
-                visualDensity: VisualDensity(horizontal: -2),
-                // Priority radio button
-                leading: GestureDetector(
-                  onTap: () {
-                    changePriorityWindow(context, taskItem);
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.7),
-                        shape: BoxShape.circle),
-                    child: PriorityRadioIcon(
-                        taskItem.priority.radio(state.theme.colorTheme)),
-                  ),
+                  color: Colors.white.withOpacity(0.7), shape: BoxShape.circle),
+              child: PriorityRadioIcon(taskItem.priority.radio(theme)),
+            ),
+          ),
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Editable text field for task text
+              TaskTextField(taskItem),
+              Padding(padding: EdgeInsets.only(top: 4)),
+              // Time radio button
+              GestureDetector(
+                onTap: () {
+                  changeDayWindow(context, taskItem);
+                },
+                child: DayRadioIconTileSize(
+                  DayRadio(false,
+                      Day(DateTime.now().weekday).dayOptions[taskItem.day]),
                 ),
-                title: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Editable text field for task text
-                    TaskTextField(taskItem),
-                    Padding(padding: EdgeInsets.only(top: 4)),
-                    // Time radio button
-                    GestureDetector(
-                      onTap: () {
-                        changeDayWindow(context, taskItem);
-                      },
-                      child: DayRadioIconTileSize(
-                        DayRadio(
-                            false,
-                            Day(DateTime.now().weekday)
-                                .dayOptions[taskItem.day]),
-                      ),
-                    ),
-                  ],
-                ),
-                contentPadding: EdgeInsets.fromLTRB(20, 5, 0, 0),
               ),
-            );
-          } else {
-            return Container();
-          }
-        },
+            ],
+          ),
+          contentPadding: EdgeInsets.fromLTRB(20, 5, 0, 0),
+        ),
       ),
       background: Container(
         margin: EdgeInsets.fromLTRB(0, 2.5, 0, 2.5),
@@ -265,11 +248,11 @@ class _TaskListViewState extends State<TaskListView> {
             begin: Alignment.centerRight,
             end: Alignment.centerLeft,
             colors: [
-              Color.fromRGBO(86, 141, 172, 1),
-              Color.fromRGBO(152, 196, 209, 1),
-              Color.fromRGBO(254, 203, 93, 1),
-              Color.fromRGBO(250, 164, 91, 1),
-              Color.fromRGBO(225, 113, 76, 1),
+              theme.low,
+              theme.lowMed,
+              theme.med,
+              theme.medHigh,
+              theme.high,
             ],
           ),
           borderRadius: BorderRadius.all(Radius.circular(6)),

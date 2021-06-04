@@ -75,7 +75,6 @@ class _CustomColorThemeRadioState extends State<CustomColorThemeRadio> {
   @override
   Widget build(BuildContext context) {
     setupListOfColorThemeRadios(widget.initialSelected);
-
     return SizedBox(
       width: 250,
       child: Wrap(

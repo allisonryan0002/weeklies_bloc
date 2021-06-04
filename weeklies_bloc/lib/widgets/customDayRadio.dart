@@ -89,10 +89,14 @@ class _CustomDayRadioState extends State<CustomDayRadio> {
   List<String> dayList = [];
   late int day;
   final currWeekday = DateTime.now().weekday;
+  bool initialized = false;
 
   @override
   Widget build(BuildContext context) {
-    setupListOfDayRadios(widget.initialSelected);
+    if (!initialized) {
+      setupListOfDayRadios(widget.initialSelected);
+      initialized = true;
+    }
     return SizedBox(
       width: 250,
       child: Wrap(
@@ -120,6 +124,7 @@ class _CustomDayRadioState extends State<CustomDayRadio> {
   }
 
   void setupListOfDayRadios(int selected) {
+    dayRadios = [];
     dayList = Day(currWeekday).dayOptions;
     if (selected < 8) {
       for (int i = 1; i < 8; i++) {

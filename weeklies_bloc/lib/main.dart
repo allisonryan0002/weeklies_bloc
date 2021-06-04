@@ -65,9 +65,9 @@ class MyApp extends StatelessWidget {
             textTheme: TextTheme(
               // AppBar title
               headline1: GoogleFonts.rockSalt(
-                  fontSize: 24,
+                  fontSize: 28,
                   color: Colors.white,
-                  letterSpacing: 3,
+                  letterSpacing: 4,
                   fontWeight: FontWeight.bold),
               // Text behind dismissing task
               headline2: GoogleFonts.righteous(

@@ -31,7 +31,7 @@ class _TaskInputWidgetState extends State<TaskInputWidget> {
     });
   }
 
-  void updateTime(int day) {
+  void updateDay(int day) {
     setState(() {
       this.day = day;
     });
@@ -39,13 +39,14 @@ class _TaskInputWidgetState extends State<TaskInputWidget> {
 
   // Pass current task input data to newTaskItem method and close dialog box
   void createTaskClick(BuildContext taskInputContext) {
+    Navigator.pop(taskInputContext);
     BlocProvider.of<TasksBloc>(taskInputContext).add(TaskAdded(
         Task(DateTime.now(), controller.text, this.priority, this.day)));
-    Navigator.pop(taskInputContext);
     controller.clear();
   }
 
   // SimpleDialog window containing priority & time radio sets and a TextField
+  //TODO: make the PriorityRadioIcons larger
   createTaskWindow(BuildContext taskInputContext) {
     return showDialog(
       barrierColor: Colors.grey.withOpacity(0.3),
@@ -57,7 +58,7 @@ class _TaskInputWidgetState extends State<TaskInputWidget> {
             Column(
               children: <Widget>[
                 CustomPriorityRadio(this.updatePriority, this.priority),
-                CustomDayRadio(this.updateTime, this.day),
+                CustomDayRadio(this.updateDay, this.day),
                 Container(
                   child: TextField(
                     controller: this.controller,

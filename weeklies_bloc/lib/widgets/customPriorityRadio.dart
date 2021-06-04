@@ -56,30 +56,35 @@ class CustomPriorityRadio extends StatefulWidget {
 class _CustomPriorityRadioState extends State<CustomPriorityRadio> {
   List<PriorityRadio> priorityRadios = [];
   late Priority priority;
+  bool initialized = false;
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TasksBloc, TasksState>(
       builder: (context, state) {
         if (state is TasksLoadSuccess) {
-          setupListOfPriorityRadios(
-              widget.initialSelected, state.theme.colorTheme);
+          if (!initialized) {
+            setupListOfPriorityRadios(
+                widget.initialSelected, state.theme.colorTheme);
+            initialized = true;
+          }
           return SizedBox(
             width: 240,
             height: 50,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
+              physics: NeverScrollableScrollPhysics(),
               itemCount: priorityRadios.length,
               itemBuilder: (context, index) {
                 return IconButton(
                   splashRadius: 0.1,
                   onPressed: () {
                     setState(() {
-                      priorityRadios.forEach((element) {
+                      this.priorityRadios.forEach((element) {
                         element.isSelected = false;
                       });
-                      priorityRadios[index].isSelected = true;
-                      priority = Priority.values[index];
+                      this.priorityRadios[index].isSelected = true;
+                      this.priority = Priority.values[index];
                     });
                     widget.callback(priority);
                   },
@@ -96,6 +101,7 @@ class _CustomPriorityRadioState extends State<CustomPriorityRadio> {
   }
 
   void setupListOfPriorityRadios(Priority selected, ColorTheme theme) {
+    this.priorityRadios = [];
     final highPriorityRadio = PriorityRadio(false, '1', theme.high);
     final medHighPriorityRadio = PriorityRadio(false, '2', theme.medHigh);
     final medPriorityRadio = PriorityRadio(false, '3', theme.med);
