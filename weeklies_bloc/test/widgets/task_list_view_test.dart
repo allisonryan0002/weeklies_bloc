@@ -137,35 +137,35 @@ void main() {
     // );
 
     //TODO: get this one and changeDayWindow working...
-    // testWidgets(
-    //   'renders changePriorityWindow and tile reflects priority change',
-    //   (WidgetTester tester) async {
-    //     when(() => tasksBloc.state).thenAnswer((_) => TasksLoadSuccess([task]));
-    //     await tester.pumpWidget(
-    //       BlocProvider.value(
-    //         value: tasksBloc,
-    //         child: MaterialApp(
-    //           home: Scaffold(
-    //             body: TaskListView(),
-    //           ),
-    //         ),
-    //       ),
-    //     );
-    //     final priorityFinder = find.widgetWithText(PriorityRadioIcon, '5');
-    //     await tester.tap(priorityFinder);
-    //     await tester.pump();
-    //     expect(find.byType(CustomPriorityRadio), findsOneWidget);
-    //     final newPriorityToTapFinder =
-    //         find.widgetWithText(PriorityRadioIcon, '3');
-    //     final newTaskToEmit =
-    //         Task(task.timeStamp, task.task, Priority.med, task.day);
-    //     when(() => tasksBloc.add(TaskUpdated(newTaskToEmit)))
-    //         .thenAnswer((_) => TasksLoadSuccess([newTaskToEmit]));
-    //     await tester.tap(newPriorityToTapFinder);
-    //     await tester.pump();
-    //     expect(find.widgetWithText(PriorityRadioIcon, '3'), findsOneWidget);
-    //   },
-    // );
+    testWidgets(
+      'renders changePriorityWindow and tile reflects priority change',
+      (WidgetTester tester) async {
+        final newTaskToEmit =
+            Task(task.timeStamp, task.task, Priority.med, task.day);
+        when(() => tasksBloc.add(TaskUpdated(newTaskToEmit)))
+            .thenAnswer((_) => TasksLoadSuccess([newTaskToEmit]));
+        when(() => tasksBloc.state).thenAnswer((_) => TasksLoadSuccess([task]));
+        await tester.pumpWidget(
+          BlocProvider.value(
+            value: tasksBloc,
+            child: MaterialApp(
+              home: Scaffold(
+                body: TaskListView(),
+              ),
+            ),
+          ),
+        );
+        final priorityFinder = find.widgetWithText(PriorityRadioIcon, '5');
+        await tester.tap(priorityFinder);
+        await tester.pump();
+        expect(find.byType(CustomPriorityRadio), findsOneWidget);
+        final newPriorityToTapFinder =
+            find.widgetWithText(PriorityRadioIcon, '3');
+        await tester.tap(newPriorityToTapFinder);
+        await tester.pump();
+        expect(find.widgetWithText(PriorityRadioIcon, '3'), findsOneWidget);
+      },
+    );
 
     testWidgets(
       'renders list view sorted in priority format when state is TasksLoadSuccess with SortType.priority',

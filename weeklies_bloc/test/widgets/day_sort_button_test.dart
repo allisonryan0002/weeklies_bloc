@@ -51,10 +51,8 @@ void main() {
       );
       var daySortButtonFinder =
           find.widgetWithIcon(DaySortButton, Icons.access_time_rounded);
-      expect(daySortButtonFinder, findsOneWidget);
       await tester.tap(daySortButtonFinder);
       verify(() => tasksBloc.add(DaySorted())).called(1);
-      //TODO: is this test needed? what else should be tested for?
     });
   });
 }

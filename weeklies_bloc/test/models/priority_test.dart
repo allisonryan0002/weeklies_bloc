@@ -4,18 +4,14 @@ import 'package:weeklies/models/models.dart';
 
 void main() {
   group('Priority', () {
-    //TODO: Find better way for testing case below...
     test('radio is correctly assigned from getter method', () {
-      final matcherRadio =
+      final expectedRadio =
           PriorityRadio(false, '5', Color.fromRGBO(86, 141, 172, 1));
-      expect(Priority.low.radio is PriorityRadio, true);
-      expect(Priority.low.radio.isSelected, matcherRadio.isSelected);
-      expect(Priority.low.radio.color, matcherRadio.color);
-      expect(Priority.low.radio.radioNumText, matcherRadio.radioNumText);
-    });
-
-    test('color is correctly given from getter method', () {
-      expect(Priority.low.color, Color.fromRGBO(86, 141, 172, 1));
+      final actualRadio = Priority.low.radio;
+      expect(actualRadio is PriorityRadio, true);
+      expect(actualRadio.isSelected, expectedRadio.isSelected);
+      expect(actualRadio.color, expectedRadio.color);
+      expect(actualRadio.radioNumText, expectedRadio.radioNumText);
     });
 
     test('comparison between low and high returns 1', () {

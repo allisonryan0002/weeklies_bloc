@@ -53,10 +53,8 @@ void main() {
       );
       var prioritySortButtonFinder = find.widgetWithIcon(
           PrioritySortButton, Icons.format_list_numbered_rounded);
-      expect(prioritySortButtonFinder, findsOneWidget);
       await tester.tap(prioritySortButtonFinder);
       verify(() => tasksBloc.add(PrioritySorted())).called(1);
-      //TODO: is this test needed? what else should be tested for?
     });
   });
 }

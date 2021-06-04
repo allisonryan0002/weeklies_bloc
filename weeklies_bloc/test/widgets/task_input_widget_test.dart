@@ -64,7 +64,7 @@ void main() {
       },
     );
 
-    //TODO: test only passes when timeStamp for task is hardcoded into line 51
+    // TODO: test only passes when timeStamp for task is hardcoded into line 51
     //      of TaskInputWidget file. Maybe make a separate method for testing?
     // testWidgets(
     //   'adds task to list onEditingComplete',

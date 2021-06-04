@@ -5,33 +5,33 @@ enum Priority { high, med_high, med, low_med, low }
 
 // Produces a radio model corresponding with the ItemPriority
 extension PriorityExtension on Priority {
-  PriorityRadio get radio {
+  PriorityRadio radio(ColorTheme theme) {
     switch (this) {
       case Priority.low:
-        return new PriorityRadio(false, '5', Color.fromRGBO(86, 141, 172, 1));
+        return new PriorityRadio(false, '5', theme.low);
       case Priority.low_med:
-        return new PriorityRadio(false, '4', Color.fromRGBO(152, 196, 209, 1));
+        return new PriorityRadio(false, '4', theme.lowMed);
       case Priority.med:
-        return new PriorityRadio(false, '3', Color.fromRGBO(254, 203, 93, 1));
+        return new PriorityRadio(false, '3', theme.med);
       case Priority.med_high:
-        return new PriorityRadio(false, '2', Color.fromRGBO(250, 164, 91, 1));
+        return new PriorityRadio(false, '2', theme.medHigh);
       case Priority.high:
-        return new PriorityRadio(false, '1', Color.fromRGBO(225, 113, 76, 1));
+        return new PriorityRadio(false, '1', theme.high);
     }
   }
 
-  Color get color {
+  Color color(ColorTheme theme) {
     switch (this) {
       case Priority.low:
-        return Color.fromRGBO(86, 141, 172, 1);
+        return theme.low;
       case Priority.low_med:
-        return Color.fromRGBO(152, 196, 209, 1);
+        return theme.lowMed;
       case Priority.med:
-        return Color.fromRGBO(254, 203, 93, 1);
+        return theme.med;
       case Priority.med_high:
-        return Color.fromRGBO(250, 164, 91, 1);
+        return theme.medHigh;
       case Priority.high:
-        return Color.fromRGBO(225, 113, 76, 1);
+        return theme.high;
     }
   }
 

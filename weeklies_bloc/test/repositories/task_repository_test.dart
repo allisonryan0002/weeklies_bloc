@@ -30,12 +30,13 @@ void main() {
 
     test('loadTasks method returns list of Tasks', () async {
       when(() => client.read('myTasks.json')).thenAnswer((_) => Future.value(
-          '{"tasks": [{"timeStamp": "${DateTime.now().toString()}", "task": "Test", "priority": 0, "day": 1}]}'));
+          '{"tasks": [{"timeStamp": "${DateTime.now()}", "task": "Test", "priority": 0, "day": 1}]}'));
       final expectedTask = Task(DateTime.now(), 'Test', Priority.low, 1);
       final actualList = await repository.loadTasks();
       final actualTask = actualList[0];
       expect([actualTask.task, actualTask.priority, actualTask.day],
           [expectedTask.task, expectedTask.priority, expectedTask.day]);
+      verify(() => client.read('myTasks.json'));
     });
 
     test('saveTasks method stores empty task list appropriately in file',
@@ -43,7 +44,6 @@ void main() {
       when(() => client.write('myTasks.json', '{"tasks":[]}'))
           .thenAnswer((_) => Future.value(MockFile()));
       repository.saveTasks([]);
-      //TODO: check the file contents??
       verify(() => client.write('myTasks.json', '{"tasks":[]}')).called(1);
     });
 
@@ -51,6 +51,7 @@ void main() {
       when(() => client.read('mySort.json'))
           .thenAnswer((_) => Future.value(''));
       expect(await repository.loadSort(), SortType.priority);
+      verify(() => client.read('mySort.json'));
     });
 
     test(
@@ -65,7 +66,6 @@ void main() {
       when(() => client.write('mySort.json', '{"sort":1}'))
           .thenAnswer((_) => Future.value(MockFile()));
       repository.saveSort(SortType.day);
-      //TODO: check the file contents??
       verify(() => client.write('mySort.json', '{"sort":1}')).called(1);
     });
   });

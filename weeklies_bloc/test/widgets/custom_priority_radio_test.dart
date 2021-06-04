@@ -58,7 +58,7 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
-              body: CustomPriorityRadio(mockedCallback),
+              body: CustomPriorityRadio(mockedCallback, Priority.med),
             ),
           ),
         );
@@ -72,7 +72,7 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
-              body: CustomPriorityRadio(mockedCallback),
+              body: CustomPriorityRadio(mockedCallback, Priority.med),
             ),
           ),
         );

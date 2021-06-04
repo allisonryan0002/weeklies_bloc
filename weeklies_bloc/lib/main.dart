@@ -24,6 +24,7 @@
  *                can be found in AppScreenshots folder.
  */
 
+import 'dart:ui';
 import 'package:file/local.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,6 +34,8 @@ import 'package:weeklies/blocs/tasks/tasks.dart';
 import 'package:weeklies/clients/clients.dart';
 import 'package:weeklies/repositories/repositories.dart';
 import 'package:weeklies/widgets/widgets.dart';
+
+//TODO: occasionally reload tasks to check for day changes...
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,138 +55,38 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return RepositoryProvider(
       create: (context) => TaskRepository(client: client),
-      child: MaterialApp(
-        title: 'Weeklies',
-        theme: ThemeData(
-          textTheme: TextTheme(
-            // AppBar title
-            headline1: GoogleFonts.rockSalt(
-                fontSize: 24,
-                color: Colors.white,
-                letterSpacing: 3,
-                fontWeight: FontWeight.bold),
-            // Text behind dismissing task
-            headline2: GoogleFonts.righteous(
-                fontSize: 24,
-                color: Colors.white,
-                fontWeight: FontWeight.normal),
-            // Font for priority radio buttons, task text, and taskTextField
-            bodyText1: GoogleFonts.karla(
-                fontSize: 20, color: Colors.black.withOpacity(0.9)),
-            // Font for time radio buttons
-            subtitle1: GoogleFonts.righteous(
-                fontSize: 12,
-                color: Colors.white,
-                fontWeight: FontWeight.normal),
-          ),
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-        ),
-        home: MyHomePage(),
-      ),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  // Setup file for data storage and if a file exists, read the file data
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => TasksBloc(
-        tasksRepository: RepositoryProvider.of<TaskRepository>(context),
-      )..add(TasksLoaded()),
-      child: Scaffold(
-        // Non-interactive AppBar simply for displaying the app name
-        appBar: AppBar(
-          title: Column(
-            children: <Widget>[
-              Text(
-                'Weeklies',
-                style: Theme.of(context).textTheme.headline1,
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).size.height / 55),
-              )
-            ],
-          ),
-          centerTitle: true,
-          backgroundColor: Color.fromRGBO(86, 141, 172, 1),
-          shape: ContinuousRectangleBorder(
-              borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(1000),
-                  bottomRight: Radius.circular(1000))),
-          toolbarHeight: MediaQuery.of(context).size.height / 15,
-        ),
-        // App body stacking the taskListView underneath the bottom button panel
-        body: Stack(
-          fit: StackFit.expand,
-          children: <Widget>[
-            // taskListView
-            Flex(
-              direction: Axis.vertical,
-              children: <Widget>[Expanded(child: TaskListView())],
+      child: BlocProvider(
+        create: (context) => TasksBloc(
+          tasksRepository: RepositoryProvider.of<TaskRepository>(context),
+        )..add(TasksLoaded()),
+        child: MaterialApp(
+          title: 'Weeklies',
+          theme: ThemeData(
+            textTheme: TextTheme(
+              // AppBar title
+              headline1: GoogleFonts.rockSalt(
+                  fontSize: 24,
+                  color: Colors.white,
+                  letterSpacing: 3,
+                  fontWeight: FontWeight.bold),
+              // Text behind dismissing task
+              headline2: GoogleFonts.righteous(
+                  fontSize: 24,
+                  color: Colors.white,
+                  fontWeight: FontWeight.normal),
+              // Font for priority radio buttons, task text, and taskTextField
+              bodyText1: GoogleFonts.karla(
+                  fontSize: 20, color: Colors.black.withOpacity(0.9)),
+              // Font for time radio buttons
+              subtitle1: GoogleFonts.righteous(
+                  fontSize: 12,
+                  color: Colors.white,
+                  fontWeight: FontWeight.normal),
             ),
-            /* Bottom button panel with PrioritySortButton, 
-               * TaskInputWidget(button), & TimeSortButton
-               * This panel sits on top of the taskListView with a white gradient so
-               * the task list seamlessly disappears under the button panel
-               */
-            // BottomNavigationBar(
-            //   items: [
-            //     BottomNavigationBarItem(icon: PrioritySortButton(), label: '1'),
-            //     BottomNavigationBarItem(icon: TaskInputWidget(), label: '2'),
-            //     BottomNavigationBarItem(icon: TimeSortButton(), label: '3'),
-            //   ],
-            //   showSelectedLabels: false,
-            //   showUnselectedLabels: false,
-            // ),
-            //IgnorePointer(child:
-            Positioned(
-              bottom: 0,
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height / 5,
-                width: MediaQuery.of(context).size.width,
-                child: Container(
-                  padding: EdgeInsets.only(top: 80, bottom: 15),
-                  child: Row(
-                    children: <Widget>[
-                      PrioritySortButton(),
-                      TaskInputWidget(),
-                      DaySortButton(),
-                    ],
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  ),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.white.withOpacity(0),
-                        Colors.white.withOpacity(0.9),
-                        Colors.white.withOpacity(0.97),
-                        Colors.white,
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            //),
-          ],
+            visualDensity: VisualDensity.adaptivePlatformDensity,
+          ),
+          home: HomePage(),
         ),
-        // Prevent keyboard from covering existing task when editing its text
-        resizeToAvoidBottomInset: false,
       ),
     );
   }

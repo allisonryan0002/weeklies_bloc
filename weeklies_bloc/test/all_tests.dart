@@ -7,9 +7,7 @@ import './blocs/tasks_event_test.dart' as tasks_event;
 import './blocs/tasks_state_test.dart' as tasks_state;
 
 import './models/day_test.dart' as day;
-import './models/day_radio_test.dart' as day_radio;
 import './models/priority_test.dart' as priority;
-import './models/priority_radio_test.dart' as priority_radio;
 import './models/sort_test.dart' as sort;
 import './models/task_test.dart' as task;
 
@@ -37,9 +35,7 @@ void main() {
 
   // Models
   day.main();
-  day_radio.main();
   priority.main();
-  priority_radio.main();
   sort.main();
   task.main();
 

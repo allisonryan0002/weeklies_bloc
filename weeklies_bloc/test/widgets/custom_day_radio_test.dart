@@ -75,7 +75,7 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
-              body: CustomDayRadio(mockedCallback),
+              body: CustomDayRadio(mockedCallback, 1),
             ),
           ),
         );
@@ -89,7 +89,7 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
-              body: CustomDayRadio(mockedCallback),
+              body: CustomDayRadio(mockedCallback, 1),
             ),
           ),
         );

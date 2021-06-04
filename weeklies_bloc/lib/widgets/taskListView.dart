@@ -31,7 +31,7 @@ class _TaskListViewState extends State<TaskListView> {
           children: <Widget>[
             Column(
               children: <Widget>[
-                CustomPriorityRadio(updatePriority),
+                CustomPriorityRadio(updatePriority, item.priority),
               ],
             )
           ],
@@ -61,7 +61,7 @@ class _TaskListViewState extends State<TaskListView> {
           children: <Widget>[
             Column(
               children: <Widget>[
-                CustomDayRadio(updateDay),
+                CustomDayRadio(updateDay, item.day),
               ],
             )
           ],
@@ -94,7 +94,7 @@ class _TaskListViewState extends State<TaskListView> {
                 padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
                 margin: EdgeInsets.fromLTRB(5, 8, 5, 0),
                 decoration: BoxDecoration(
-                  color: Color.fromRGBO(52, 85, 103, 1),
+                  color: state.theme.colorTheme.accent,
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
                 child: ListView.builder(
@@ -115,10 +115,7 @@ class _TaskListViewState extends State<TaskListView> {
                           height: MediaQuery.of(context).size.height / 6,
                         );
                       } else {
-                        return Container(
-                          color: Colors.red,
-                          height: 0,
-                        );
+                        return Container();
                       }
                     } else {
                       var taskItem = tasks[index];
@@ -152,7 +149,7 @@ class _TaskListViewState extends State<TaskListView> {
                       padding: EdgeInsets.fromLTRB(8, 8, 8, 5),
                       margin: EdgeInsets.fromLTRB(5, 8, 5, 0),
                       decoration: BoxDecoration(
-                        color: Color.fromRGBO(52, 85, 103, 1),
+                        color: state.theme.colorTheme.accent,
                         borderRadius: BorderRadius.all(Radius.circular(10)),
                       ),
                       child: Column(
@@ -200,51 +197,65 @@ class _TaskListViewState extends State<TaskListView> {
   }
 
   Dismissible getTaskTileDismissible(Task taskItem, int index) {
+    //TODO: issue with time change giving task.day is 9??
+    //print('TaskItem day : ${taskItem.day}');
     return Dismissible(
       key: UniqueKey(),
       onDismissed: (direction) {
         BlocProvider.of<TasksBloc>(context).add(TaskDeleted(taskItem));
       },
-      child: Container(
-        margin: EdgeInsets.fromLTRB(0, 2.5, 0, 2.5),
-        padding: EdgeInsets.fromLTRB(0, 2, 0, 2),
-        decoration: BoxDecoration(
-          color: taskItem.priority.color,
-          borderRadius: BorderRadius.all(Radius.circular(6)),
-        ),
-        child: ListTile(
-          visualDensity: VisualDensity(horizontal: -2),
-          // Priority radio button
-          leading: GestureDetector(
-            onTap: () {
-              changePriorityWindow(context, taskItem);
-            },
-            child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.7),
-                    shape: BoxShape.circle),
-                child: PriorityRadioIcon(taskItem.priority.radio)),
-          ),
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Editable text field for task text
-              TaskTextField(taskItem),
-              Padding(padding: EdgeInsets.only(top: 4)),
-              // Time radio button
-              GestureDetector(
-                onTap: () {
-                  changeDayWindow(context, taskItem);
-                },
-                child: DayRadioIconTileSize(
-                  DayRadio(false,
-                      Day(DateTime.now().weekday).dayOptions[taskItem.day]),
-                ),
+      child: BlocBuilder<TasksBloc, TasksState>(
+        builder: (context, state) {
+          if (state is TasksLoadSuccess) {
+            return Container(
+              margin: EdgeInsets.fromLTRB(0, 2.5, 0, 2.5),
+              padding: EdgeInsets.fromLTRB(0, 2, 0, 2),
+              decoration: BoxDecoration(
+                color: taskItem.priority.color(state.theme.colorTheme),
+                borderRadius: BorderRadius.all(Radius.circular(6)),
               ),
-            ],
-          ),
-          contentPadding: EdgeInsets.fromLTRB(20, 5, 0, 0),
-        ),
+              child: ListTile(
+                visualDensity: VisualDensity(horizontal: -2),
+                // Priority radio button
+                leading: GestureDetector(
+                  onTap: () {
+                    changePriorityWindow(context, taskItem);
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.7),
+                        shape: BoxShape.circle),
+                    child: PriorityRadioIcon(
+                        taskItem.priority.radio(state.theme.colorTheme)),
+                  ),
+                ),
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Editable text field for task text
+                    TaskTextField(taskItem),
+                    Padding(padding: EdgeInsets.only(top: 4)),
+                    // Time radio button
+                    GestureDetector(
+                      onTap: () {
+                        changeDayWindow(context, taskItem);
+                      },
+                      child: DayRadioIconTileSize(
+                        DayRadio(
+                            false,
+                            Day(DateTime.now().weekday)
+                                .dayOptions[taskItem.day]),
+                      ),
+                    ),
+                  ],
+                ),
+                contentPadding: EdgeInsets.fromLTRB(20, 5, 0, 0),
+              ),
+            );
+          } else {
+            return Container();
+          }
+        },
       ),
       background: Container(
         margin: EdgeInsets.fromLTRB(0, 2.5, 0, 2.5),

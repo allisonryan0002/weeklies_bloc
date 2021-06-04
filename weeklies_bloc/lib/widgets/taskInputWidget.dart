@@ -2,7 +2,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weeklies/blocs/tasks/tasks.dart';
-import 'package:weeklies/repositories/repositories.dart';
 import 'package:weeklies/widgets/widgets.dart';
 import 'package:weeklies/models/models.dart';
 
@@ -18,19 +17,12 @@ class TaskInputWidget extends StatefulWidget {
 class _TaskInputWidgetState extends State<TaskInputWidget> {
   // Variables for storing and managing task data
   Priority priority = Priority.med;
-  int time = 8;
+  int day = 8;
   final controller = new TextEditingController();
 
   @override
   void initState() {
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    //TODO: everything works without this... delete it?
-    //controller.dispose();
   }
 
   void updatePriority(Priority priority) {
@@ -39,16 +31,16 @@ class _TaskInputWidgetState extends State<TaskInputWidget> {
     });
   }
 
-  void updateTime(int time) {
+  void updateTime(int day) {
     setState(() {
-      this.time = time;
+      this.day = day;
     });
   }
 
   // Pass current task input data to newTaskItem method and close dialog box
   void createTaskClick(BuildContext taskInputContext) {
     BlocProvider.of<TasksBloc>(taskInputContext).add(TaskAdded(
-        Task(DateTime.now(), controller.text, this.priority, this.time)));
+        Task(DateTime.now(), controller.text, this.priority, this.day)));
     Navigator.pop(taskInputContext);
     controller.clear();
   }
@@ -64,8 +56,8 @@ class _TaskInputWidgetState extends State<TaskInputWidget> {
           children: <Widget>[
             Column(
               children: <Widget>[
-                CustomPriorityRadio(this.updatePriority),
-                CustomDayRadio(this.updateTime),
+                CustomPriorityRadio(this.updatePriority, this.priority),
+                CustomDayRadio(this.updateTime, this.day),
                 Container(
                   child: TextField(
                     controller: this.controller,
@@ -109,26 +101,29 @@ class _TaskInputWidgetState extends State<TaskInputWidget> {
   // 'add task' button
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => TasksBloc(
-        tasksRepository: RepositoryProvider.of<TaskRepository>(context),
-      ),
-      child: GestureDetector(
-        onTap: () {
-          // Reset priority & time values to match radio defaults
-          priority = Priority.med;
-          time = 8;
-          createTaskWindow(context);
-        },
-        child: Container(
-          child: Icon(
-            Icons.add_circle_outline_rounded,
-            color: Color.fromRGBO(86, 141, 172, 0.95),
-            size: MediaQuery.of(context).size.height / 14,
-          ),
-          padding: EdgeInsets.all(6),
-        ),
-      ),
+    return BlocBuilder<TasksBloc, TasksState>(
+      builder: (context, state) {
+        if (state is TasksLoadSuccess) {
+          return GestureDetector(
+            onTap: () {
+              // Reset priority & time values to match radio defaults
+              priority = Priority.med;
+              day = 8;
+              createTaskWindow(context);
+            },
+            child: Container(
+              child: Icon(
+                Icons.add_circle_outline_rounded,
+                color: state.theme.colorTheme.low,
+                size: MediaQuery.of(context).size.height / 14,
+              ),
+              padding: EdgeInsets.all(6),
+            ),
+          );
+        } else {
+          return Container();
+        }
+      },
     );
   }
 }

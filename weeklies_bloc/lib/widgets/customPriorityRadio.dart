@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weeklies/blocs/tasks/tasks.dart';
 import 'package:weeklies/models/models.dart';
 
 // Circular UI element representing the radio model
@@ -43,8 +45,9 @@ class PriorityRadioIcon extends StatelessWidget {
 // Widget containing set of priority radio buttons (1-5)
 class CustomPriorityRadio extends StatefulWidget {
   final Function(Priority) callback;
+  final Priority initialSelected;
 
-  CustomPriorityRadio(this.callback);
+  CustomPriorityRadio(this.callback, this.initialSelected);
 
   @override
   _CustomPriorityRadioState createState() => _CustomPriorityRadioState();
@@ -54,43 +57,87 @@ class _CustomPriorityRadioState extends State<CustomPriorityRadio> {
   List<PriorityRadio> priorityRadios = [];
   late Priority priority;
 
-  // Priority '3' selected by default
-  @override
-  void initState() {
-    super.initState();
-    priorityRadios.add(Priority.high.radio);
-    priorityRadios.add(Priority.med_high.radio);
-    priorityRadios
-        .add(PriorityRadio(true, '3', Color.fromRGBO(254, 203, 93, 1)));
-    priorityRadios.add(Priority.low_med.radio);
-    priorityRadios.add(Priority.low.radio);
-  }
-
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 240,
-      height: 50,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: priorityRadios.length,
-        itemBuilder: (context, index) {
-          return IconButton(
-            splashRadius: 0.1,
-            onPressed: () {
-              setState(() {
-                priorityRadios.forEach((element) {
-                  element.isSelected = false;
-                });
-                priorityRadios[index].isSelected = true;
-                priority = Priority.values[index];
-              });
-              widget.callback(priority);
-            },
-            icon: new PriorityRadioIcon(priorityRadios[index]),
+    return BlocBuilder<TasksBloc, TasksState>(
+      builder: (context, state) {
+        if (state is TasksLoadSuccess) {
+          setupListOfPriorityRadios(
+              widget.initialSelected, state.theme.colorTheme);
+          return SizedBox(
+            width: 240,
+            height: 50,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: priorityRadios.length,
+              itemBuilder: (context, index) {
+                return IconButton(
+                  splashRadius: 0.1,
+                  onPressed: () {
+                    setState(() {
+                      priorityRadios.forEach((element) {
+                        element.isSelected = false;
+                      });
+                      priorityRadios[index].isSelected = true;
+                      priority = Priority.values[index];
+                    });
+                    widget.callback(priority);
+                  },
+                  icon: new PriorityRadioIcon(priorityRadios[index]),
+                );
+              },
+            ),
           );
-        },
-      ),
+        } else {
+          return Container();
+        }
+      },
     );
+  }
+
+  void setupListOfPriorityRadios(Priority selected, ColorTheme theme) {
+    final highPriorityRadio = PriorityRadio(false, '1', theme.high);
+    final medHighPriorityRadio = PriorityRadio(false, '2', theme.medHigh);
+    final medPriorityRadio = PriorityRadio(false, '3', theme.med);
+    final lowMedPriorityRadio = PriorityRadio(false, '4', theme.lowMed);
+    final lowPriorityRadio = PriorityRadio(false, '5', theme.low);
+
+    switch (selected) {
+      case Priority.low:
+        priorityRadios.add(highPriorityRadio);
+        priorityRadios.add(medHighPriorityRadio);
+        priorityRadios.add(medPriorityRadio);
+        priorityRadios.add(lowMedPriorityRadio);
+        priorityRadios.add(PriorityRadio(true, '5', theme.low));
+        break;
+      case Priority.low_med:
+        priorityRadios.add(highPriorityRadio);
+        priorityRadios.add(medHighPriorityRadio);
+        priorityRadios.add(medPriorityRadio);
+        priorityRadios.add(PriorityRadio(true, '4', theme.lowMed));
+        priorityRadios.add(lowPriorityRadio);
+        break;
+      case Priority.med:
+        priorityRadios.add(highPriorityRadio);
+        priorityRadios.add(medHighPriorityRadio);
+        priorityRadios.add(PriorityRadio(true, '3', theme.med));
+        priorityRadios.add(lowMedPriorityRadio);
+        priorityRadios.add(lowPriorityRadio);
+        break;
+      case Priority.med_high:
+        priorityRadios.add(highPriorityRadio);
+        priorityRadios.add(PriorityRadio(true, '2', theme.medHigh));
+        priorityRadios.add(medPriorityRadio);
+        priorityRadios.add(lowMedPriorityRadio);
+        priorityRadios.add(lowPriorityRadio);
+        break;
+      case Priority.high:
+        priorityRadios.add(PriorityRadio(true, '1', theme.high));
+        priorityRadios.add(medHighPriorityRadio);
+        priorityRadios.add(medPriorityRadio);
+        priorityRadios.add(lowMedPriorityRadio);
+        priorityRadios.add(lowPriorityRadio);
+        break;
+    }
   }
 }

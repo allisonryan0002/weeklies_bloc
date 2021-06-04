@@ -23,36 +23,40 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
       yield* _mapPrioritySortedToState();
     } else if (event is DaySorted) {
       yield* _mapDaySortedToState();
+    } else if (event is ThemeChanged) {
+      yield* _mapThemeChangedToState(event);
     }
   }
 
   Stream<TasksState> _mapTasksLoadedToState() async* {
     final tasks = await this.tasksRepository.loadTasks();
     final sort = await this.tasksRepository.loadSort();
+    final theme = await this.tasksRepository.loadTheme();
     yield TasksLoadSuccess(
       tasks,
       sort,
+      theme,
     );
   }
 
-  //TODO: Sort here
   Stream<TasksState> _mapTaskAddedToState(TaskAdded event) async* {
     if (state is TasksLoadSuccess) {
       if ((state as TasksLoadSuccess).sort == SortType.priority) {
         List<Task> updatedTasks = _prioritySort(
             List.from((state as TasksLoadSuccess).tasks)..add(event.task));
-        yield TasksLoadSuccess(updatedTasks, SortType.priority);
+        yield TasksLoadSuccess(
+            updatedTasks, SortType.priority, (state as TasksLoadSuccess).theme);
         _saveTasks(updatedTasks);
       } else {
         List<Task> updatedTasks = _prioritySort(
             List.from((state as TasksLoadSuccess).tasks)..add(event.task));
-        yield TasksLoadSuccess(updatedTasks, SortType.day);
+        yield TasksLoadSuccess(
+            updatedTasks, SortType.day, (state as TasksLoadSuccess).theme);
         _saveTasks(updatedTasks);
       }
     }
   }
 
-  //TODO: Sort here
   Stream<TasksState> _mapTaskUpdatedToState(TaskUpdated event) async* {
     if (state is TasksLoadSuccess) {
       if ((state as TasksLoadSuccess).sort == SortType.priority) {
@@ -62,7 +66,8 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
               ? event.updatedTask
               : task;
         }).toList());
-        yield TasksLoadSuccess(updatedTasks, SortType.priority);
+        yield TasksLoadSuccess(
+            updatedTasks, SortType.priority, (state as TasksLoadSuccess).theme);
         _saveTasks(updatedTasks);
       } else {
         List<Task> updatedTasks =
@@ -71,7 +76,8 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
               ? event.updatedTask
               : task;
         }).toList());
-        yield TasksLoadSuccess(updatedTasks, SortType.day);
+        yield TasksLoadSuccess(
+            updatedTasks, SortType.day, (state as TasksLoadSuccess).theme);
         _saveTasks(updatedTasks);
       }
     }
@@ -84,14 +90,16 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
             .tasks
             .where((task) => task.timeStamp != event.task.timeStamp)
             .toList();
-        yield TasksLoadSuccess(updatedTasks, SortType.priority);
+        yield TasksLoadSuccess(
+            updatedTasks, SortType.priority, (state as TasksLoadSuccess).theme);
         _saveTasks(updatedTasks);
       } else {
         final List<Task> updatedTasks = (state as TasksLoadSuccess)
             .tasks
             .where((task) => task.timeStamp != event.task.timeStamp)
             .toList();
-        yield TasksLoadSuccess(updatedTasks, SortType.day);
+        yield TasksLoadSuccess(
+            updatedTasks, SortType.day, (state as TasksLoadSuccess).theme);
         _saveTasks(updatedTasks);
       }
     }
@@ -103,7 +111,8 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
   Stream<TasksState> _mapPrioritySortedToState() async* {
     if (state is TasksLoadSuccess) {
       List<Task> sortedTasks = _prioritySort((state as TasksLoadSuccess).tasks);
-      yield TasksLoadSuccess(sortedTasks, SortType.priority);
+      yield TasksLoadSuccess(
+          sortedTasks, SortType.priority, (state as TasksLoadSuccess).theme);
       _saveTasks(sortedTasks);
       _saveSort(SortType.priority);
     }
@@ -112,10 +121,19 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
   Stream<TasksState> _mapDaySortedToState() async* {
     if (state is TasksLoadSuccess) {
       List<Task> sortedTasks = _timeSort((state as TasksLoadSuccess).tasks);
-      yield TasksLoadSuccess(sortedTasks, SortType.day);
+      yield TasksLoadSuccess(
+          sortedTasks, SortType.day, (state as TasksLoadSuccess).theme);
       _saveSort(SortType.day);
       _saveTasks(sortedTasks);
     }
+  }
+
+  Stream<TasksState> _mapThemeChangedToState(ThemeChanged event) async* {
+    if (state is TasksLoadSuccess) {
+      final taskState = state as TasksLoadSuccess;
+      yield TasksLoadSuccess(taskState.tasks, taskState.sort, event.theme);
+    }
+    _saveTheme(event.theme);
   }
 
   List<Task> _prioritySort(List<Task> tasks) {
@@ -159,5 +177,9 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
 
   void _saveSort(SortType sort) {
     tasksRepository.saveSort(sort);
+  }
+
+  void _saveTheme(ColorThemeOption theme) {
+    tasksRepository.saveTheme(theme);
   }
 }
