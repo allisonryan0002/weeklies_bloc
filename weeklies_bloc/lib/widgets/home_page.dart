@@ -140,18 +140,18 @@ class _HomePageState extends State<HomePage> {
     }
 
     return showDialog(
-      barrierColor: Colors.grey.withOpacity(0.3),
+      barrierColor: currentTheme.colorTheme.accent.withOpacity(0.3),
       context: themeContext,
       builder: (context) => BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
         child: SimpleDialog(
           //contentPadding: EdgeInsets.fromLTRB(0, 24, 0, 24),
           insetPadding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width / 5, vertical: 24),
+              horizontal: MediaQuery.of(context).size.width / 4, vertical: 24),
           children: <Widget>[
             CustomColorThemeRadio(changeTheme, currentTheme),
           ],
-          backgroundColor: Colors.grey.withOpacity(0.85),
+          backgroundColor: currentTheme.colorTheme.accent.withOpacity(0.85),
           elevation: 1,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(20.0))),

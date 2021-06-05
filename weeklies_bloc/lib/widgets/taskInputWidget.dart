@@ -48,8 +48,12 @@ class _TaskInputWidgetState extends State<TaskInputWidget> {
   // SimpleDialog window containing priority & time radio sets and a TextField
   //TODO: make the PriorityRadioIcons larger
   createTaskWindow(BuildContext taskInputContext) {
+    ColorTheme theme =
+        (BlocProvider.of<TasksBloc>(taskInputContext).state as TasksLoadSuccess)
+            .theme
+            .colorTheme;
     return showDialog(
-      barrierColor: Colors.grey.withOpacity(0.3),
+      barrierColor: theme.accent.withOpacity(0.3),
       context: taskInputContext,
       builder: (context) => BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
@@ -78,10 +82,11 @@ class _TaskInputWidgetState extends State<TaskInputWidget> {
                         .textTheme
                         .bodyText1
                         ?.copyWith(color: Colors.white),
+                    cursorColor: Colors.white,
                   ),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(6)),
-                    color: Colors.black12.withOpacity(0.1),
+                    color: Colors.black12.withOpacity(0.2),
                   ),
                   padding: EdgeInsets.fromLTRB(6, 0, 6, 0),
                   margin: EdgeInsets.fromLTRB(2, 6, 2, 6),
@@ -89,7 +94,7 @@ class _TaskInputWidgetState extends State<TaskInputWidget> {
               ],
             ),
           ],
-          backgroundColor: Colors.grey.withOpacity(0.85),
+          backgroundColor: theme.accent.withOpacity(0.85),
           elevation: 1,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(20.0))),
@@ -102,29 +107,25 @@ class _TaskInputWidgetState extends State<TaskInputWidget> {
   // 'add task' button
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<TasksBloc, TasksState>(
-      builder: (context, state) {
-        if (state is TasksLoadSuccess) {
-          return GestureDetector(
-            onTap: () {
-              // Reset priority & time values to match radio defaults
-              priority = Priority.med;
-              day = 8;
-              createTaskWindow(context);
-            },
-            child: Container(
-              child: Icon(
-                Icons.add_circle_outline_rounded,
-                color: state.theme.colorTheme.low,
-                size: MediaQuery.of(context).size.height / 14,
-              ),
-              padding: EdgeInsets.all(6),
-            ),
-          );
-        } else {
-          return Container();
-        }
+    ColorTheme theme =
+        (BlocProvider.of<TasksBloc>(context).state as TasksLoadSuccess)
+            .theme
+            .colorTheme;
+    return GestureDetector(
+      onTap: () {
+        // Reset priority & time values to match radio defaults
+        priority = Priority.med;
+        day = 8;
+        createTaskWindow(context);
       },
+      child: Container(
+        child: Icon(
+          Icons.add_circle_outline_rounded,
+          color: theme.low,
+          size: MediaQuery.of(context).size.height / 14,
+        ),
+        padding: EdgeInsets.all(6),
+      ),
     );
   }
 }

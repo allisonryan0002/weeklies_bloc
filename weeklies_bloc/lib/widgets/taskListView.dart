@@ -22,8 +22,13 @@ class _TaskListViewState extends State<TaskListView> {
           .add(TaskUpdated(Task(item.timeStamp, item.task, p, item.day)));
     }
 
+    ColorTheme theme =
+        (BlocProvider.of<TasksBloc>(context).state as TasksLoadSuccess)
+            .theme
+            .colorTheme;
+
     return showDialog(
-      barrierColor: Colors.grey.withOpacity(0.3),
+      barrierColor: theme.accent.withOpacity(0.3),
       context: priorityContext,
       builder: (context) => BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
@@ -35,7 +40,7 @@ class _TaskListViewState extends State<TaskListView> {
               ],
             )
           ],
-          backgroundColor: Colors.grey.withOpacity(0.85),
+          backgroundColor: theme.accent.withOpacity(0.85),
           elevation: 1,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(20.0))),
@@ -52,8 +57,13 @@ class _TaskListViewState extends State<TaskListView> {
           TaskUpdated(Task(item.timeStamp, item.task, item.priority, day)));
     }
 
+    ColorTheme theme =
+        (BlocProvider.of<TasksBloc>(context).state as TasksLoadSuccess)
+            .theme
+            .colorTheme;
+
     return showDialog(
-      barrierColor: Colors.grey.withOpacity(0.3),
+      barrierColor: theme.accent.withOpacity(0.3),
       context: dayContext,
       builder: (context) => BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
@@ -65,7 +75,7 @@ class _TaskListViewState extends State<TaskListView> {
               ],
             )
           ],
-          backgroundColor: Colors.grey.withOpacity(0.85),
+          backgroundColor: theme.accent.withOpacity(0.85),
           elevation: 1,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(20.0))),
@@ -82,7 +92,7 @@ class _TaskListViewState extends State<TaskListView> {
   Widget build(BuildContext context) {
     return Scaffold(
       //TODO: does this resize actually do anything?
-      resizeToAvoidBottomInset: true,
+      resizeToAvoidBottomInset: false,
       body: BlocBuilder<TasksBloc, TasksState>(
         builder: (context, state) {
           if (state is TasksLoadInProgress) {
@@ -127,7 +137,7 @@ class _TaskListViewState extends State<TaskListView> {
             Map<String, dynamic> taskAndIndex = getDaysAndTasks(tasks);
 
             return Scaffold(
-              resizeToAvoidBottomInset: true,
+              resizeToAvoidBottomInset: false,
               body: ListView.builder(
                 key: Key('day_sort_outer_list_view'),
                 itemCount: taskAndIndex.length + 1,
@@ -195,7 +205,7 @@ class _TaskListViewState extends State<TaskListView> {
     //TODO: issue with time change giving task.day is 9??
     //print('TaskItem day : ${taskItem.day}');
     return Dismissible(
-      key: UniqueKey(),
+      key: GlobalKey(),
       onDismissed: (direction) {
         BlocProvider.of<TasksBloc>(context).add(TaskDeleted(taskItem));
       },

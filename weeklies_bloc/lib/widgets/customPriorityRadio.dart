@@ -60,43 +60,38 @@ class _CustomPriorityRadioState extends State<CustomPriorityRadio> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<TasksBloc, TasksState>(
-      builder: (context, state) {
-        if (state is TasksLoadSuccess) {
-          if (!initialized) {
-            setupListOfPriorityRadios(
-                widget.initialSelected, state.theme.colorTheme);
-            initialized = true;
-          }
-          return SizedBox(
-            width: 240,
-            height: 50,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: priorityRadios.length,
-              itemBuilder: (context, index) {
-                return IconButton(
-                  splashRadius: 0.1,
-                  onPressed: () {
-                    setState(() {
-                      this.priorityRadios.forEach((element) {
-                        element.isSelected = false;
-                      });
-                      this.priorityRadios[index].isSelected = true;
-                      this.priority = Priority.values[index];
-                    });
-                    widget.callback(priority);
-                  },
-                  icon: new PriorityRadioIcon(priorityRadios[index]),
-                );
-              },
-            ),
+    ColorTheme theme =
+        (BlocProvider.of<TasksBloc>(context).state as TasksLoadSuccess)
+            .theme
+            .colorTheme;
+    if (!initialized) {
+      setupListOfPriorityRadios(widget.initialSelected, theme);
+      initialized = true;
+    }
+    return SizedBox(
+      width: 240,
+      height: 50,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        physics: NeverScrollableScrollPhysics(),
+        itemCount: priorityRadios.length,
+        itemBuilder: (context, index) {
+          return IconButton(
+            splashRadius: 0.1,
+            onPressed: () {
+              setState(() {
+                this.priorityRadios.forEach((element) {
+                  element.isSelected = false;
+                });
+                this.priorityRadios[index].isSelected = true;
+                this.priority = Priority.values[index];
+              });
+              widget.callback(priority);
+            },
+            icon: new PriorityRadioIcon(priorityRadios[index]),
           );
-        } else {
-          return Container();
-        }
-      },
+        },
+      ),
     );
   }
 

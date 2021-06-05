@@ -33,10 +33,12 @@ class _TaskTextFieldState extends State<TaskTextField> {
   Widget build(BuildContext context) {
     return TextField(
       controller: this.controller,
-      key: Key(widget.item.timeStamp.toString()),
+      //key: Key(widget.item.timeStamp.toString()),
       style: Theme.of(context).textTheme.bodyText1,
       textInputAction: TextInputAction.done,
+      //autofocus: true,
       onEditingComplete: () {
+        print('editing complete');
         Task task = Task(widget.item.timeStamp, controller.text,
             widget.item.priority, widget.item.day);
         BlocProvider.of<TasksBloc>(context).add(TaskUpdated(task));
@@ -45,6 +47,9 @@ class _TaskTextFieldState extends State<TaskTextField> {
       maxLines: null,
       textCapitalization: TextCapitalization.sentences,
       decoration: null,
+      cursorColor: Colors.black12,
+      cursorHeight: 18,
+      cursorWidth: 1.5,
     );
   }
 }

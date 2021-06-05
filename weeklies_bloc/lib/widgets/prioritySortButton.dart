@@ -12,29 +12,25 @@ class PrioritySortButton extends StatefulWidget {
 class _PrioritySortButtonState extends State<PrioritySortButton> {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<TasksBloc, TasksState>(
-      builder: (context, state) {
-        if (state is TasksLoadSuccess) {
-          return GestureDetector(
-            onTap: () {
-              BlocProvider.of<TasksBloc>(context).add(PrioritySorted());
-            },
-            child: Container(
-              child: Icon(
-                Icons.format_list_numbered_rounded,
-                color: state.theme.colorTheme.medHigh,
-                size: MediaQuery.of(context).size.height / 24,
-              ),
-              decoration: ShapeDecoration(
-                shape: CircleBorder(),
-              ),
-              padding: EdgeInsets.all(8),
-            ),
-          );
-        } else {
-          return Container();
-        }
+    ColorTheme theme =
+        (BlocProvider.of<TasksBloc>(context).state as TasksLoadSuccess)
+            .theme
+            .colorTheme;
+    return GestureDetector(
+      onTap: () {
+        BlocProvider.of<TasksBloc>(context).add(PrioritySorted());
       },
+      child: Container(
+        child: Icon(
+          Icons.format_list_numbered_rounded,
+          color: theme.medHigh,
+          size: MediaQuery.of(context).size.height / 24,
+        ),
+        decoration: ShapeDecoration(
+          shape: CircleBorder(),
+        ),
+        padding: EdgeInsets.all(8),
+      ),
     );
   }
 }

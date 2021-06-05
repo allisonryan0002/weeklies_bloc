@@ -11,41 +11,41 @@ class DayRadioIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<TasksBloc, TasksState>(builder: (context, state) {
-      if (state is TasksLoadSuccess) {
-        return Container(
-          child: FittedBox(
-            fit: BoxFit.contain,
-            child: Text(
-              item.timeText,
-              style: Theme.of(context).textTheme.subtitle1?.copyWith(
-                  fontSize: 15,
-                  color: Colors.black.withOpacity(0.7),
-                  fontWeight: FontWeight.w100),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          decoration: BoxDecoration(
-            shape: BoxShape.rectangle,
-            color: state.theme.colorTheme.med,
-            boxShadow: item.isSelected
-                ? [
-                    BoxShadow(
-                      color: Colors.black45,
-                      blurRadius: 2,
-                      spreadRadius: 1,
-                      offset: Offset(1.5, 1.5),
-                    )
-                  ]
-                : null,
-            borderRadius: BorderRadius.all(Radius.circular(7)),
-          ),
-          padding: EdgeInsets.fromLTRB(5, 4, 5, 4),
-        );
-      } else {
-        return Container();
-      }
-    });
+    ColorTheme theme =
+        (BlocProvider.of<TasksBloc>(context).state as TasksLoadSuccess)
+            .theme
+            .colorTheme;
+    return Container(
+      child: FittedBox(
+        fit: BoxFit.contain,
+        child: Text(
+          item.timeText,
+          style: Theme.of(context).textTheme.subtitle1?.copyWith(
+              fontSize: 15,
+              color: Colors.black.withOpacity(0.7),
+              fontWeight: FontWeight.w100),
+          textAlign: TextAlign.center,
+        ),
+      ),
+      decoration: BoxDecoration(
+        shape: BoxShape.rectangle,
+        color: theme.med,
+        boxShadow: item.isSelected
+            ? [
+                BoxShadow(
+                  color: Colors.black45,
+                  blurRadius: 2,
+                  spreadRadius: 1,
+                  offset: Offset(1.5, 1.5),
+                )
+              ]
+            : null,
+        //TODO: figure out the best way to display which one is selected
+        //border: item.isSelected ? Border.all(color: theme.high) : null,
+        borderRadius: BorderRadius.all(Radius.circular(7)),
+      ),
+      padding: EdgeInsets.fromLTRB(5, 4, 5, 4),
+    );
   }
 }
 
@@ -61,13 +61,16 @@ class DayRadioIconTileSize extends StatelessWidget {
         fit: BoxFit.contain,
         child: Text(
           item.timeText,
-          style: Theme.of(context).textTheme.subtitle1,
+          style: Theme.of(context)
+              .textTheme
+              .subtitle1
+              ?.copyWith(color: Colors.black.withOpacity(0.8)),
           textAlign: TextAlign.center,
         ),
       ),
       padding: EdgeInsets.fromLTRB(5, 2.5, 5, 2.5),
       decoration: BoxDecoration(
-        color: Colors.grey.shade500,
+        color: Colors.white.withOpacity(0.8),
         borderRadius: BorderRadius.all(Radius.circular(6)),
       ),
     );

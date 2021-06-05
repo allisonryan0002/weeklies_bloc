@@ -76,7 +76,10 @@ class MyApp extends StatelessWidget {
                   fontWeight: FontWeight.normal),
               // Font for priority radio buttons, task text, and taskTextField
               bodyText1: GoogleFonts.karla(
-                  fontSize: 20, color: Colors.black.withOpacity(0.9)),
+                fontSize: 19,
+                color: Colors.black.withOpacity(0.8),
+                fontWeight: FontWeight.bold,
+              ),
               // Font for time radio buttons
               subtitle1: GoogleFonts.righteous(
                   fontSize: 12,
@@ -85,6 +88,7 @@ class MyApp extends StatelessWidget {
             ),
             visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
+          debugShowCheckedModeBanner: false,
           home: HomePage(),
         ),
       ),

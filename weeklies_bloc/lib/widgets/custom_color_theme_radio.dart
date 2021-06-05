@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:weeklies/blocs/tasks/tasks.dart';
 import 'package:weeklies/models/models.dart';
 
 class ColorThemeRadioIcon extends StatelessWidget {
@@ -10,51 +8,50 @@ class ColorThemeRadioIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<TasksBloc, TasksState>(builder: (context, state) {
-      if (state is TasksLoadSuccess) {
-        return Container(
-          child: Container(
-            child: Column(
-              children: [
-                Container(color: item.theme.high),
-                Container(color: item.theme.medHigh),
-                Container(color: item.theme.med),
-                Container(color: item.theme.lowMed),
-                Container(color: item.theme.low),
-              ],
+    return Container(
+      child: Container(
+        child: Column(
+          children: [
+            Container(
+              color: item.theme.high,
+              constraints: BoxConstraints(maxHeight: 10, maxWidth: 50),
             ),
-            constraints: BoxConstraints(maxHeight: 50, maxWidth: 50),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.bottomRight,
-                end: Alignment.topLeft,
-                colors: [
-                  item.theme.high,
-                  item.theme.medHigh,
-                  item.theme.med,
-                  item.theme.lowMed,
-                  item.theme.low,
-                ],
-              ),
-              shape: BoxShape.circle,
+            Container(
+              color: item.theme.medHigh,
+              constraints: BoxConstraints(maxHeight: 10, maxWidth: 50),
             ),
-            margin: EdgeInsets.all(4),
-          ),
-          decoration: BoxDecoration(
-            //color: item.theme.low,
-            shape: BoxShape.circle,
-            border: item.isSelected
-                ? Border.all(
-                    color: Colors.white,
-                    width: 2,
-                  )
-                : null,
-          ),
-        );
-      } else {
-        return Container();
-      }
-    });
+            Container(
+              color: item.theme.med,
+              constraints: BoxConstraints(maxHeight: 10, maxWidth: 50),
+            ),
+            Container(
+              color: item.theme.lowMed,
+              constraints: BoxConstraints(maxHeight: 10, maxWidth: 50),
+            ),
+            Container(
+              color: item.theme.low,
+              constraints: BoxConstraints(maxHeight: 10, maxWidth: 50),
+            ),
+          ],
+        ),
+        constraints: BoxConstraints(maxHeight: 50, maxWidth: 50),
+        clipBehavior: Clip.hardEdge,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+        ),
+        margin: EdgeInsets.all(4),
+      ),
+      decoration: BoxDecoration(
+        //color: item.theme.low,
+        shape: BoxShape.circle,
+        border: item.isSelected
+            ? Border.all(
+                color: Colors.white.withOpacity(0.8),
+                width: 2,
+              )
+            : null,
+      ),
+    );
   }
 }
 
@@ -129,19 +126,57 @@ class _CustomColorThemeRadioState extends State<CustomColorThemeRadio> {
   }
 
   void setupListOfColorThemeRadios(ColorThemeOption selected) {
+    final theme1Radio =
+        ColorThemeRadio(false, ColorThemeOption.theme1.colorTheme);
+    final theme2Radio =
+        ColorThemeRadio(false, ColorThemeOption.theme2.colorTheme);
+    final theme3Radio =
+        ColorThemeRadio(false, ColorThemeOption.theme3.colorTheme);
+    final theme4Radio =
+        ColorThemeRadio(false, ColorThemeOption.theme4.colorTheme);
+    final theme5Radio =
+        ColorThemeRadio(false, ColorThemeOption.theme5.colorTheme);
     colorThemeRadios = [];
     switch (selected) {
       case ColorThemeOption.theme1:
         colorThemeRadios
             .add(ColorThemeRadio(true, ColorThemeOption.theme1.colorTheme));
-        colorThemeRadios
-            .add(ColorThemeRadio(false, ColorThemeOption.theme2.colorTheme));
+        colorThemeRadios.add(theme2Radio);
+        colorThemeRadios.add(theme3Radio);
+        colorThemeRadios.add(theme4Radio);
+        colorThemeRadios.add(theme5Radio);
         break;
       case ColorThemeOption.theme2:
-        colorThemeRadios
-            .add(ColorThemeRadio(false, ColorThemeOption.theme1.colorTheme));
+        colorThemeRadios.add(theme1Radio);
         colorThemeRadios
             .add(ColorThemeRadio(true, ColorThemeOption.theme2.colorTheme));
+        colorThemeRadios.add(theme3Radio);
+        colorThemeRadios.add(theme4Radio);
+        colorThemeRadios.add(theme5Radio);
+        break;
+      case ColorThemeOption.theme3:
+        colorThemeRadios.add(theme1Radio);
+        colorThemeRadios.add(theme2Radio);
+        colorThemeRadios
+            .add(ColorThemeRadio(true, ColorThemeOption.theme3.colorTheme));
+        colorThemeRadios.add(theme4Radio);
+        colorThemeRadios.add(theme5Radio);
+        break;
+      case ColorThemeOption.theme4:
+        colorThemeRadios.add(theme1Radio);
+        colorThemeRadios.add(theme2Radio);
+        colorThemeRadios.add(theme3Radio);
+        colorThemeRadios
+            .add(ColorThemeRadio(true, ColorThemeOption.theme4.colorTheme));
+        colorThemeRadios.add(theme5Radio);
+        break;
+      case ColorThemeOption.theme5:
+        colorThemeRadios.add(theme1Radio);
+        colorThemeRadios.add(theme2Radio);
+        colorThemeRadios.add(theme3Radio);
+        colorThemeRadios.add(theme4Radio);
+        colorThemeRadios
+            .add(ColorThemeRadio(true, ColorThemeOption.theme5.colorTheme));
         break;
     }
   }
