@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weeklies/blocs/tasks/tasks.dart';
@@ -14,6 +15,14 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    DateTime now = DateTime.now();
+    DateTime midnight = DateTime(now.year, now.month, now.day + 1, 0);
+    Timer(Duration(minutes: midnight.difference(now).inMinutes + 3), () {
+      BlocProvider.of<TasksBloc>(context).add(TasksLoaded());
+      Timer.periodic(Duration(hours: 24), (timer) {
+        BlocProvider.of<TasksBloc>(context).add(TasksLoaded());
+      });
+    });
   }
 
   @override
@@ -76,20 +85,10 @@ class _HomePageState extends State<HomePage> {
                   children: <Widget>[Expanded(child: TaskListView())],
                 ),
                 /* Bottom button panel with PrioritySortButton, 
-                     * TaskInputWidget(button), & TimeSortButton
-                     * This panel sits on top of the taskListView with a white gradient so
-                     * the task list seamlessly disappears under the button panel
-                     */
-                // BottomNavigationBar(
-                //   items: [
-                //     BottomNavigationBarItem(icon: PrioritySortButton(), label: '1'),
-                //     BottomNavigationBarItem(icon: TaskInputWidget(), label: '2'),
-                //     BottomNavigationBarItem(icon: TimeSortButton(), label: '3'),
-                //   ],
-                //   showSelectedLabels: false,
-                //   showUnselectedLabels: false,
-                // ),
-                //IgnorePointer(child:
+                * TaskInputWidget(button), & TimeSortButton
+                * This panel sits on top of the taskListView with a white gradient so
+                * the task list seamlessly disappears under the button panel
+                */
                 Positioned(
                   bottom: 0,
                   child: SizedBox(
@@ -145,9 +144,9 @@ class _HomePageState extends State<HomePage> {
       builder: (context) => BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
         child: SimpleDialog(
-          //contentPadding: EdgeInsets.fromLTRB(0, 24, 0, 24),
           insetPadding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width / 4, vertical: 24),
+              horizontal: MediaQuery.of(context).size.width / 4.6,
+              vertical: 24),
           children: <Widget>[
             CustomColorThemeRadio(changeTheme, currentTheme),
           ],

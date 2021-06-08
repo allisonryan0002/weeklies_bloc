@@ -35,8 +35,6 @@ import 'package:weeklies/clients/clients.dart';
 import 'package:weeklies/repositories/repositories.dart';
 import 'package:weeklies/widgets/widgets.dart';
 
-//TODO: occasionally reload tasks to check for day changes...
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final dir = await getApplicationDocumentsDirectory();

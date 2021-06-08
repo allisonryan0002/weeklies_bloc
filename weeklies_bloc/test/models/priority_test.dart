@@ -7,7 +7,8 @@ void main() {
     test('radio is correctly assigned from getter method', () {
       final expectedRadio =
           PriorityRadio(false, '5', Color.fromRGBO(86, 141, 172, 1));
-      final actualRadio = Priority.low.radio;
+      final actualRadio =
+          Priority.low.radio(ColorThemeOption.theme1.colorTheme);
       expect(actualRadio is PriorityRadio, true);
       expect(actualRadio.isSelected, expectedRadio.isSelected);
       expect(actualRadio.color, expectedRadio.color);

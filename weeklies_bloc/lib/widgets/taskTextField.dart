@@ -16,11 +16,16 @@ class TaskTextField extends StatefulWidget {
 
 class _TaskTextFieldState extends State<TaskTextField> {
   final controller = new TextEditingController();
+  //late final _formKey;
 
   @override
   void initState() {
     super.initState();
     controller.text = widget.item.task;
+    controller.selection =
+        TextSelection.collapsed(offset: controller.text.length);
+    //(TextPosition(offset: controller.text.length));
+    //_formKey = GlobalKey<FormState>();
   }
 
   @override
@@ -32,21 +37,26 @@ class _TaskTextFieldState extends State<TaskTextField> {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      key: ValueKey(widget.item.timeStamp),
+      //autofocus: true,
       controller: this.controller,
-      //key: Key(widget.item.timeStamp.toString()),
       style: Theme.of(context).textTheme.bodyText1,
       textInputAction: TextInputAction.done,
-      //autofocus: true,
       onEditingComplete: () {
         print('editing complete');
         Task task = Task(widget.item.timeStamp, controller.text,
             widget.item.priority, widget.item.day);
         BlocProvider.of<TasksBloc>(context).add(TaskUpdated(task));
+        FocusScope.of(context).unfocus();
       },
       keyboardType: TextInputType.multiline,
       maxLines: null,
       textCapitalization: TextCapitalization.sentences,
-      decoration: null,
+      decoration: InputDecoration(
+        border: InputBorder.none,
+        isDense: true,
+        contentPadding: EdgeInsets.only(top: 3, bottom: 3),
+      ),
       cursorColor: Colors.black12,
       cursorHeight: 18,
       cursorWidth: 1.5,

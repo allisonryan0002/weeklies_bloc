@@ -60,38 +60,50 @@ class _CustomPriorityRadioState extends State<CustomPriorityRadio> {
 
   @override
   Widget build(BuildContext context) {
-    ColorTheme theme =
-        (BlocProvider.of<TasksBloc>(context).state as TasksLoadSuccess)
-            .theme
-            .colorTheme;
+    // ColorTheme theme =
+    //     (BlocProvider.of<TasksBloc>(context).state as TasksLoadSuccess)
+    //         .theme
+    //         .colorTheme;
+    final theme = context.select<TasksBloc, ColorTheme>((bloc) =>
+        bloc.state is TasksLoadSuccess
+            ? (bloc.state as TasksLoadSuccess).theme.colorTheme
+            : ColorThemeOption.theme1.colorTheme);
     if (!initialized) {
       setupListOfPriorityRadios(widget.initialSelected, theme);
       initialized = true;
     }
-    return SizedBox(
-      width: 240,
-      height: 50,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        physics: NeverScrollableScrollPhysics(),
-        itemCount: priorityRadios.length,
-        itemBuilder: (context, index) {
-          return IconButton(
-            splashRadius: 0.1,
-            onPressed: () {
-              setState(() {
-                this.priorityRadios.forEach((element) {
-                  element.isSelected = false;
-                });
-                this.priorityRadios[index].isSelected = true;
-                this.priority = Priority.values[index];
-              });
-              widget.callback(priority);
+    return BlocBuilder<TasksBloc, TasksState>(
+      builder: (context, state) {
+        if (!initialized) {
+          setupListOfPriorityRadios(widget.initialSelected, theme);
+          initialized = true;
+        }
+        return SizedBox(
+          width: 240,
+          height: 50,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: priorityRadios.length,
+            itemBuilder: (context, index) {
+              return IconButton(
+                splashRadius: 0.1,
+                onPressed: () {
+                  setState(() {
+                    this.priorityRadios.forEach((element) {
+                      element.isSelected = false;
+                    });
+                    this.priorityRadios[index].isSelected = true;
+                    this.priority = Priority.values[index];
+                  });
+                  widget.callback(priority);
+                },
+                icon: new PriorityRadioIcon(priorityRadios[index]),
+              );
             },
-            icon: new PriorityRadioIcon(priorityRadios[index]),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 

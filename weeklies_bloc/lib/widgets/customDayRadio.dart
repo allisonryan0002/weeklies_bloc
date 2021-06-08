@@ -16,35 +16,34 @@ class DayRadioIcon extends StatelessWidget {
             .theme
             .colorTheme;
     return Container(
-      child: FittedBox(
-        fit: BoxFit.contain,
-        child: Text(
-          item.timeText,
-          style: Theme.of(context).textTheme.subtitle1?.copyWith(
-              fontSize: 15,
-              color: Colors.black.withOpacity(0.7),
-              fontWeight: FontWeight.w100),
-          textAlign: TextAlign.center,
-        ),
-      ),
+      padding: EdgeInsets.all(1.5),
       decoration: BoxDecoration(
         shape: BoxShape.rectangle,
         color: theme.med,
-        boxShadow: item.isSelected
-            ? [
-                BoxShadow(
-                  color: Colors.black45,
-                  blurRadius: 2,
-                  spreadRadius: 1,
-                  offset: Offset(1.5, 1.5),
-                )
-              ]
-            : null,
-        //TODO: figure out the best way to display which one is selected
-        //border: item.isSelected ? Border.all(color: theme.high) : null,
-        borderRadius: BorderRadius.all(Radius.circular(7)),
+        borderRadius: BorderRadius.all(Radius.circular(8)),
       ),
-      padding: EdgeInsets.fromLTRB(5, 4, 5, 4),
+      child: Container(
+        child: FittedBox(
+          fit: BoxFit.contain,
+          child: Text(
+            item.timeText,
+            style: Theme.of(context).textTheme.subtitle1?.copyWith(
+                fontSize: 15,
+                color: Colors.black.withOpacity(0.7),
+                fontWeight: FontWeight.w100),
+            textAlign: TextAlign.center,
+          ),
+        ),
+        decoration: BoxDecoration(
+          shape: BoxShape.rectangle,
+          color: theme.med,
+          border: item.isSelected
+              ? Border.all(color: Colors.black, width: 1.15)
+              : null,
+          borderRadius: BorderRadius.all(Radius.circular(7)),
+        ),
+        padding: EdgeInsets.fromLTRB(5, 4, 5, 4),
+      ),
     );
   }
 }
@@ -103,6 +102,8 @@ class _CustomDayRadioState extends State<CustomDayRadio> {
     return SizedBox(
       width: 250,
       child: Wrap(
+        crossAxisAlignment: WrapCrossAlignment.center,
+        alignment: WrapAlignment.center,
         children: [
           for (int i = 0; i < dayRadios.length; i++)
             GestureDetector(
@@ -129,7 +130,13 @@ class _CustomDayRadioState extends State<CustomDayRadio> {
   void setupListOfDayRadios(int selected) {
     dayRadios = [];
     dayList = Day(currWeekday).dayOptions;
-    if (selected < 8) {
+    //TODO: this overdue option still needs to be tested
+    if (selected == 0) {
+      for (String day in dayList.sublist(1, 9)) {
+        dayRadios.add(DayRadio(false, day));
+      }
+    }
+    if (selected < 8 && selected > 0) {
       for (int i = 1; i < 8; i++) {
         if (i == selected) {
           dayRadios.add(DayRadio(true, dayList[i]));
@@ -138,7 +145,8 @@ class _CustomDayRadioState extends State<CustomDayRadio> {
         }
       }
       dayRadios.add(DayRadio(false, "Someday"));
-    } else {
+    }
+    if (selected == 8) {
       for (String day in dayList.sublist(1, 8)) {
         dayRadios.add(DayRadio(false, day));
       }

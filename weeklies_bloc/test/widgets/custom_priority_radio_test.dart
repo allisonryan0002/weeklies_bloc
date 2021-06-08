@@ -12,6 +12,14 @@ import 'package:weeklies/widgets/widgets.dart';
 //   call(Priority p) {}
 // }
 
+class MockTasksBloc extends Mock implements TasksBloc {}
+
+// class MockBlocProvider extends Mock implements BlocProvider {}
+
+class FakeTasksEvent extends Fake implements TasksEvent {}
+
+class FakeTasksState extends Fake implements TasksState {}
+
 //TODO: should the actual Mock be used instead?
 class MockCallback {
   int _callCounter = 0;
@@ -24,10 +32,6 @@ class MockCallback {
     _callCounter = 0;
   }
 }
-
-// class FakeTasksEvent extends Fake implements TasksEvent {}
-
-// class FakeTasksState extends Fake implements TasksState {}
 
 void main() {
   // setUpAll(() {
@@ -42,7 +46,8 @@ void main() {
           await tester.pumpWidget(
             MaterialApp(
               home: Scaffold(
-                body: PriorityRadioIcon(Priority.low.radio),
+                body: PriorityRadioIcon(
+                    Priority.low.radio(ColorThemeOption.theme1.colorTheme)),
               ),
             ),
           );
@@ -53,6 +58,17 @@ void main() {
     });
 
     group('CustomPriorityRadioWidget', () {
+      late TasksBloc tasksBloc;
+
+      setUpAll(() {
+        registerFallbackValue<TasksEvent>(FakeTasksEvent());
+        registerFallbackValue<TasksState>(FakeTasksState());
+      });
+
+      setUp(() {
+        tasksBloc = MockTasksBloc();
+      });
+
       testWidgets("renders correctly", (WidgetTester tester) async {
         final mockedCallback = MockCallback();
         await tester.pumpWidget(
@@ -69,14 +85,34 @@ void main() {
       testWidgets("callback function is called on tap",
           (WidgetTester tester) async {
         final mockedCallback = MockCallback();
+
+        // when(() => tasksBloc.state).thenAnswer((_) =>
+        //     TasksLoadSuccess([], SortType.priority, ColorThemeOption.theme1));
+        // when(() => (tasksBloc.state as TasksLoadSuccess).theme.colorTheme)
+        //     .thenAnswer((_) => ColorThemeOption.theme1.colorTheme);
         await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: CustomPriorityRadio(mockedCallback, Priority.med),
+          BlocProvider.value(
+            value: tasksBloc,
+            child: Builder(
+              builder: (BuildContext context) {
+                when(() => tasksBloc.state).thenAnswer((_) => TasksLoadSuccess(
+                    [], SortType.priority, ColorThemeOption.theme1));
+                // when(() => context.select<TasksBloc, TasksState>((bloc) =>
+                //     bloc.state is TasksLoadSuccess
+                //         ? TasksLoadSuccess()
+                //         : TasksLoadInProgress())).thenAnswer((_) =>
+                //     TasksLoadSuccess(
+                //         [], SortType.priority, ColorThemeOption.theme1));
+                return MaterialApp(
+                  home: Scaffold(
+                    body: CustomPriorityRadio(mockedCallback, Priority.med),
+                  ),
+                );
+              },
             ),
           ),
         );
-        final radioIconFinder = find.widgetWithText(PriorityRadioIcon, '1');
+        final radioIconFinder = find.widgetWithText(PriorityRadioIcon, '2');
         await tester.tap(radioIconFinder);
         //verify(() => mockedCallback.call(Priority.high)).called(1);
         expect(mockedCallback.called(1), true);

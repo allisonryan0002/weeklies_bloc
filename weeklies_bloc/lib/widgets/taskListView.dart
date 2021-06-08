@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,6 +15,19 @@ class TaskListView extends StatefulWidget {
 }
 
 class _TaskListViewState extends State<TaskListView> {
+  static final _formKey = GlobalKey<FormState>();
+  List<String> dismissTextList = [
+    "Never again...",
+    "YAY 🙌",
+    "Productivity +1",
+    "Time for a nap... 😴",
+    "Wooohooo! 🥳",
+    "DONE 👏👏👏",
+    "Fun & done 🤩",
+    "Very Good Job 🦄",
+  ];
+  final rand = Random();
+
   // Displays SimpleDialog with a priority radio set to change a task's priority
   changePriorityWindow(BuildContext priorityContext, Task item) {
     updatePriority(Priority p) {
@@ -90,11 +104,12 @@ class _TaskListViewState extends State<TaskListView> {
    */
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      //TODO: does this resize actually do anything?
-      resizeToAvoidBottomInset: false,
-      body: BlocBuilder<TasksBloc, TasksState>(
+    //TODO: was wrapped with a scaffold
+    return Form(
+      key: _formKey,
+      child: BlocBuilder<TasksBloc, TasksState>(
         builder: (context, state) {
+          //print(state);
           if (state is TasksLoadInProgress) {
             return Center(child: CircularProgressIndicator());
           } else if (state is TasksLoadSuccess &&
@@ -179,7 +194,6 @@ class _TaskListViewState extends State<TaskListView> {
                                   .toList()[index][indexInner][0];
                               int taskIndex = taskAndIndex.values
                                   .toList()[index][indexInner][1];
-
                               // Task is dismissed on top of gradient
                               return getTaskTileDismissible(
                                   taskItem, taskIndex, state.theme.colorTheme);
@@ -202,10 +216,12 @@ class _TaskListViewState extends State<TaskListView> {
 
   Dismissible getTaskTileDismissible(
       Task taskItem, int index, ColorTheme theme) {
+    final _formKey = GlobalKey<FormState>();
+    //final _formKey = GlobalKey<FormState>();
     //TODO: issue with time change giving task.day is 9??
     //print('TaskItem day : ${taskItem.day}');
     return Dismissible(
-      key: GlobalKey(),
+      key: UniqueKey(),
       onDismissed: (direction) {
         BlocProvider.of<TasksBloc>(context).add(TaskDeleted(taskItem));
       },
@@ -217,7 +233,7 @@ class _TaskListViewState extends State<TaskListView> {
           borderRadius: BorderRadius.all(Radius.circular(6)),
         ),
         child: ListTile(
-          visualDensity: VisualDensity(horizontal: -2),
+          visualDensity: VisualDensity(horizontal: -1),
           // Priority radio button
           leading: GestureDetector(
             onTap: () {
@@ -229,12 +245,20 @@ class _TaskListViewState extends State<TaskListView> {
               child: PriorityRadioIcon(taskItem.priority.radio(theme)),
             ),
           ),
-          title: Column(
+          title:
+              // Form(
+              //   key: _formKey,
+              //   child:
+              Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Editable text field for task text
+              //Form(
+              //key: _formKey,
+              //child:
               TaskTextField(taskItem),
-              Padding(padding: EdgeInsets.only(top: 4)),
+              //),
+              Padding(padding: EdgeInsets.only(top: 5)),
               // Time radio button
               GestureDetector(
                 onTap: () {
@@ -247,12 +271,17 @@ class _TaskListViewState extends State<TaskListView> {
               ),
             ],
           ),
+          //),
           contentPadding: EdgeInsets.fromLTRB(20, 5, 0, 0),
         ),
       ),
       background: Container(
         margin: EdgeInsets.fromLTRB(0, 2.5, 0, 2.5),
         alignment: Alignment.centerLeft,
+        child: Text(
+          dismissTextList[rand.nextInt(dismissTextList.length)],
+          style: Theme.of(context).textTheme.headline2,
+        ),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.centerRight,

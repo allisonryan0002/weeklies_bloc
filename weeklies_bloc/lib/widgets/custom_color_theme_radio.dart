@@ -81,7 +81,7 @@ class _CustomColorThemeRadioState extends State<CustomColorThemeRadio> {
           for (int i = 0; i < colorThemeRadios.length; i++)
             GestureDetector(
               child: Container(
-                padding: EdgeInsets.all(2),
+                padding: EdgeInsets.all(3),
                 child: ColorThemeRadioIcon(colorThemeRadios[i]),
               ),
               onTap: () {

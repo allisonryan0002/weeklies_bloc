@@ -31,9 +31,12 @@ void main() {
       'renders correctly',
       (WidgetTester tester) async {
         await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: TaskInputWidget(),
+          BlocProvider.value(
+            value: tasksBloc,
+            child: MaterialApp(
+              home: Scaffold(
+                body: TaskInputWidget(),
+              ),
             ),
           ),
         );
