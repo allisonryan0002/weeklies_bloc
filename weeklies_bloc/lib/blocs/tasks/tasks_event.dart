@@ -49,15 +49,3 @@ class TaskDeleted extends TasksEvent {
 class PrioritySorted extends TasksEvent {}
 
 class DaySorted extends TasksEvent {}
-
-class ThemeChanged extends TasksEvent {
-  final ColorThemeOption theme;
-
-  const ThemeChanged(this.theme);
-
-  @override
-  List<Object> get props => [theme];
-
-  @override
-  String toString() => 'ThemeChanged { Theme: $theme }';
-}

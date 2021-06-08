@@ -42,5 +42,23 @@ void main() {
         );
       });
     });
+
+    group('PrioritySorted', () {
+      test('toString returns correct value', () {
+        expect(
+          PrioritySorted().toString(),
+          'PrioritySorted()',
+        );
+      });
+    });
+
+    group('DaySorted', () {
+      test('toString returns correct value', () {
+        expect(
+          DaySorted().toString(),
+          'DaySorted()',
+        );
+      });
+    });
   });
 }

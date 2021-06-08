@@ -13,15 +13,14 @@ class TasksLoadInProgress extends TasksState {}
 class TasksLoadSuccess extends TasksState {
   final List<Task> tasks;
   final SortType sort;
-  final ColorThemeOption theme;
 
-  const TasksLoadSuccess(
-      [this.tasks = const [],
-      this.sort = SortType.priority,
-      this.theme = ColorThemeOption.theme1]);
+  const TasksLoadSuccess([
+    this.tasks = const [],
+    this.sort = SortType.priority,
+  ]);
 
   @override
-  List<Object> get props => [tasks, sort, theme];
+  List<Object> get props => [tasks, sort];
 
   @override
   String toString() => 'TasksLoadSuccess { tasks: $tasks }';

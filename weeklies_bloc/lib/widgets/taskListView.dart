@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weeklies/blocs/tasks/tasks.dart';
+import 'package:weeklies/blocs/theme/theme.dart';
 import 'package:weeklies/widgets/widgets.dart';
 import 'package:weeklies/models/models.dart';
 
@@ -15,7 +16,6 @@ class TaskListView extends StatefulWidget {
 }
 
 class _TaskListViewState extends State<TaskListView> {
-  static final _formKey = GlobalKey<FormState>();
   List<String> dismissTextList = [
     "Never again...",
     "YAY 🙌",
@@ -29,17 +29,13 @@ class _TaskListViewState extends State<TaskListView> {
   final rand = Random();
 
   // Displays SimpleDialog with a priority radio set to change a task's priority
-  changePriorityWindow(BuildContext priorityContext, Task item) {
+  changePriorityWindow(
+      BuildContext priorityContext, Task item, ColorTheme theme) {
     updatePriority(Priority p) {
       Navigator.pop(priorityContext);
       BlocProvider.of<TasksBloc>(priorityContext)
           .add(TaskUpdated(Task(item.timeStamp, item.task, p, item.day)));
     }
-
-    ColorTheme theme =
-        (BlocProvider.of<TasksBloc>(context).state as TasksLoadSuccess)
-            .theme
-            .colorTheme;
 
     return showDialog(
       barrierColor: theme.accent.withOpacity(0.3),
@@ -64,17 +60,12 @@ class _TaskListViewState extends State<TaskListView> {
   }
 
   // Displays SimpleDialog with a time radio set to change a task's time
-  changeDayWindow(BuildContext dayContext, Task item) {
+  changeDayWindow(BuildContext dayContext, Task item, ColorTheme theme) {
     updateDay(int day) {
       Navigator.pop(dayContext);
       BlocProvider.of<TasksBloc>(dayContext).add(
           TaskUpdated(Task(item.timeStamp, item.task, item.priority, day)));
     }
-
-    ColorTheme theme =
-        (BlocProvider.of<TasksBloc>(context).state as TasksLoadSuccess)
-            .theme
-            .colorTheme;
 
     return showDialog(
       barrierColor: theme.accent.withOpacity(0.3),
@@ -100,75 +91,80 @@ class _TaskListViewState extends State<TaskListView> {
 
   /* ListView displaying ListTiles with leading priority icon/button followed
    * by the task text and day icon/button
-   * Utilizes methods from taskList.dart to manage and remove TaskItems
    */
   @override
   Widget build(BuildContext context) {
     //TODO: was wrapped with a scaffold
-    return Form(
-      key: _formKey,
-      child: BlocBuilder<TasksBloc, TasksState>(
-        builder: (context, state) {
-          //print(state);
-          if (state is TasksLoadInProgress) {
-            return Center(child: CircularProgressIndicator());
-          } else if (state is TasksLoadSuccess &&
-              state.sort == SortType.priority) {
-            List<Task> tasks = state.tasks;
-            if (tasks.isNotEmpty) {
-              return SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.fromLTRB(8, 5, 8, 0),
-                      margin: EdgeInsets.fromLTRB(5, 8, 5, 0),
-                      decoration: BoxDecoration(
-                        color: state.theme.colorTheme.accent,
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                      ),
-                      child: ListView.builder(
-                        padding: EdgeInsets.only(bottom: 5),
-                        physics: NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: tasks.length,
-                        itemBuilder: (context, index) {
-                          var taskItem = tasks[index];
-                          return getTaskTileDismissible(
-                              taskItem, index, state.theme.colorTheme);
-                        },
-                      ),
+    final tasks = context.select<TasksBloc, List<Task>>((bloc) =>
+        bloc.state is TasksLoadSuccess
+            ? (bloc.state as TasksLoadSuccess).tasks
+            : []);
+    final sort = context.select<TasksBloc, SortType>((bloc) =>
+        bloc.state is TasksLoadSuccess
+            ? (bloc.state as TasksLoadSuccess).sort
+            : SortType.priority);
+    if (tasks.isEmpty) {
+      return Center(child: CircularProgressIndicator());
+    } else if (sort == SortType.priority) {
+      return SingleChildScrollView(
+        child: Column(
+          children: [
+            BlocBuilder<ThemeBloc, ThemeState>(
+              builder: (context, themeState) {
+                if (themeState is ThemeLoadSuccess) {
+                  final theme = themeState.theme.colorTheme;
+                  return Container(
+                    padding: EdgeInsets.fromLTRB(8, 5, 8, 0),
+                    margin: EdgeInsets.fromLTRB(5, 8, 5, 0),
+                    decoration: BoxDecoration(
+                      color: theme.accent,
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
-                    Container(
-                      height: MediaQuery.of(context).size.height / 5.5,
+                    child: ListView.builder(
+                      padding: EdgeInsets.only(bottom: 5),
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: tasks.length,
+                      itemBuilder: (context, index) {
+                        var taskItem = tasks[index];
+                        return getTaskTileDismissible(taskItem, index, theme);
+                      },
                     ),
-                  ],
-                ),
+                  );
+                } else {
+                  //TODO: better way to address this
+                  return Container();
+                }
+              },
+            ),
+            Container(
+              height: MediaQuery.of(context).size.height / 5.5,
+            ),
+          ],
+        ),
+      );
+    } else {
+      Map<String, dynamic> taskAndIndex = getDaysAndTasks(tasks);
+      return Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: ListView.builder(
+          key: Key('day_sort_outer_list_view'),
+          itemCount: taskAndIndex.length + 1,
+          itemBuilder: (context, index) {
+            if (index == taskAndIndex.length) {
+              return Container(
+                height: MediaQuery.of(context).size.height / 6,
               );
             } else {
-              return Container();
-            }
-          } else if (state is TasksLoadSuccess && state.sort == SortType.day) {
-            List<Task> tasks = state.tasks;
-            Map<String, dynamic> taskAndIndex = getDaysAndTasks(tasks);
-
-            return Scaffold(
-              resizeToAvoidBottomInset: false,
-              body: ListView.builder(
-                key: Key('day_sort_outer_list_view'),
-                itemCount: taskAndIndex.length + 1,
-                itemBuilder: (context, index) {
-                  // Last item in list is empty container acting as a buffer to allow
-                  // TaskItems to sit above bottom button panel when scrollled
-                  if (index == taskAndIndex.length) {
-                    return Container(
-                      height: MediaQuery.of(context).size.height / 6,
-                    );
-                  } else {
+              return BlocBuilder<ThemeBloc, ThemeState>(
+                builder: (context, themeState) {
+                  if (themeState is ThemeLoadSuccess) {
+                    final theme = themeState.theme.colorTheme;
                     return Container(
                       padding: EdgeInsets.fromLTRB(8, 8, 8, 5),
                       margin: EdgeInsets.fromLTRB(5, 8, 5, 0),
                       decoration: BoxDecoration(
-                        color: state.theme.colorTheme.accent,
+                        color: theme.accent,
                         borderRadius: BorderRadius.all(Radius.circular(10)),
                       ),
                       child: Column(
@@ -196,23 +192,148 @@ class _TaskListViewState extends State<TaskListView> {
                                   .toList()[index][indexInner][1];
                               // Task is dismissed on top of gradient
                               return getTaskTileDismissible(
-                                  taskItem, taskIndex, state.theme.colorTheme);
+                                  taskItem, taskIndex, theme);
                             },
                           ),
                         ],
                       ),
                     );
+                  } else {
+                    //TODO: better way to address this
+                    return Container();
                   }
                 },
-              ),
-            );
-          } else {
-            return Container();
-          }
-        },
-      ),
-    );
+              );
+            }
+          },
+        ),
+      );
+    }
   }
+
+  // return BlocBuilder<TasksBloc, TasksState>(
+  //     builder: (context, tasksState) {
+  //       //print(state);
+  //       if (tasksState is TasksLoadInProgress) {
+  //         return Center(child: CircularProgressIndicator());
+  //       } else if (tasksState is TasksLoadSuccess &&
+  //           tasksState.sort == SortType.priority) {
+  //         List<Task> tasks = tasksState.tasks;
+  //         if (tasks.isNotEmpty) {
+  //           return SingleChildScrollView(
+  //             child: Column(
+  //               children: [
+  //                 BlocBuilder<ThemeBloc, ThemeState>(
+  //                   builder: (context, themeState) {
+  //                     if (themeState is ThemeLoadSuccess) {
+  //                       final theme = themeState.theme.colorTheme;
+  //                       return Container(
+  //                         padding: EdgeInsets.fromLTRB(8, 5, 8, 0),
+  //                         margin: EdgeInsets.fromLTRB(5, 8, 5, 0),
+  //                         decoration: BoxDecoration(
+  //                           color: theme.accent,
+  //                           borderRadius: BorderRadius.all(Radius.circular(10)),
+  //                         ),
+  //                         child: ListView.builder(
+  //                           padding: EdgeInsets.only(bottom: 5),
+  //                           physics: NeverScrollableScrollPhysics(),
+  //                           shrinkWrap: true,
+  //                           itemCount: tasks.length,
+  //                           itemBuilder: (context, index) {
+  //                             var taskItem = tasks[index];
+  //                             return getTaskTileDismissible(
+  //                                 taskItem, index, theme);
+  //                           },
+  //                         ),
+  //                       );
+  //                     } else {
+  //                       //TODO: better way to address this
+  //                       return Container();
+  //                     }
+  //                   },
+  //                 ),
+  //                 Container(
+  //                   height: MediaQuery.of(context).size.height / 5.5,
+  //                 ),
+  //               ],
+  //             ),
+  //           );
+  //         } else {
+  //           return Container();
+  //         }
+  //       } else if (tasksState is TasksLoadSuccess &&
+  //           tasksState.sort == SortType.day) {
+  //         List<Task> tasks = tasksState.tasks;
+  //         Map<String, dynamic> taskAndIndex = getDaysAndTasks(tasks);
+
+  //         return Scaffold(
+  //           resizeToAvoidBottomInset: false,
+  //           body: ListView.builder(
+  //             key: Key('day_sort_outer_list_view'),
+  //             itemCount: taskAndIndex.length + 1,
+  //             itemBuilder: (context, index) {
+  //               if (index == taskAndIndex.length) {
+  //                 return Container(
+  //                   height: MediaQuery.of(context).size.height / 6,
+  //                 );
+  //               } else {
+  //                 return BlocBuilder<ThemeBloc, ThemeState>(
+  //                   builder: (context, themeState) {
+  //                     if (themeState is ThemeLoadSuccess) {
+  //                       final theme = themeState.theme.colorTheme;
+  //                       return Container(
+  //                         padding: EdgeInsets.fromLTRB(8, 8, 8, 5),
+  //                         margin: EdgeInsets.fromLTRB(5, 8, 5, 0),
+  //                         decoration: BoxDecoration(
+  //                           color: theme.accent,
+  //                           borderRadius: BorderRadius.all(Radius.circular(10)),
+  //                         ),
+  //                         child: Column(
+  //                           children: [
+  //                             Align(
+  //                               alignment: Alignment.centerLeft,
+  //                               child: Text(
+  //                                 taskAndIndex.keys.toList()[index],
+  //                                 style: Theme.of(context)
+  //                                     .textTheme
+  //                                     .subtitle1
+  //                                     ?.copyWith(fontSize: 18),
+  //                               ),
+  //                             ),
+  //                             ListView.builder(
+  //                               key: Key('day_sort_inner_list_view'),
+  //                               physics: const NeverScrollableScrollPhysics(),
+  //                               shrinkWrap: true,
+  //                               itemCount:
+  //                                   taskAndIndex.values.toList()[index].length,
+  //                               itemBuilder: (context, indexInner) {
+  //                                 Task taskItem = taskAndIndex.values
+  //                                     .toList()[index][indexInner][0];
+  //                                 int taskIndex = taskAndIndex.values
+  //                                     .toList()[index][indexInner][1];
+  //                                 // Task is dismissed on top of gradient
+  //                                 return getTaskTileDismissible(
+  //                                     taskItem, taskIndex, theme);
+  //                               },
+  //                             ),
+  //                           ],
+  //                         ),
+  //                       );
+  //                     } else {
+  //                       //TODO: better way to address this
+  //                       return Container();
+  //                     }
+  //                   },
+  //                 );
+  //               }
+  //             },
+  //           ),
+  //         );
+  //       } else {
+  //         return Container();
+  //       }
+  //     },
+  //   );
 
   Dismissible getTaskTileDismissible(
       Task taskItem, int index, ColorTheme theme) {
@@ -237,12 +358,12 @@ class _TaskListViewState extends State<TaskListView> {
           // Priority radio button
           leading: GestureDetector(
             onTap: () {
-              changePriorityWindow(context, taskItem);
+              changePriorityWindow(context, taskItem, theme);
             },
             child: Container(
               decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.7), shape: BoxShape.circle),
-              child: PriorityRadioIcon(taskItem.priority.radio(theme)),
+              child: PriorityRadioIcon(taskItem.priority.radio),
             ),
           ),
           title:
@@ -262,7 +383,7 @@ class _TaskListViewState extends State<TaskListView> {
               // Time radio button
               GestureDetector(
                 onTap: () {
-                  changeDayWindow(context, taskItem);
+                  changeDayWindow(context, taskItem, theme);
                 },
                 child: DayRadioIconTileSize(
                   DayRadio(false,

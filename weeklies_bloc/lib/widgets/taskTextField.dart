@@ -37,7 +37,7 @@ class _TaskTextFieldState extends State<TaskTextField> {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      key: ValueKey(widget.item.timeStamp),
+      key: UniqueKey(),
       //autofocus: true,
       controller: this.controller,
       style: Theme.of(context).textTheme.bodyText1,

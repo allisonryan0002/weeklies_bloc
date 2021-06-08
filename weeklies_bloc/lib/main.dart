@@ -3,13 +3,13 @@
  * Description: Productivity app for creating and managing weekly tasks. Tasks 
  *              are stored in a single list, each with a priority label (1-5) 
  *              and a day of the week to be completed by. Users can choose to 
- *              sort the list by priority or completion time. Created tasks are
+ *              sort the list by priority or completion day. Created tasks are
  *              fully editable and can be swiped away once completed. The app
  *              has a minimalistic design for quick and simple task management.
  * 
  * Author: Allison Ryan
  * 
- * Version Date: 5/26/2021
+ * Version Date: 6/8/2021
  * 
  * Author's Note: I created this app as a fun personal project and beacause I 
  *                felt no other task management apps had a simple, weekly style
@@ -20,8 +20,7 @@
  *                a task. I also created the app as a challenge for myself, as
  *                it's my first largely UI based project. It was a great 
  *                learning experience and is intended for my personal use and as
- *                a showcase of skill. Screenshots and a video demo of the app 
- *                can be found in AppScreenshots folder.
+ *                a showcase of skill.
  */
 
 import 'dart:ui';
@@ -31,6 +30,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:weeklies/blocs/tasks/tasks.dart';
+import 'package:weeklies/blocs/theme/theme.dart';
 import 'package:weeklies/clients/clients.dart';
 import 'package:weeklies/repositories/repositories.dart';
 import 'package:weeklies/widgets/widgets.dart';
@@ -53,10 +53,19 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return RepositoryProvider(
       create: (context) => TaskRepository(client: client),
-      child: BlocProvider(
-        create: (context) => TasksBloc(
-          tasksRepository: RepositoryProvider.of<TaskRepository>(context),
-        )..add(TasksLoaded()),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => TasksBloc(
+              tasksRepository: RepositoryProvider.of<TaskRepository>(context),
+            )..add(TasksLoaded()),
+          ),
+          BlocProvider(
+            create: (context) => ThemeBloc(
+              tasksRepository: RepositoryProvider.of<TaskRepository>(context),
+            )..add(ThemeLoaded()),
+          ),
+        ],
         child: MaterialApp(
           title: 'Weeklies',
           theme: ThemeData(

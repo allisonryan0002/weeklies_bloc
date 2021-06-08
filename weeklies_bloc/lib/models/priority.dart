@@ -5,18 +5,18 @@ enum Priority { high, med_high, med, low_med, low }
 
 // Produces a radio model corresponding with the ItemPriority
 extension PriorityExtension on Priority {
-  PriorityRadio radio(ColorTheme theme) {
+  PriorityRadio get radio {
     switch (this) {
       case Priority.low:
-        return new PriorityRadio(false, '5', theme.low);
+        return new PriorityRadio(false, '5');
       case Priority.low_med:
-        return new PriorityRadio(false, '4', theme.lowMed);
+        return new PriorityRadio(false, '4');
       case Priority.med:
-        return new PriorityRadio(false, '3', theme.med);
+        return new PriorityRadio(false, '3');
       case Priority.med_high:
-        return new PriorityRadio(false, '2', theme.medHigh);
+        return new PriorityRadio(false, '2');
       case Priority.high:
-        return new PriorityRadio(false, '1', theme.high);
+        return new PriorityRadio(false, '1');
     }
   }
 

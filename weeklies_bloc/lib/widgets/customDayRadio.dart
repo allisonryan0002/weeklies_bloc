@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:weeklies/blocs/tasks/tasks.dart';
+import 'package:weeklies/blocs/theme/theme.dart';
 import 'package:weeklies/models/models.dart';
 
 // Rounded box UI representing time selection options
@@ -11,39 +11,45 @@ class DayRadioIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ColorTheme theme =
-        (BlocProvider.of<TasksBloc>(context).state as TasksLoadSuccess)
-            .theme
-            .colorTheme;
-    return Container(
-      padding: EdgeInsets.all(1.5),
-      decoration: BoxDecoration(
-        shape: BoxShape.rectangle,
-        color: theme.med,
-        borderRadius: BorderRadius.all(Radius.circular(8)),
-      ),
-      child: Container(
-        child: FittedBox(
-          fit: BoxFit.contain,
-          child: Text(
-            item.timeText,
-            style: Theme.of(context).textTheme.subtitle1?.copyWith(
-                fontSize: 15,
-                color: Colors.black.withOpacity(0.7),
-                fontWeight: FontWeight.w100),
-            textAlign: TextAlign.center,
-          ),
-        ),
-        decoration: BoxDecoration(
-          shape: BoxShape.rectangle,
-          color: theme.med,
-          border: item.isSelected
-              ? Border.all(color: Colors.black, width: 1.15)
-              : null,
-          borderRadius: BorderRadius.all(Radius.circular(7)),
-        ),
-        padding: EdgeInsets.fromLTRB(5, 4, 5, 4),
-      ),
+    return BlocBuilder<ThemeBloc, ThemeState>(
+      builder: (context, state) {
+        if (state is ThemeLoadSuccess) {
+          final theme = state.theme.colorTheme;
+          return Container(
+            padding: EdgeInsets.all(1.5),
+            decoration: BoxDecoration(
+              shape: BoxShape.rectangle,
+              color: theme.med,
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+            ),
+            child: Container(
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: Text(
+                  item.timeText,
+                  style: Theme.of(context).textTheme.subtitle1?.copyWith(
+                      fontSize: 15,
+                      color: Colors.black.withOpacity(0.7),
+                      fontWeight: FontWeight.w100),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              decoration: BoxDecoration(
+                shape: BoxShape.rectangle,
+                color: theme.med,
+                border: item.isSelected
+                    ? Border.all(color: Colors.black, width: 1.15)
+                    : null,
+                borderRadius: BorderRadius.all(Radius.circular(7)),
+              ),
+              padding: EdgeInsets.fromLTRB(5, 4, 5, 4),
+            ),
+          );
+        } else {
+          //TODO: better wayt to address this
+          return Container();
+        }
+      },
     );
   }
 }
@@ -91,14 +97,15 @@ class _CustomDayRadioState extends State<CustomDayRadio> {
   List<String> dayList = [];
   late int day;
   final currWeekday = DateTime.now().weekday;
-  bool initialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    setupListOfDayRadios(widget.initialSelected);
+  }
 
   @override
   Widget build(BuildContext context) {
-    if (!initialized) {
-      setupListOfDayRadios(widget.initialSelected);
-      initialized = true;
-    }
     return SizedBox(
       width: 250,
       child: Wrap(
@@ -130,7 +137,6 @@ class _CustomDayRadioState extends State<CustomDayRadio> {
   void setupListOfDayRadios(int selected) {
     dayRadios = [];
     dayList = Day(currWeekday).dayOptions;
-    //TODO: this overdue option still needs to be tested
     if (selected == 0) {
       for (String day in dayList.sublist(1, 9)) {
         dayRadios.add(DayRadio(false, day));

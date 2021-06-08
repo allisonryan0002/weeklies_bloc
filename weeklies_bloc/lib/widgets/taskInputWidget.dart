@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weeklies/blocs/tasks/tasks.dart';
+import 'package:weeklies/blocs/theme/theme.dart';
 import 'package:weeklies/widgets/widgets.dart';
 import 'package:weeklies/models/models.dart';
 
@@ -47,11 +48,7 @@ class _TaskInputWidgetState extends State<TaskInputWidget> {
 
   // SimpleDialog window containing priority & time radio sets and a TextField
   //TODO: make the PriorityRadioIcons larger
-  createTaskWindow(BuildContext taskInputContext) {
-    ColorTheme theme =
-        (BlocProvider.of<TasksBloc>(taskInputContext).state as TasksLoadSuccess)
-            .theme
-            .colorTheme;
+  createTaskWindow(BuildContext taskInputContext, ColorTheme theme) {
     return showDialog(
       barrierColor: theme.accent.withOpacity(0.3),
       context: taskInputContext,
@@ -91,6 +88,7 @@ class _TaskInputWidgetState extends State<TaskInputWidget> {
                   padding: EdgeInsets.fromLTRB(6, 0, 6, 0),
                   margin: EdgeInsets.fromLTRB(2, 6, 2, 6),
                 ),
+                //TaskTextField(Task(DateTime.now(), 'TEST', Priority.low, 1))
               ],
             ),
           ],
@@ -107,25 +105,31 @@ class _TaskInputWidgetState extends State<TaskInputWidget> {
   // 'add task' button
   @override
   Widget build(BuildContext context) {
-    ColorTheme theme =
-        (BlocProvider.of<TasksBloc>(context).state as TasksLoadSuccess)
-            .theme
-            .colorTheme;
-    return GestureDetector(
-      onTap: () {
-        // Reset priority & time values to match radio defaults
-        priority = Priority.med;
-        day = 8;
-        createTaskWindow(context);
+    return BlocBuilder<ThemeBloc, ThemeState>(
+      builder: (context, state) {
+        if (state is ThemeLoadSuccess) {
+          final theme = state.theme.colorTheme;
+          return GestureDetector(
+            onTap: () {
+              // Reset priority & time values to match radio defaults
+              priority = Priority.med;
+              day = 8;
+              createTaskWindow(context, theme);
+            },
+            child: Container(
+              child: Icon(
+                Icons.add_circle_outline_rounded,
+                color: theme.low,
+                size: MediaQuery.of(context).size.height / 14,
+              ),
+              padding: EdgeInsets.all(6),
+            ),
+          );
+        } else {
+          //TODO: better way to address this
+          return Container();
+        }
       },
-      child: Container(
-        child: Icon(
-          Icons.add_circle_outline_rounded,
-          color: theme.low,
-          size: MediaQuery.of(context).size.height / 14,
-        ),
-        padding: EdgeInsets.all(6),
-      ),
     );
   }
 }

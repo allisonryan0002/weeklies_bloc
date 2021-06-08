@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:weeklies/blocs/tasks/tasks.dart';
+import 'package:weeklies/blocs/theme/theme.dart';
 import 'package:weeklies/models/models.dart';
 import 'package:weeklies/widgets/widgets.dart';
 
@@ -13,17 +14,30 @@ class FakeTasksEvent extends Fake implements TasksEvent {}
 
 class FakeTasksState extends Fake implements TasksState {}
 
+class MockThemeBloc extends MockBloc<ThemeEvent, ThemeState>
+    implements ThemeBloc {}
+
+class FakeThemeEvent extends Fake implements ThemeEvent {}
+
+class FakeThemeState extends Fake implements ThemeState {}
+
 void main() {
   late TasksBloc tasksBloc;
+  late ThemeBloc themeBloc;
   final task = Task(DateTime(2021, 6, 1), 'Test', Priority.low, 1);
 
   setUpAll(() {
     registerFallbackValue<TasksEvent>(FakeTasksEvent());
     registerFallbackValue<TasksState>(FakeTasksState());
+    registerFallbackValue<ThemeEvent>(FakeThemeEvent());
+    registerFallbackValue<ThemeState>(FakeThemeState());
   });
 
   setUp(() {
     tasksBloc = MockTaskBloc();
+    themeBloc = MockThemeBloc();
+    when(() => themeBloc.state)
+        .thenAnswer((_) => ThemeLoadSuccess(theme: ColorThemeOption.theme1));
   });
 
   group('TaskListView', () {
@@ -73,9 +87,12 @@ void main() {
         await tester.pumpWidget(
           BlocProvider.value(
             value: tasksBloc,
-            child: MaterialApp(
-              home: Scaffold(
-                body: TaskListView(),
+            child: BlocProvider.value(
+              value: themeBloc,
+              child: MaterialApp(
+                home: Scaffold(
+                  body: TaskListView(),
+                ),
               ),
             ),
           ),
@@ -93,9 +110,12 @@ void main() {
         await tester.pumpWidget(
           BlocProvider.value(
             value: tasksBloc,
-            child: MaterialApp(
-              home: Scaffold(
-                body: TaskListView(),
+            child: BlocProvider.value(
+              value: themeBloc,
+              child: MaterialApp(
+                home: Scaffold(
+                  body: TaskListView(),
+                ),
               ),
             ),
           ),
@@ -148,9 +168,12 @@ void main() {
         await tester.pumpWidget(
           BlocProvider.value(
             value: tasksBloc,
-            child: MaterialApp(
-              home: Scaffold(
-                body: TaskListView(),
+            child: BlocProvider.value(
+              value: themeBloc,
+              child: MaterialApp(
+                home: Scaffold(
+                  body: TaskListView(),
+                ),
               ),
             ),
           ),
@@ -175,9 +198,12 @@ void main() {
         await tester.pumpWidget(
           BlocProvider.value(
             value: tasksBloc,
-            child: MaterialApp(
-              home: Scaffold(
-                body: TaskListView(),
+            child: BlocProvider.value(
+              value: themeBloc,
+              child: MaterialApp(
+                home: Scaffold(
+                  body: TaskListView(),
+                ),
               ),
             ),
           ),
@@ -197,9 +223,12 @@ void main() {
         await tester.pumpWidget(
           BlocProvider.value(
             value: tasksBloc,
-            child: MaterialApp(
-              home: Scaffold(
-                body: TaskListView(),
+            child: BlocProvider.value(
+              value: themeBloc,
+              child: MaterialApp(
+                home: Scaffold(
+                  body: TaskListView(),
+                ),
               ),
             ),
           ),

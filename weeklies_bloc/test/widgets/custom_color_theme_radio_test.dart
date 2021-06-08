@@ -10,10 +10,10 @@ import 'package:weeklies/widgets/widgets.dart';
 class MockThemeBloc extends Mock implements ThemeBloc {}
 
 void main() {
-  group('CustomDayRadio', () {
+  group('CustomColorThemeRadio', () {
     late ThemeBloc themeBloc;
 
-    setUp(() async {
+    setUp(() {
       themeBloc = MockThemeBloc();
       when(() => themeBloc.state)
           .thenAnswer((_) => ThemeLoadSuccess(theme: ColorThemeOption.theme1));
@@ -23,7 +23,7 @@ void main() {
               [ThemeLoadSuccess(theme: ColorThemeOption.theme1)]));
     });
 
-    group('DayRadioIcon', () {
+    group('ColorThemeRadioIcon', () {
       testWidgets(
         "renders correctly",
         (WidgetTester tester) async {
@@ -32,48 +32,31 @@ void main() {
               value: themeBloc,
               child: MaterialApp(
                 home: Scaffold(
-                  body: DayRadioIcon(DayRadio(true, 'Today')),
+                  body: ColorThemeRadioIcon(ColorThemeRadio(
+                      false, ColorThemeOption.theme1.colorTheme)),
                 ),
               ),
             ),
           );
-          expect(find.byType(DayRadioIcon), findsOneWidget);
-          expect(find.text('Today'), findsOneWidget);
+          expect(find.byType(ColorThemeRadioIcon), findsOneWidget);
         },
       );
     });
 
-    group('DayRadioIconTileSize', () {
-      testWidgets(
-        "renders correctly",
-        (WidgetTester tester) async {
-          await tester.pumpWidget(
-            MaterialApp(
-              home: Scaffold(
-                body: DayRadioIconTileSize(DayRadio(true, 'Today')),
-              ),
-            ),
-          );
-          expect(find.byType(DayRadioIconTileSize), findsOneWidget);
-          expect(find.text('Today'), findsOneWidget);
-        },
-      );
-    });
-
-    group('CustomDayRadioWidget', () {
+    group('CustomColorThemeRadioWidget', () {
       testWidgets("renders correctly", (WidgetTester tester) async {
         await tester.pumpWidget(
-          BlocProvider.value(
+          BlocProvider<ThemeBloc>.value(
             value: themeBloc,
             child: MaterialApp(
               home: Scaffold(
-                body: CustomDayRadio((_) {}, 1),
+                body: CustomColorThemeRadio((_) {}, ColorThemeOption.theme1),
               ),
             ),
           ),
         );
-        expect(find.byType(CustomDayRadio), findsOneWidget);
-        expect(find.byType(DayRadioIcon), findsNWidgets(8));
+        expect(find.byType(CustomColorThemeRadio), findsOneWidget);
+        expect(find.byType(ColorThemeRadioIcon), findsNWidgets(5));
       });
 
       testWidgets("callback function is called on tap",
@@ -81,17 +64,16 @@ void main() {
         bool called = false;
         await tester.pumpWidget(
           BlocProvider.value(
-            value: themeBloc,
-            child: MaterialApp(
-              home: Scaffold(
-                body: CustomDayRadio((_) {
-                  called = true;
-                }, 1),
-              ),
-            ),
-          ),
+              value: themeBloc,
+              child: MaterialApp(
+                home: Scaffold(
+                  body: CustomColorThemeRadio((_) {
+                    called = true;
+                  }, ColorThemeOption.theme1),
+                ),
+              )),
         );
-        final radioIconFinder = find.widgetWithText(DayRadioIcon, 'Today');
+        final radioIconFinder = find.byType(ColorThemeRadioIcon).last;
         await tester.tap(radioIconFinder);
         expect(called, true);
       });

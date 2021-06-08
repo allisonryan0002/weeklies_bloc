@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weeklies/blocs/tasks/tasks.dart';
+import 'package:weeklies/blocs/theme/theme.dart';
 import 'package:weeklies/models/models.dart';
 import 'package:weeklies/widgets/widgets.dart';
 
@@ -27,9 +28,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<TasksBloc, TasksState>(
+    return BlocBuilder<ThemeBloc, ThemeState>(
       builder: (context, state) {
-        if (state is TasksLoadSuccess) {
+        if (state is ThemeLoadSuccess) {
           ColorThemeOption currentTheme = state.theme;
           return Scaffold(
             appBar: AppBar(
@@ -125,7 +126,7 @@ class _HomePageState extends State<HomePage> {
             resizeToAvoidBottomInset: false,
           );
         } else {
-          return Container();
+          return Center(child: CircularProgressIndicator());
         }
       },
     );
@@ -134,7 +135,7 @@ class _HomePageState extends State<HomePage> {
   changeThemeWindow(BuildContext themeContext, ColorThemeOption currentTheme) {
     changeTheme(ColorThemeOption theme) {
       Navigator.pop(themeContext);
-      BlocProvider.of<TasksBloc>(themeContext).add(ThemeChanged(theme));
+      BlocProvider.of<ThemeBloc>(themeContext).add(ThemeChanged(theme));
       currentTheme = theme;
     }
 

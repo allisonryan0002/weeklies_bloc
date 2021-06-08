@@ -1,17 +1,13 @@
-import 'dart:ui';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:weeklies/models/models.dart';
 
 void main() {
   group('Priority', () {
     test('radio is correctly assigned from getter method', () {
-      final expectedRadio =
-          PriorityRadio(false, '5', Color.fromRGBO(86, 141, 172, 1));
-      final actualRadio =
-          Priority.low.radio(ColorThemeOption.theme1.colorTheme);
+      final expectedRadio = PriorityRadio(false, '5');
+      final actualRadio = Priority.low.radio;
       expect(actualRadio is PriorityRadio, true);
       expect(actualRadio.isSelected, expectedRadio.isSelected);
-      expect(actualRadio.color, expectedRadio.color);
       expect(actualRadio.radioNumText, expectedRadio.radioNumText);
     });
 
