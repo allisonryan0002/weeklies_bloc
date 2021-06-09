@@ -16,34 +16,20 @@ void main() {
 
     setUp(() {
       tasksRepository = MockTaskRepository();
-      when(() => tasksRepository.loadTheme())
-          .thenAnswer((_) => Future.value(ColorThemeOption.theme1));
       when(() => tasksRepository.saveTheme(ColorThemeOption.theme1))
           .thenAnswer((_) => Future.value(MockFile()));
-      themeBloc = ThemeBloc(tasksRepository: tasksRepository);
+      themeBloc = ThemeBloc(
+          tasksRepository: tasksRepository,
+          initialTheme: ColorThemeOption.theme1);
     });
-
-    blocTest(
-      'should load Theme from the ThemeLoaded event',
-      build: () {
-        when(() => tasksRepository.loadTheme())
-            .thenAnswer((_) => Future.value(ColorThemeOption.theme3));
-        return themeBloc;
-      },
-      act: (ThemeBloc bloc) async => bloc..add(ThemeLoaded()),
-      expect: () => <ThemeState>[
-        ThemeLoadSuccess(theme: ColorThemeOption.theme3),
-      ],
-    );
 
     blocTest(
       'should updated the current theme from the ThemeChanged event',
       build: () => themeBloc,
       act: (ThemeBloc bloc) async =>
-          bloc..add(ThemeLoaded())..add(ThemeChanged(ColorThemeOption.theme2)),
+          bloc..add(ThemeChanged(ColorThemeOption.theme2)),
       expect: () => <ThemeState>[
-        ThemeLoadSuccess(theme: ColorThemeOption.theme1),
-        ThemeLoadSuccess(theme: ColorThemeOption.theme2),
+        ThemeState(theme: ColorThemeOption.theme2),
       ],
     );
   });

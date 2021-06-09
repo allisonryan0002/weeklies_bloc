@@ -11,43 +11,34 @@ class PriorityRadioIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ThemeBloc, ThemeState>(
-      builder: (context, state) {
-        if (state is ThemeLoadSuccess) {
-          final theme = state.theme.colorTheme;
-          return Container(
-            child: Container(
-              child: Center(
-                child: Text(
-                  item.radioNumText,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText1
-                      ?.copyWith(color: Colors.black.withOpacity(0.7)),
-                ),
-              ),
-              constraints: BoxConstraints(maxHeight: 30, maxWidth: 30),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
+    final theme = BlocProvider.of<ThemeBloc>(context).state.theme.colorTheme;
+    return Container(
+      child: Container(
+        child: Center(
+          child: Text(
+            item.radioNumText,
+            style: Theme.of(context)
+                .textTheme
+                .bodyText1
+                ?.copyWith(color: Colors.black.withOpacity(0.7)),
+          ),
+        ),
+        constraints: BoxConstraints(maxHeight: 30, maxWidth: 30),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: item.priority.color(theme),
+        ),
+        margin: EdgeInsets.all(2.5),
+      ),
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: item.isSelected
+            ? Border.all(
                 color: item.priority.color(theme),
-              ),
-              margin: EdgeInsets.all(2.5),
-            ),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: item.isSelected
-                  ? Border.all(
-                      color: item.priority.color(theme),
-                      width: 2,
-                    )
-                  : null,
-            ),
-          );
-        } else {
-          //TODO: better way to address this
-          return Container();
-        }
-      },
+                width: 2,
+              )
+            : null,
+      ),
     );
   }
 }
@@ -76,16 +67,7 @@ class _CustomPriorityRadioState extends State<CustomPriorityRadio> {
 
   @override
   Widget build(BuildContext context) {
-    return
-        // BlocBuilder<ThemeBloc, ThemeState>(
-        //   builder: (context, state) {
-        //     if (state is ThemeLoadSuccess) {
-        //       final theme = state.theme.colorTheme;
-        //       if (!initialized) {
-        //         setupListOfPriorityRadios(widget.initialSelected, theme);
-        //         initialized = true;
-        //       }
-        SizedBox(
+    return SizedBox(
       width: 240,
       height: 50,
       child: ListView.builder(
@@ -110,12 +92,6 @@ class _CustomPriorityRadioState extends State<CustomPriorityRadio> {
         },
       ),
     );
-    //   } else {
-    //     //TODO: better way to address this
-    //     return Container();
-    //   }
-    // },
-    //);
   }
 
   void setupListOfPriorityRadios(Priority selected) {

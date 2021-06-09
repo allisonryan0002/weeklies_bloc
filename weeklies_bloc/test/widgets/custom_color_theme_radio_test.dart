@@ -16,11 +16,9 @@ void main() {
     setUp(() {
       themeBloc = MockThemeBloc();
       when(() => themeBloc.state)
-          .thenAnswer((_) => ThemeLoadSuccess(theme: ColorThemeOption.theme1));
-      whenListen(
-          themeBloc,
-          Stream.fromIterable(
-              [ThemeLoadSuccess(theme: ColorThemeOption.theme1)]));
+          .thenAnswer((_) => ThemeState(theme: ColorThemeOption.theme1));
+      whenListen(themeBloc,
+          Stream.fromIterable([ThemeState(theme: ColorThemeOption.theme1)]));
     });
 
     group('ColorThemeRadioIcon', () {

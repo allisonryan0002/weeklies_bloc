@@ -38,7 +38,7 @@ void main() {
       tasksBloc = MockTaskBloc();
       themeBloc = MockThemeBloc();
       when(() => themeBloc.state)
-          .thenAnswer((_) => ThemeLoadSuccess(theme: ColorThemeOption.theme1));
+          .thenAnswer((_) => ThemeState(theme: ColorThemeOption.theme1));
     });
 
     testWidgets('renders correctly', (WidgetTester tester) async {

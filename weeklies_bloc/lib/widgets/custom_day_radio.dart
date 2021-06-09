@@ -11,46 +11,36 @@ class DayRadioIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ThemeBloc, ThemeState>(
-      builder: (context, state) {
-        if (state is ThemeLoadSuccess) {
-          final theme = state.theme.colorTheme;
-          return Container(
-            padding: EdgeInsets.all(1.5),
-            decoration: BoxDecoration(
-              shape: BoxShape.rectangle,
-              color: theme.med,
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-            ),
-            child: Container(
-              child: FittedBox(
-                fit: BoxFit.contain,
-                child: Text(
-                  item.timeText,
-                  style: Theme.of(context).textTheme.subtitle1?.copyWith(
-                      fontSize: 15,
-                      color: Colors.black.withOpacity(0.7),
-                      fontWeight: FontWeight.w100),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              decoration: BoxDecoration(
-                shape: BoxShape.rectangle,
-                color: theme.med,
-                border: item.isSelected
-                    ? Border.all(
-                        color: Colors.black.withOpacity(0.8), width: 1.3)
-                    : null,
-                borderRadius: BorderRadius.all(Radius.circular(7)),
-              ),
-              padding: EdgeInsets.fromLTRB(5, 4, 5, 4),
-            ),
-          );
-        } else {
-          //TODO: better wayt to address this
-          return Container();
-        }
-      },
+    final theme = BlocProvider.of<ThemeBloc>(context).state.theme.colorTheme;
+    return Container(
+      padding: EdgeInsets.all(1.5),
+      decoration: BoxDecoration(
+        shape: BoxShape.rectangle,
+        color: theme.med,
+        borderRadius: BorderRadius.all(Radius.circular(8)),
+      ),
+      child: Container(
+        child: FittedBox(
+          fit: BoxFit.contain,
+          child: Text(
+            item.timeText,
+            style: Theme.of(context).textTheme.subtitle1?.copyWith(
+                fontSize: 15,
+                color: Colors.black.withOpacity(0.7),
+                fontWeight: FontWeight.w100),
+            textAlign: TextAlign.center,
+          ),
+        ),
+        decoration: BoxDecoration(
+          shape: BoxShape.rectangle,
+          color: theme.med,
+          border: item.isSelected
+              ? Border.all(color: Colors.black.withOpacity(0.8), width: 1.3)
+              : null,
+          borderRadius: BorderRadius.all(Radius.circular(7)),
+        ),
+        padding: EdgeInsets.fromLTRB(5, 4, 5, 4),
+      ),
     );
   }
 }

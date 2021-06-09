@@ -103,39 +103,30 @@ class _TaskListViewState extends State<TaskListView> {
         bloc.state is TasksLoadSuccess
             ? (bloc.state as TasksLoadSuccess).sort
             : SortType.priority);
+    final theme = BlocProvider.of<ThemeBloc>(context).state.theme.colorTheme;
     if (tasks.isEmpty) {
       return Center(child: CircularProgressIndicator());
     } else if (sort == SortType.priority) {
       return SingleChildScrollView(
         child: Column(
           children: [
-            BlocBuilder<ThemeBloc, ThemeState>(
-              builder: (context, themeState) {
-                if (themeState is ThemeLoadSuccess) {
-                  final theme = themeState.theme.colorTheme;
-                  return Container(
-                    padding: EdgeInsets.fromLTRB(8, 5, 8, 0),
-                    margin: EdgeInsets.fromLTRB(5, 8, 5, 0),
-                    decoration: BoxDecoration(
-                      color: theme.accent,
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                    ),
-                    child: ListView.builder(
-                      padding: EdgeInsets.only(bottom: 5),
-                      physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: tasks.length,
-                      itemBuilder: (context, index) {
-                        var taskItem = tasks[index];
-                        return getTaskTileDismissible(taskItem, index, theme);
-                      },
-                    ),
-                  );
-                } else {
-                  //TODO: better way to address this
-                  return Container();
-                }
-              },
+            Container(
+              padding: EdgeInsets.fromLTRB(8, 5, 8, 0),
+              margin: EdgeInsets.fromLTRB(5, 8, 5, 0),
+              decoration: BoxDecoration(
+                color: theme.accent,
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+              ),
+              child: ListView.builder(
+                padding: EdgeInsets.only(bottom: 5),
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: tasks.length,
+                itemBuilder: (context, index) {
+                  var taskItem = tasks[index];
+                  return getTaskTileDismissible(taskItem, index, theme);
+                },
+              ),
             ),
             Container(
               height: MediaQuery.of(context).size.height / 5.5,
@@ -156,53 +147,42 @@ class _TaskListViewState extends State<TaskListView> {
                 height: MediaQuery.of(context).size.height / 6,
               );
             } else {
-              return BlocBuilder<ThemeBloc, ThemeState>(
-                builder: (context, themeState) {
-                  if (themeState is ThemeLoadSuccess) {
-                    final theme = themeState.theme.colorTheme;
-                    return Container(
-                      padding: EdgeInsets.fromLTRB(8, 8, 8, 5),
-                      margin: EdgeInsets.fromLTRB(5, 8, 5, 0),
-                      decoration: BoxDecoration(
-                        color: theme.accent,
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
+              return Container(
+                padding: EdgeInsets.fromLTRB(8, 8, 8, 5),
+                margin: EdgeInsets.fromLTRB(5, 8, 5, 0),
+                decoration: BoxDecoration(
+                  color: theme.accent,
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ),
+                child: Column(
+                  children: [
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        taskAndIndex.keys.toList()[index],
+                        style: Theme.of(context)
+                            .textTheme
+                            .subtitle1
+                            ?.copyWith(fontSize: 18),
                       ),
-                      child: Column(
-                        children: [
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              taskAndIndex.keys.toList()[index],
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .subtitle1
-                                  ?.copyWith(fontSize: 18),
-                            ),
-                          ),
-                          ListView.builder(
-                            key: Key('day_sort_inner_list_view'),
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemCount:
-                                taskAndIndex.values.toList()[index].length,
-                            itemBuilder: (context, indexInner) {
-                              Task taskItem = taskAndIndex.values
-                                  .toList()[index][indexInner][0];
-                              int taskIndex = taskAndIndex.values
-                                  .toList()[index][indexInner][1];
-                              // Task is dismissed on top of gradient
-                              return getTaskTileDismissible(
-                                  taskItem, taskIndex, theme);
-                            },
-                          ),
-                        ],
-                      ),
-                    );
-                  } else {
-                    //TODO: better way to address this
-                    return Container();
-                  }
-                },
+                    ),
+                    ListView.builder(
+                      key: Key('day_sort_inner_list_view'),
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: taskAndIndex.values.toList()[index].length,
+                      itemBuilder: (context, indexInner) {
+                        Task taskItem =
+                            taskAndIndex.values.toList()[index][indexInner][0];
+                        int taskIndex =
+                            taskAndIndex.values.toList()[index][indexInner][1];
+                        // Task is dismissed on top of gradient
+                        return getTaskTileDismissible(
+                            taskItem, taskIndex, theme);
+                      },
+                    ),
+                  ],
+                ),
               );
             }
           },

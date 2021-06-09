@@ -9,7 +9,7 @@
  * 
  * Author: Allison Ryan
  * 
- * Version Date: 6/8/2021
+ * Version Date: 6/9/2021
  * 
  * Author's Note: I created this app as a fun personal project and beacause I 
  *                felt no other task management apps had a simple, weekly style
@@ -18,9 +18,7 @@
  *                jotting down a note on paper and doesn't require a myriad of
  *                selections to be made (time, date, notification, etc.) to make
  *                a task. I also created the app as a challenge for myself, as
- *                it's my first largely UI based project. It was a great 
- *                learning experience and is intended for my personal use and as
- *                a showcase of skill.
+ *                it's my first project using Flutter.  
  */
 
 import 'dart:ui';
@@ -32,27 +30,35 @@ import 'package:path_provider/path_provider.dart';
 import 'package:weeklies/blocs/tasks/tasks.dart';
 import 'package:weeklies/blocs/theme/theme.dart';
 import 'package:weeklies/clients/clients.dart';
+import 'package:weeklies/models/color_theme.dart';
 import 'package:weeklies/repositories/repositories.dart';
 import 'package:weeklies/widgets/widgets.dart';
 
 void main() async {
+  // Setup [FileClient] for application access to local storage
   WidgetsFlutterBinding.ensureInitialized();
   final dir = await getApplicationDocumentsDirectory();
   final fileClient = FileClient(dir: dir, fileSystem: LocalFileSystem());
+
+  final repository = TaskRepository(client: fileClient);
+  final theme = await repository.loadTheme();
   runApp(MyApp(
-    client: fileClient,
+    taskRepository: repository,
+    theme: theme,
   ));
 }
 
 class MyApp extends StatelessWidget {
-  final FileClient client;
+  final TaskRepository taskRepository;
+  final ColorThemeOption theme;
 
-  MyApp({required this.client});
+  MyApp({required this.taskRepository, required this.theme});
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider(
-      create: (context) => TaskRepository(client: client),
+    // Provide [TasksRepository], [TasksBloc], & [ThemeBloc] to tree
+    return RepositoryProvider.value(
+      value: this.taskRepository,
       child: MultiBlocProvider(
         providers: [
           BlocProvider(
@@ -62,41 +68,46 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) => ThemeBloc(
-              tasksRepository: RepositoryProvider.of<TaskRepository>(context),
-            )..add(ThemeLoaded()),
+                tasksRepository: RepositoryProvider.of<TaskRepository>(context),
+                initialTheme: theme),
           ),
         ],
-        child: MaterialApp(
-          title: 'Weeklies',
-          theme: ThemeData(
-            textTheme: TextTheme(
-              // AppBar title
-              headline1: GoogleFonts.rockSalt(
-                  fontSize: 28,
-                  color: Colors.white,
-                  letterSpacing: 4,
-                  fontWeight: FontWeight.bold),
-              // Text behind dismissing task
-              headline2: GoogleFonts.righteous(
-                  fontSize: 24,
-                  color: Colors.white,
-                  fontWeight: FontWeight.normal),
-              // Font for priority radio buttons, task text, and taskTextField
-              bodyText1: GoogleFonts.karla(
-                fontSize: 19,
-                color: Colors.black.withOpacity(0.8),
-                fontWeight: FontWeight.bold,
+        child: BlocBuilder<ThemeBloc, ThemeState>(
+          builder: (context, state) {
+            return MaterialApp(
+              title: 'Weeklies',
+              // TextThemes for all text components
+              theme: ThemeData(
+                textTheme: TextTheme(
+                  // AppBar title
+                  headline1: GoogleFonts.rockSalt(
+                      fontSize: 28,
+                      color: Colors.white,
+                      letterSpacing: 4,
+                      fontWeight: FontWeight.bold),
+                  // Text behind dismissing task
+                  headline2: GoogleFonts.righteous(
+                      fontSize: 24,
+                      color: Colors.white,
+                      fontWeight: FontWeight.normal),
+                  // Font for priority radio icons, task text, and taskTextField
+                  bodyText1: GoogleFonts.karla(
+                    fontSize: 19,
+                    color: Colors.black.withOpacity(0.8),
+                    fontWeight: FontWeight.bold,
+                  ),
+                  // Font for time radio icons
+                  subtitle1: GoogleFonts.righteous(
+                      fontSize: 12,
+                      color: Colors.white,
+                      fontWeight: FontWeight.normal),
+                ),
+                visualDensity: VisualDensity.adaptivePlatformDensity,
               ),
-              // Font for time radio buttons
-              subtitle1: GoogleFonts.righteous(
-                  fontSize: 12,
-                  color: Colors.white,
-                  fontWeight: FontWeight.normal),
-            ),
-            visualDensity: VisualDensity.adaptivePlatformDensity,
-          ),
-          debugShowCheckedModeBanner: false,
-          home: HomePage(),
+              debugShowCheckedModeBanner: false,
+              home: HomePage(),
+            );
+          },
         ),
       ),
     );

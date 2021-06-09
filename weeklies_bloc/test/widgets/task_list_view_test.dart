@@ -37,7 +37,7 @@ void main() {
     tasksBloc = MockTaskBloc();
     themeBloc = MockThemeBloc();
     when(() => themeBloc.state)
-        .thenAnswer((_) => ThemeLoadSuccess(theme: ColorThemeOption.theme1));
+        .thenAnswer((_) => ThemeState(theme: ColorThemeOption.theme1));
   });
 
   group('TaskListView', () {
@@ -48,9 +48,12 @@ void main() {
         await tester.pumpWidget(
           BlocProvider.value(
             value: tasksBloc,
-            child: MaterialApp(
-              home: Scaffold(
-                body: TaskListView(),
+            child: BlocProvider.value(
+              value: themeBloc,
+              child: MaterialApp(
+                home: Scaffold(
+                  body: TaskListView(),
+                ),
               ),
             ),
           ),
@@ -67,9 +70,12 @@ void main() {
         await tester.pumpWidget(
           BlocProvider.value(
             value: tasksBloc,
-            child: MaterialApp(
-              home: Scaffold(
-                body: TaskListView(),
+            child: BlocProvider.value(
+              value: themeBloc,
+              child: MaterialApp(
+                home: Scaffold(
+                  body: TaskListView(),
+                ),
               ),
             ),
           ),

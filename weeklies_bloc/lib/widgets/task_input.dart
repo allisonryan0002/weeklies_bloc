@@ -106,31 +106,22 @@ class _TaskInputWidgetState extends State<TaskInputWidget> {
   // 'add task' button
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ThemeBloc, ThemeState>(
-      builder: (context, state) {
-        if (state is ThemeLoadSuccess) {
-          final theme = state.theme.colorTheme;
-          return GestureDetector(
-            onTap: () {
-              // Reset priority & time values to match radio defaults
-              priority = Priority.med;
-              day = 1;
-              createTaskWindow(context, theme);
-            },
-            child: Container(
-              child: Icon(
-                Icons.add_circle_outline_rounded,
-                color: theme.low,
-                size: MediaQuery.of(context).size.height / 14,
-              ),
-              padding: EdgeInsets.all(6),
-            ),
-          );
-        } else {
-          //TODO: better way to address this
-          return Container();
-        }
+    final theme = BlocProvider.of<ThemeBloc>(context).state.theme.colorTheme;
+    return GestureDetector(
+      onTap: () {
+        // Reset priority & time values to match radio defaults
+        priority = Priority.med;
+        day = 1;
+        createTaskWindow(context, theme);
       },
+      child: Container(
+        child: Icon(
+          Icons.add_circle_outline_rounded,
+          color: theme.low,
+          size: MediaQuery.of(context).size.height / 14,
+        ),
+        padding: EdgeInsets.all(6),
+      ),
     );
   }
 }

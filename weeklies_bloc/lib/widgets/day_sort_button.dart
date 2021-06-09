@@ -13,31 +13,22 @@ class DaySortButton extends StatefulWidget {
 class _DaySortButtonState extends State<DaySortButton> {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ThemeBloc, ThemeState>(
-      builder: (context, state) {
-        if (state is ThemeLoadSuccess) {
-          final theme = state.theme.colorTheme;
-          return GestureDetector(
-            onTap: () {
-              BlocProvider.of<TasksBloc>(context).add(DaySorted());
-            },
-            child: Container(
-              child: Icon(
-                Icons.access_time_rounded,
-                color: theme.med,
-                size: MediaQuery.of(context).size.height / 24,
-              ),
-              decoration: ShapeDecoration(
-                shape: CircleBorder(),
-              ),
-              padding: EdgeInsets.all(8),
-            ),
-          );
-        } else {
-          //TODO: better way to address this
-          return Container();
-        }
+    final theme = BlocProvider.of<ThemeBloc>(context).state.theme.colorTheme;
+    return GestureDetector(
+      onTap: () {
+        BlocProvider.of<TasksBloc>(context).add(DaySorted());
       },
+      child: Container(
+        child: Icon(
+          Icons.access_time_rounded,
+          color: theme.med,
+          size: MediaQuery.of(context).size.height / 24,
+        ),
+        decoration: ShapeDecoration(
+          shape: CircleBorder(),
+        ),
+        padding: EdgeInsets.all(8),
+      ),
     );
   }
 }

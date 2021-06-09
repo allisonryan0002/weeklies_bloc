@@ -4,15 +4,6 @@ import 'package:weeklies/models/models.dart';
 
 void main() {
   group('ThemeEvent', () {
-    group('ThemeLoaded', () {
-      test('toString returns correct value', () {
-        expect(
-          ThemeLoaded().toString(),
-          'ThemeLoaded()',
-        );
-      });
-    });
-
     group('ThemeChanged', () {
       test('toString returns correct value', () {
         expect(

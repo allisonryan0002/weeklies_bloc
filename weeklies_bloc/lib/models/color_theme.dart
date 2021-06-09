@@ -2,6 +2,23 @@ import 'package:flutter/material.dart';
 
 enum ColorThemeOption { theme1, theme2, theme3, theme4, theme5 }
 
+class ColorTheme {
+  Color low;
+  Color lowMed;
+  Color med;
+  Color medHigh;
+  Color high;
+  Color accent;
+
+  ColorTheme(
+      {required this.low,
+      required this.lowMed,
+      required this.med,
+      required this.medHigh,
+      required this.high,
+      required this.accent});
+}
+
 extension ColorThemeOptionExtension on ColorThemeOption {
   ColorTheme get colorTheme {
     switch (this) {
@@ -84,21 +101,4 @@ extension ColorThemeOptionExtension on ColorThemeOption {
         return throw ArgumentError('Invalid string for a ColorThemeOption');
     }
   }
-}
-
-class ColorTheme {
-  Color low;
-  Color lowMed;
-  Color med;
-  Color medHigh;
-  Color high;
-  Color accent;
-
-  ColorTheme(
-      {required this.low,
-      required this.lowMed,
-      required this.med,
-      required this.medHigh,
-      required this.high,
-      required this.accent});
 }
