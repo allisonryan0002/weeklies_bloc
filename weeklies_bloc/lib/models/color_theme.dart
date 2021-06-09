@@ -16,27 +16,15 @@ extension ColorThemeOptionExtension on ColorThemeOption {
         );
       case ColorThemeOption.theme2:
         return ColorTheme(
-          // low: Color.fromRGBO(42, 134, 159, 1),
-          // lowMed: Color.fromRGBO(104, 159, 182, 1),
-          // med: Color.fromRGBO(187, 126, 140, 1),
-          // medHigh: Color.fromRGBO(212, 181, 184, 1),
-          // high: Color.fromRGBO(222, 219, 207, 1),
-          // accent: Color.fromRGBO(12, 89, 107, 1),
-          low: Color.fromRGBO(26, 149, 186, 1),
-          lowMed: Color.fromRGBO(47, 121, 181, 1),
-          med: Color.fromRGBO(106, 77, 168, 1),
-          medHigh: Color.fromRGBO(171, 62, 158, 1),
-          high: Color.fromRGBO(199, 44, 119, 1),
-          accent: Color.fromRGBO(71, 53, 115, 1),
+          low: Color.fromRGBO(99, 77, 130, 1),
+          lowMed: Color.fromRGBO(130, 87, 118, 1),
+          med: Color.fromRGBO(209, 120, 119, 1),
+          medHigh: Color.fromRGBO(244, 157, 108, 1),
+          high: Color.fromRGBO(234, 98, 72, 1),
+          accent: Color.fromRGBO(52, 47, 87, 1),
         );
       case ColorThemeOption.theme3:
         return ColorTheme(
-          // low: Color.fromRGBO(67, 170, 139, 1),
-          // lowMed: Color.fromRGBO(144, 190, 109, 1),
-          // med: Color.fromRGBO(249, 199, 79, 1),
-          // medHigh: Color.fromRGBO(248, 150, 30, 1),
-          // high: Color.fromRGBO(243, 114, 44, 1),
-          // accent: Color.fromRGBO(62, 98, 82, 1),
           low: Color.fromRGBO(247, 178, 103, 1),
           lowMed: Color.fromRGBO(247, 157, 101, 1),
           med: Color.fromRGBO(244, 132, 95, 1),
@@ -46,33 +34,21 @@ extension ColorThemeOptionExtension on ColorThemeOption {
         );
       case ColorThemeOption.theme4:
         return ColorTheme(
-          // low: Color.fromRGBO(137, 112, 148, 1),
-          // lowMed: Color.fromRGBO(176, 123, 123, 1),
-          // med: Color.fromRGBO(227, 165, 135, 1),
-          // medHigh: Color.fromRGBO(223, 128, 101, 1),
-          // high: Color.fromRGBO(219, 90, 66, 1),
-          // accent: Color.fromRGBO(93, 72, 102, 1),
-          low: Color.fromRGBO(125, 48, 201, 1),
-          lowMed: Color.fromRGBO(128, 71, 252, 1),
-          med: Color.fromRGBO(94, 124, 255, 1),
-          medHigh: Color.fromRGBO(99, 172, 255, 1),
-          high: Color.fromRGBO(97, 198, 232, 1),
-          accent: Color.fromRGBO(87, 23, 150, 1),
+          low: Color.fromRGBO(69, 70, 153, 1),
+          lowMed: Color.fromRGBO(62, 97, 179, 1),
+          med: Color.fromRGBO(89, 138, 210, 1),
+          medHigh: Color.fromRGBO(176, 106, 174, 1),
+          high: Color.fromRGBO(156, 76, 153, 1),
+          accent: Color.fromRGBO(46, 40, 93, 1),
         );
       case ColorThemeOption.theme5:
         return ColorTheme(
-          // low: Color.fromRGBO(91, 146, 121, 1),
-          // lowMed: Color.fromRGBO(167, 170, 121, 1),
-          // med: Color.fromRGBO(243, 193, 120, 1),
-          // medHigh: Color.fromRGBO(242, 126, 96, 1),
-          // high: Color.fromRGBO(237, 85, 85, 1),
-          // accent: Color.fromRGBO(62, 98, 82, 1),
-          low: Color.fromRGBO(10, 147, 150, 1),
-          lowMed: Color.fromRGBO(148, 210, 189, 1),
-          med: Color.fromRGBO(250, 216, 115, 1),
-          medHigh: Color.fromRGBO(255, 140, 98, 1),
-          high: Color.fromRGBO(214, 81, 84, 1),
-          accent: Color.fromRGBO(1, 113, 130, 1),
+          low: Color.fromRGBO(159, 56, 109, 1),
+          lowMed: Color.fromRGBO(191, 64, 108, 1),
+          med: Color.fromRGBO(214, 104, 102, 1),
+          medHigh: Color.fromRGBO(237, 143, 96, 1),
+          high: Color.fromRGBO(239, 187, 108, 1),
+          accent: Color.fromRGBO(103, 40, 100, 1),
         );
     }
   }

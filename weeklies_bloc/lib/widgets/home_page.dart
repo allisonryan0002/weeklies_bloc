@@ -151,7 +151,7 @@ class _HomePageState extends State<HomePage> {
           children: <Widget>[
             CustomColorThemeRadio(changeTheme, currentTheme),
           ],
-          backgroundColor: currentTheme.colorTheme.accent.withOpacity(0.85),
+          backgroundColor: currentTheme.colorTheme.accent.withOpacity(0.8),
           elevation: 1,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(20.0))),

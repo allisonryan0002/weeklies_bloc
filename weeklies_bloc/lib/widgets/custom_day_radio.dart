@@ -38,7 +38,8 @@ class DayRadioIcon extends StatelessWidget {
                 shape: BoxShape.rectangle,
                 color: theme.med,
                 border: item.isSelected
-                    ? Border.all(color: Colors.black, width: 1.15)
+                    ? Border.all(
+                        color: Colors.black.withOpacity(0.8), width: 1.3)
                     : null,
                 borderRadius: BorderRadius.all(Radius.circular(7)),
               ),

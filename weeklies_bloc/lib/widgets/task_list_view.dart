@@ -337,7 +337,7 @@ class _TaskListViewState extends State<TaskListView> {
 
   Dismissible getTaskTileDismissible(
       Task taskItem, int index, ColorTheme theme) {
-    final _formKey = GlobalKey<FormState>();
+    //final _formKey = GlobalKey<FormState>();
     //final _formKey = GlobalKey<FormState>();
     //TODO: issue with time change giving task.day is 9??
     //print('TaskItem day : ${taskItem.day}');

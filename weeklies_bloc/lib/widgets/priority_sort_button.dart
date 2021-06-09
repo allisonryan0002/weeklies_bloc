@@ -24,7 +24,7 @@ class _PrioritySortButtonState extends State<PrioritySortButton> {
             child: Container(
               child: Icon(
                 Icons.format_list_numbered_rounded,
-                color: theme.medHigh,
+                color: theme.high,
                 size: MediaQuery.of(context).size.height / 24,
               ),
               decoration: ShapeDecoration(

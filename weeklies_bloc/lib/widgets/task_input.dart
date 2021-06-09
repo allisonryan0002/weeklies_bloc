@@ -49,6 +49,7 @@ class _TaskInputWidgetState extends State<TaskInputWidget> {
   // SimpleDialog window containing priority & time radio sets and a TextField
   //TODO: make the PriorityRadioIcons larger
   createTaskWindow(BuildContext taskInputContext, ColorTheme theme) {
+    print(day);
     return showDialog(
       barrierColor: theme.accent.withOpacity(0.3),
       context: taskInputContext,
@@ -113,7 +114,7 @@ class _TaskInputWidgetState extends State<TaskInputWidget> {
             onTap: () {
               // Reset priority & time values to match radio defaults
               priority = Priority.med;
-              day = 8;
+              day = 1;
               createTaskWindow(context, theme);
             },
             child: Container(
