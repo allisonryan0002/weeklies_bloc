@@ -18,7 +18,7 @@ class TaskInputWidget extends StatefulWidget {
 class _TaskInputWidgetState extends State<TaskInputWidget> {
   // Variables for storing and managing task data
   Priority priority = Priority.med;
-  int day = 8;
+  int day = 1;
   final controller = new TextEditingController();
 
   @override

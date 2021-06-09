@@ -16,12 +16,18 @@ extension ColorThemeOptionExtension on ColorThemeOption {
         );
       case ColorThemeOption.theme2:
         return ColorTheme(
-          low: Color.fromRGBO(42, 134, 159, 1),
-          lowMed: Color.fromRGBO(104, 159, 182, 1),
-          med: Color.fromRGBO(187, 126, 140, 1),
-          medHigh: Color.fromRGBO(212, 181, 184, 1),
-          high: Color.fromRGBO(222, 219, 207, 1),
-          accent: Color.fromRGBO(12, 89, 107, 1),
+          // low: Color.fromRGBO(42, 134, 159, 1),
+          // lowMed: Color.fromRGBO(104, 159, 182, 1),
+          // med: Color.fromRGBO(187, 126, 140, 1),
+          // medHigh: Color.fromRGBO(212, 181, 184, 1),
+          // high: Color.fromRGBO(222, 219, 207, 1),
+          // accent: Color.fromRGBO(12, 89, 107, 1),
+          low: Color.fromRGBO(26, 149, 186, 1),
+          lowMed: Color.fromRGBO(47, 121, 181, 1),
+          med: Color.fromRGBO(106, 77, 168, 1),
+          medHigh: Color.fromRGBO(171, 62, 158, 1),
+          high: Color.fromRGBO(199, 44, 119, 1),
+          accent: Color.fromRGBO(71, 53, 115, 1),
         );
       case ColorThemeOption.theme3:
         return ColorTheme(
@@ -46,21 +52,27 @@ extension ColorThemeOptionExtension on ColorThemeOption {
           // medHigh: Color.fromRGBO(223, 128, 101, 1),
           // high: Color.fromRGBO(219, 90, 66, 1),
           // accent: Color.fromRGBO(93, 72, 102, 1),
-          low: Color.fromRGBO(97, 198, 232, 1),
-          lowMed: Color.fromRGBO(99, 172, 255, 1),
+          low: Color.fromRGBO(125, 48, 201, 1),
+          lowMed: Color.fromRGBO(128, 71, 252, 1),
           med: Color.fromRGBO(94, 124, 255, 1),
-          medHigh: Color.fromRGBO(128, 71, 252, 1),
-          high: Color.fromRGBO(125, 48, 201, 1),
+          medHigh: Color.fromRGBO(99, 172, 255, 1),
+          high: Color.fromRGBO(97, 198, 232, 1),
           accent: Color.fromRGBO(87, 23, 150, 1),
         );
       case ColorThemeOption.theme5:
         return ColorTheme(
-          low: Color.fromRGBO(91, 146, 121, 1),
-          lowMed: Color.fromRGBO(167, 170, 121, 1),
-          med: Color.fromRGBO(243, 193, 120, 1),
-          medHigh: Color.fromRGBO(242, 126, 96, 1),
-          high: Color.fromRGBO(237, 85, 85, 1),
-          accent: Color.fromRGBO(62, 98, 82, 1),
+          // low: Color.fromRGBO(91, 146, 121, 1),
+          // lowMed: Color.fromRGBO(167, 170, 121, 1),
+          // med: Color.fromRGBO(243, 193, 120, 1),
+          // medHigh: Color.fromRGBO(242, 126, 96, 1),
+          // high: Color.fromRGBO(237, 85, 85, 1),
+          // accent: Color.fromRGBO(62, 98, 82, 1),
+          low: Color.fromRGBO(10, 147, 150, 1),
+          lowMed: Color.fromRGBO(148, 210, 189, 1),
+          med: Color.fromRGBO(250, 216, 115, 1),
+          medHigh: Color.fromRGBO(255, 140, 98, 1),
+          high: Color.fromRGBO(214, 81, 84, 1),
+          accent: Color.fromRGBO(1, 113, 130, 1),
         );
     }
   }

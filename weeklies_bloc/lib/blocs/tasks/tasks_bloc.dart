@@ -97,19 +97,24 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
 
   Stream<TasksState> _mapPrioritySortedToState() async* {
     if (state is TasksLoadSuccess) {
-      List<Task> sortedTasks = _prioritySort((state as TasksLoadSuccess).tasks);
-      yield TasksLoadSuccess(sortedTasks, SortType.priority);
-      _saveTasks(sortedTasks);
-      _saveSort(SortType.priority);
+      if ((state as TasksLoadSuccess).sort == SortType.day) {
+        List<Task> sortedTasks =
+            _prioritySort((state as TasksLoadSuccess).tasks);
+        yield TasksLoadSuccess(sortedTasks, SortType.priority);
+        _saveTasks(sortedTasks);
+        _saveSort(SortType.priority);
+      }
     }
   }
 
   Stream<TasksState> _mapDaySortedToState() async* {
     if (state is TasksLoadSuccess) {
-      List<Task> sortedTasks = _timeSort((state as TasksLoadSuccess).tasks);
-      yield TasksLoadSuccess(sortedTasks, SortType.day);
-      _saveSort(SortType.day);
-      _saveTasks(sortedTasks);
+      if ((state as TasksLoadSuccess).sort == SortType.priority) {
+        List<Task> sortedTasks = _timeSort((state as TasksLoadSuccess).tasks);
+        yield TasksLoadSuccess(sortedTasks, SortType.day);
+        _saveSort(SortType.day);
+        _saveTasks(sortedTasks);
+      }
     }
   }
 

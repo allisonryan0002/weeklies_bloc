@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:weeklies/models/models.dart';
-import 'package:weeklies/utility/adjustedDay.dart';
+import 'package:weeklies/utility/adjusted_day.dart';
 
 class Task extends Equatable {
   final DateTime timeStamp;

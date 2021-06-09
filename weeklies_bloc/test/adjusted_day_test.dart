@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:weeklies/utility/adjustedDay.dart';
+import 'package:weeklies/utility/adjusted_day.dart';
 
 void main() {
   group('DayDifference', () {

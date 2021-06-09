@@ -1,7 +1,7 @@
 export 'priority.dart';
-export 'priorityRadio.dart';
+export 'priority_radio.dart';
 export 'day.dart';
-export 'dayRadio.dart';
+export 'day_radio.dart';
 export 'task.dart';
 export 'sort.dart';
 export 'color_theme.dart';
