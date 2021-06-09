@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weeklies/blocs/tasks/tasks.dart';
 import 'package:weeklies/blocs/theme/theme.dart';
+import 'package:weeklies/utility/utility.dart';
 import 'package:weeklies/widgets/widgets.dart';
 import 'package:weeklies/models/models.dart';
 
@@ -28,7 +29,7 @@ class _TaskListViewState extends State<TaskListView> {
   ];
   final rand = Random();
 
-  // Displays SimpleDialog with a priority radio set to change a task's priority
+  // [SimpleDialog] with [CustomPriorityRadio] to change [Task]'s [Priority]
   changePriorityWindow(
       BuildContext priorityContext, Task item, ColorTheme theme) {
     updatePriority(Priority p) {
@@ -94,7 +95,6 @@ class _TaskListViewState extends State<TaskListView> {
    */
   @override
   Widget build(BuildContext context) {
-    //TODO: was wrapped with a scaffold
     final tasks = context.select<TasksBloc, List<Task>>((bloc) =>
         bloc.state is TasksLoadSuccess
             ? (bloc.state as TasksLoadSuccess).tasks
@@ -357,7 +357,7 @@ class _TaskListViewState extends State<TaskListView> {
               //Form(
               //key: _formKey,
               //child:
-              TaskTextField(taskItem),
+              TaskTileTextField(taskItem),
               //),
               Padding(padding: EdgeInsets.only(top: 5)),
               // Time radio button
@@ -401,84 +401,5 @@ class _TaskListViewState extends State<TaskListView> {
       ),
       resizeDuration: Duration(milliseconds: 550),
     );
-  }
-
-  Map<String, List<dynamic>> getDaysAndTasks(List<Task> tasks) {
-    Map<String, List<dynamic>> map = Map();
-    List<dynamic> zero = [];
-    List<dynamic> one = [];
-    List<dynamic> two = [];
-    List<dynamic> three = [];
-    List<dynamic> four = [];
-    List<dynamic> five = [];
-    List<dynamic> six = [];
-    List<dynamic> seven = [];
-    List<dynamic> eight = [];
-    for (int i = 0; i < tasks.length; i++) {
-      Task task = tasks[i];
-      switch (task.day) {
-        case 0:
-          zero.add([task, i]);
-          break;
-        case 1:
-          one.add([task, i]);
-          break;
-        case 2:
-          two.add([task, i]);
-          break;
-        case 3:
-          three.add([task, i]);
-          break;
-        case 4:
-          four.add([task, i]);
-          break;
-        case 5:
-          five.add([task, i]);
-          break;
-        case 6:
-          six.add([task, i]);
-          break;
-        case 7:
-          seven.add([task, i]);
-          break;
-        case 8:
-          eight.add([task, i]);
-          break;
-      }
-    }
-
-    List<String> dayList = Day(DateTime.now().weekday).dayOptions;
-    List<MapEntry<String, List<dynamic>>> entries = [];
-
-    if (zero.isNotEmpty) {
-      entries.add(MapEntry<String, List<dynamic>>(dayList[0], zero));
-    }
-    if (one.isNotEmpty) {
-      entries.add(MapEntry<String, List<dynamic>>(dayList[1], one));
-    }
-    if (two.isNotEmpty) {
-      entries.add(MapEntry<String, List<dynamic>>(dayList[2], two));
-    }
-    if (three.isNotEmpty) {
-      entries.add(MapEntry<String, List<dynamic>>(dayList[3], three));
-    }
-    if (four.isNotEmpty) {
-      entries.add(MapEntry<String, List<dynamic>>(dayList[4], four));
-    }
-    if (five.isNotEmpty) {
-      entries.add(MapEntry<String, List<dynamic>>(dayList[5], five));
-    }
-    if (six.isNotEmpty) {
-      entries.add(MapEntry<String, List<dynamic>>(dayList[6], six));
-    }
-    if (seven.isNotEmpty) {
-      entries.add(MapEntry<String, List<dynamic>>(dayList[7], seven));
-    }
-    if (eight.isNotEmpty) {
-      entries.add(MapEntry<String, List<dynamic>>(dayList[8], eight));
-    }
-
-    map.addEntries(entries);
-    return map;
   }
 }

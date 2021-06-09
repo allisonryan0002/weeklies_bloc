@@ -4,20 +4,21 @@ import 'package:weeklies/blocs/tasks/tasks.dart';
 import 'package:weeklies/blocs/tasks/tasks_bloc.dart';
 import 'package:weeklies/models/models.dart';
 
-// Custom TextField used to input tasks and edit existing tasks
-class TaskTextField extends StatefulWidget {
+// Custom [TextField] used to edit [Task]s in the [TaskListView] [ListTile]s
+class TaskTileTextField extends StatefulWidget {
   final Task item;
 
-  TaskTextField(this.item);
+  TaskTileTextField(this.item);
 
   @override
-  _TaskTextFieldState createState() => _TaskTextFieldState();
+  _TaskTileTextFieldState createState() => _TaskTileTextFieldState();
 }
 
-class _TaskTextFieldState extends State<TaskTextField> {
+class _TaskTileTextFieldState extends State<TaskTileTextField> {
   final controller = new TextEditingController();
   //late final _formKey;
 
+  // Initialize to display [Task] text and start editing at the end of the text
   @override
   void initState() {
     super.initState();
@@ -34,6 +35,7 @@ class _TaskTextFieldState extends State<TaskTextField> {
     controller.dispose();
   }
 
+  // Stylized [TextField] that interacts with the [TaskBloc]
   @override
   Widget build(BuildContext context) {
     return TextField(
@@ -42,6 +44,7 @@ class _TaskTextFieldState extends State<TaskTextField> {
       controller: this.controller,
       style: Theme.of(context).textTheme.bodyText1,
       textInputAction: TextInputAction.done,
+      // Add [TaskUpdated] event with the modified [Task] to the [TasksBloc]
       onEditingComplete: () {
         print('editing complete');
         Task task = Task(widget.item.timeStamp, controller.text,

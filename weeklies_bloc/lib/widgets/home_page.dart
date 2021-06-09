@@ -14,15 +14,22 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // Upon opening the app, start a [Timer] set for midnight to update [Task.day]
+  // Upon launching the app, start a [Timer] set for midnight to update [Task.day]
+  //
+  // This operation is only necessary for users who leave the app open or open
+  // in the background overnight. Otherwise, [Task.day] is updated upon
+  // launching the app.
   @override
   void initState() {
     super.initState();
-    // Use the current time to
+    // Use the current time to find the nearest midnight
     final now = DateTime.now();
     final midnight = DateTime(now.year, now.month, now.day + 1, 0);
+    // [Timer] counts down minutes until midnight
     Timer(Duration(minutes: midnight.difference(now).inMinutes + 3), () {
+      // At midnight, trigger [TasksLoaded] event to update [Task.day]
       BlocProvider.of<TasksBloc>(context).add(TasksLoaded());
+      // Periodic [Timer] set for subsequent days that the app is left open
       Timer.periodic(Duration(hours: 24), (timer) {
         BlocProvider.of<TasksBloc>(context).add(TasksLoaded());
       });
@@ -31,8 +38,10 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    ColorThemeOption currentTheme =
-        BlocProvider.of<ThemeBloc>(context).state.theme;
+    // [ColorThemeOption] to pull app component colors from
+    final currentTheme = BlocProvider.of<ThemeBloc>(context).state.theme;
+
+    // Main screen of app
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -42,15 +51,6 @@ class _HomePageState extends State<HomePage> {
             },
             icon:
                 Icon(Icons.swap_horizontal_circle_rounded, color: Colors.white),
-            //settings_outlined
-            //settings_rounded
-            //circle
-            //circle_outlined
-            //color_lens_outlined
-            //color_lens_rounded
-            //invert_colors_on_rounded
-            //account_circle_rounded
-            //change_circle_outlined
             iconSize: 30,
             padding: EdgeInsets.only(
                 bottom: MediaQuery.of(context).size.height / 50, right: 15),
@@ -77,20 +77,21 @@ class _HomePageState extends State<HomePage> {
                 bottomRight: Radius.circular(1000))),
         toolbarHeight: MediaQuery.of(context).size.height / 15,
       ),
-      // App body stacking the taskListView underneath the bottom button panel
+      // App body stacking the [TaskListView] underneath the bottom button panel
       body: Stack(
         fit: StackFit.expand,
         children: <Widget>[
-          // TaskListView
+          // [TaskListView] at the bottom of the [Stack]
           Flex(
             direction: Axis.vertical,
             children: <Widget>[Expanded(child: TaskListView())],
           ),
-          /* Bottom button panel with PrioritySortButton, 
-                * TaskInputWidget(button), & TimeSortButton
-                * This panel sits on top of the taskListView with a white gradient so
-                * the task list seamlessly disappears under the button panel
-                */
+
+          // Bottom button panel with [PrioritySortButton],
+          // [TaskInputWidget](button), & [TimeSortButton]
+          //
+          // This panel sits on top of the [TaskListView] with a white gradient
+          // so the task list seamlessly disappears under the button panel
           Positioned(
             bottom: 0,
             child: SizedBox(
@@ -128,22 +129,20 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  // Produces [SimpleDialog] with [CustomColorThemeRadio] for changing app theme
   changeThemeWindow(BuildContext themeContext, ColorThemeOption currentTheme) {
+    // Adds [ThemeChanged] event with user's selected [ColorThemeOption] &
+    // closes [SimpleDialog]
     changeTheme(ColorThemeOption theme) {
       Navigator.pop(themeContext);
       BlocProvider.of<ThemeBloc>(themeContext).add(ThemeChanged(theme));
-      currentTheme = theme;
     }
 
     return showDialog(
-      barrierColor: currentTheme.colorTheme.accent.withOpacity(0.3),
       context: themeContext,
       builder: (context) => BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
         child: SimpleDialog(
-          insetPadding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width / 4.6,
-              vertical: 24),
           children: <Widget>[
             CustomColorThemeRadio(changeTheme, currentTheme),
           ],
@@ -151,8 +150,12 @@ class _HomePageState extends State<HomePage> {
           elevation: 1,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(20.0))),
+          insetPadding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width / 4.6,
+              vertical: 24),
         ),
       ),
+      barrierColor: currentTheme.colorTheme.accent.withOpacity(0.3),
     );
   }
 }

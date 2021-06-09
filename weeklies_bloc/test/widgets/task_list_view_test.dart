@@ -126,7 +126,7 @@ void main() {
             ),
           ),
         );
-        expect(find.widgetWithText(TaskTextField, 'Test'), findsOneWidget);
+        expect(find.widgetWithText(TaskTileTextField, 'Test'), findsOneWidget);
         expect(find.widgetWithText(PriorityRadioIcon, '5'), findsOneWidget);
         expect(
             find.widgetWithText(DayRadioIconTileSize, 'Today'), findsOneWidget);

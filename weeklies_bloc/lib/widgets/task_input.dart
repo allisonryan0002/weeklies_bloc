@@ -6,50 +6,45 @@ import 'package:weeklies/blocs/theme/theme.dart';
 import 'package:weeklies/widgets/widgets.dart';
 import 'package:weeklies/models/models.dart';
 
-/* Widget displaying 'add task' button and creating input dialog window on tap
- * Maintains a single task's data and passes information to taskList.dart
- * methods for task creation 
- */
+// [IconButton] that displays a task input dialog window
+//
+// Maintains user's selections/inputs and adds [TaskAdded] event to [TasksBloc]
+// to create a [Task] with inputted values
 class TaskInputWidget extends StatefulWidget {
   @override
   _TaskInputWidgetState createState() => _TaskInputWidgetState();
 }
 
 class _TaskInputWidgetState extends State<TaskInputWidget> {
-  // Variables for storing and managing task data
+  // Variables for storing and maintaining [Priority], [Day], & text input
   Priority priority = Priority.med;
   int day = 1;
   final controller = new TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
+  // Callback function passed to [CustomPriorityRadio] for reflecting user selection
   void updatePriority(Priority priority) {
     setState(() {
       this.priority = priority;
     });
   }
 
+  // Callback function passed to [CustomDayRadio] for reflecting user selection
   void updateDay(int day) {
     setState(() {
       this.day = day;
     });
   }
 
-  // Pass current task input data to newTaskItem method and close dialog box
-  void createTaskClick(BuildContext taskInputContext) {
+  // Adds [TaskAdded] event with user's input and closes the input window
+  void createTask(BuildContext taskInputContext) {
     Navigator.pop(taskInputContext);
     BlocProvider.of<TasksBloc>(taskInputContext).add(TaskAdded(
         Task(DateTime.now(), controller.text, this.priority, this.day)));
     controller.clear();
   }
 
-  // SimpleDialog window containing priority & time radio sets and a TextField
-  //TODO: make the PriorityRadioIcons larger
+  // [SimpleDialog] window with [CustomPriorityRadio], [CustomDayRadio], & [TextField]
   createTaskWindow(BuildContext taskInputContext, ColorTheme theme) {
-    print(day);
     return showDialog(
       barrierColor: theme.accent.withOpacity(0.3),
       context: taskInputContext,
@@ -66,7 +61,7 @@ class _TaskInputWidgetState extends State<TaskInputWidget> {
                     controller: this.controller,
                     autofocus: true,
                     textInputAction: TextInputAction.done,
-                    onEditingComplete: () => createTaskClick(taskInputContext),
+                    onEditingComplete: () => createTask(taskInputContext),
                     textCapitalization: TextCapitalization.sentences,
                     decoration: InputDecoration(
                       border: InputBorder.none,
@@ -89,7 +84,8 @@ class _TaskInputWidgetState extends State<TaskInputWidget> {
                   padding: EdgeInsets.fromLTRB(6, 0, 6, 0),
                   margin: EdgeInsets.fromLTRB(2, 6, 2, 6),
                 ),
-                //TaskTextField(Task(DateTime.now(), 'TEST', Priority.low, 1))
+                //TaskTileTextField(Task(DateTime.now(), 'TEST', Priority.low, 1))
+                // ^ For testing TaskTileTextField keyboard issue
               ],
             ),
           ],
@@ -103,13 +99,15 @@ class _TaskInputWidgetState extends State<TaskInputWidget> {
     );
   }
 
-  // 'add task' button
+  // 'Add' icon button to bring up task creation [SimpleDialog] window
   @override
   Widget build(BuildContext context) {
+    // [ColorThemeOption] to pull colors from
     final theme = BlocProvider.of<ThemeBloc>(context).state.theme.colorTheme;
+
     return GestureDetector(
       onTap: () {
-        // Reset priority & time values to match radio defaults
+        // Reset priority & time values to match what the radios display on default
         priority = Priority.med;
         day = 1;
         createTaskWindow(context, theme);

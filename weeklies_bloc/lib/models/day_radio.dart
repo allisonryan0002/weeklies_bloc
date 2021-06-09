@@ -1,6 +1,6 @@
 class DayRadio {
   bool isSelected;
-  String timeText;
+  String dayText;
 
-  DayRadio(this.isSelected, this.timeText);
+  DayRadio(this.isSelected, this.dayText);
 }

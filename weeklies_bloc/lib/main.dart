@@ -40,8 +40,11 @@ void main() async {
   final dir = await getApplicationDocumentsDirectory();
   final fileClient = FileClient(dir: dir, fileSystem: LocalFileSystem());
 
+  // Setup [TaskRepository] & load stored [ColorThemeOption] from it
   final repository = TaskRepository(client: fileClient);
   final theme = await repository.loadTheme();
+
+  // Start the app with the repository & loaded theme
   runApp(MyApp(
     taskRepository: repository,
     theme: theme,

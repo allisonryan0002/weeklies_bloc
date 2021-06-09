@@ -3,20 +3,26 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weeklies/blocs/theme/theme.dart';
 import 'package:weeklies/models/models.dart';
+import 'package:weeklies/utility/utility.dart';
 
-// Circular UI element representing the radio model
+// Circular material element representing the [PriorityRadio] model
 class PriorityRadioIcon extends StatelessWidget {
-  final PriorityRadio item;
-  PriorityRadioIcon(this.item);
+  final PriorityRadio model;
+
+  PriorityRadioIcon(this.model);
 
   @override
   Widget build(BuildContext context) {
+    // [ColorTheme] to pull colors from
     final theme = BlocProvider.of<ThemeBloc>(context).state.theme.colorTheme;
+
+    // Outer [Container] for displaying border indicating the model is selected
     return Container(
+      //Inner circular [Container] with the model text and theme color
       child: Container(
         child: Center(
           child: Text(
-            item.radioNumText,
+            model.radioNumText,
             style: Theme.of(context)
                 .textTheme
                 .bodyText1
@@ -26,15 +32,16 @@ class PriorityRadioIcon extends StatelessWidget {
         constraints: BoxConstraints(maxHeight: 30, maxWidth: 30),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: item.priority.color(theme),
+          color: model.priority.color(theme),
         ),
         margin: EdgeInsets.all(2.5),
       ),
+      // Conditional circular border/ring
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: item.isSelected
+        border: model.isSelected
             ? Border.all(
-                color: item.priority.color(theme),
+                color: model.priority.color(theme),
                 width: 2,
               )
             : null,
@@ -43,9 +50,13 @@ class PriorityRadioIcon extends StatelessWidget {
   }
 }
 
-// Widget containing set of priority radio buttons (1-5)
+// Displays set of [PriorityRadioIcon]s (1-5) in a horizontal row
 class CustomPriorityRadio extends StatefulWidget {
+  // Relays currently selected [Priority] value to [TaskInputWidget]
   final Function(Priority) callback;
+
+  // When [CustomPriorityRadio] is being built from an existing [Task], display
+  // this [Priority] as the initially selected [PriorityRadioIcon]
   final Priority initialSelected;
 
   CustomPriorityRadio(this.callback, this.initialSelected);
@@ -55,16 +66,21 @@ class CustomPriorityRadio extends StatefulWidget {
 }
 
 class _CustomPriorityRadioState extends State<CustomPriorityRadio> {
-  List<PriorityRadio> priorityRadios = [];
-  late Priority priority;
-  //bool initialized = false;
+  // List of [PriorityRadio] models for the [PriorityRadioIcon]s to be built from
+  late List<PriorityRadio> priorityRadios;
 
+  // Stores the selected [PriorityRadioIcon]s corresponding [Priority] value to
+  // be passed into the callback function upon [Task] creation
+  late Priority priority;
+
+  // Setup priorityRadios list with [PriorityRadio]s based on the initialSelected
   @override
   void initState() {
     super.initState();
-    setupListOfPriorityRadios(widget.initialSelected);
+    priorityRadios = generatePriorityRadioList(widget.initialSelected);
   }
 
+  // Unscrollable, horizontal [ListView] displaying all 5 [PriorityRadioIcon]s
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -76,7 +92,7 @@ class _CustomPriorityRadioState extends State<CustomPriorityRadio> {
         itemCount: priorityRadios.length,
         itemBuilder: (context, index) {
           return IconButton(
-            splashRadius: 0.1,
+            // Ensure only one button is selected at a time & rebuild to update
             onPressed: () {
               setState(() {
                 this.priorityRadios.forEach((element) {
@@ -87,57 +103,11 @@ class _CustomPriorityRadioState extends State<CustomPriorityRadio> {
               });
               widget.callback(priority);
             },
-            icon: new PriorityRadioIcon(priorityRadios[index]),
+            icon: PriorityRadioIcon(priorityRadios[index]),
+            splashRadius: 0.1,
           );
         },
       ),
     );
-  }
-
-  void setupListOfPriorityRadios(Priority selected) {
-    this.priorityRadios = [];
-    final highPriorityRadio = Priority.high.radio;
-    final medHighPriorityRadio = Priority.med_high.radio;
-    final medPriorityRadio = Priority.med.radio;
-    final lowMedPriorityRadio = Priority.low_med.radio;
-    final lowPriorityRadio = Priority.low.radio;
-
-    switch (selected) {
-      case Priority.low:
-        priorityRadios.add(highPriorityRadio);
-        priorityRadios.add(medHighPriorityRadio);
-        priorityRadios.add(medPriorityRadio);
-        priorityRadios.add(lowMedPriorityRadio);
-        priorityRadios.add(PriorityRadio(true, '5'));
-        break;
-      case Priority.low_med:
-        priorityRadios.add(highPriorityRadio);
-        priorityRadios.add(medHighPriorityRadio);
-        priorityRadios.add(medPriorityRadio);
-        priorityRadios.add(PriorityRadio(true, '4'));
-        priorityRadios.add(lowPriorityRadio);
-        break;
-      case Priority.med:
-        priorityRadios.add(highPriorityRadio);
-        priorityRadios.add(medHighPriorityRadio);
-        priorityRadios.add(PriorityRadio(true, '3'));
-        priorityRadios.add(lowMedPriorityRadio);
-        priorityRadios.add(lowPriorityRadio);
-        break;
-      case Priority.med_high:
-        priorityRadios.add(highPriorityRadio);
-        priorityRadios.add(PriorityRadio(true, '2'));
-        priorityRadios.add(medPriorityRadio);
-        priorityRadios.add(lowMedPriorityRadio);
-        priorityRadios.add(lowPriorityRadio);
-        break;
-      case Priority.high:
-        priorityRadios.add(PriorityRadio(true, '1'));
-        priorityRadios.add(medHighPriorityRadio);
-        priorityRadios.add(medPriorityRadio);
-        priorityRadios.add(lowMedPriorityRadio);
-        priorityRadios.add(lowPriorityRadio);
-        break;
-    }
   }
 }

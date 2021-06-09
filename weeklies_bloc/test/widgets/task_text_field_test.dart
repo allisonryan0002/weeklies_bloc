@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:weeklies/blocs/tasks/tasks.dart';
 import 'package:weeklies/models/models.dart';
-import 'package:weeklies/widgets/task_text_field.dart';
+import 'package:weeklies/widgets/task_tile_text_field.dart';
 
 // class MockTaskBloc extends MockBloc<TasksEvent, TasksState>
 //     implements TasksBloc {}
@@ -34,11 +34,11 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
-              body: TaskTextField(testerTask),
+              body: TaskTileTextField(testerTask),
             ),
           ),
         );
-        expect(find.byType(TaskTextField), findsOneWidget);
+        expect(find.byType(TaskTileTextField), findsOneWidget);
         expect(find.text('Test'), findsOneWidget);
       },
     );
@@ -49,11 +49,11 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
-              body: TaskTextField(testerTask),
+              body: TaskTileTextField(testerTask),
             ),
           ),
         );
-        final textFieldfinder = find.byType(TaskTextField);
+        final textFieldfinder = find.byType(TaskTileTextField);
         await tester.enterText(textFieldfinder, 'Updated');
         expect(find.text('Updated'), findsOneWidget);
       },

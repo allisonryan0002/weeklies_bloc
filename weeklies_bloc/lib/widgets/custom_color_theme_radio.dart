@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:weeklies/models/models.dart';
+import 'package:weeklies/utility/utility.dart';
 
+// Circular material element representing 5 colors of the [ColorThemeRadio] model
 class ColorThemeRadioIcon extends StatelessWidget {
-  final ColorThemeRadio item;
+  final ColorThemeRadio model;
 
-  ColorThemeRadioIcon(this.item);
+  ColorThemeRadioIcon(this.model);
 
+  // Each of the 5 colors are layered in a column that is clipped into a circle
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -13,23 +16,23 @@ class ColorThemeRadioIcon extends StatelessWidget {
         child: Column(
           children: [
             Container(
-              color: item.theme.high,
+              color: model.theme.high,
               constraints: BoxConstraints(maxHeight: 10, maxWidth: 50),
             ),
             Container(
-              color: item.theme.medHigh,
+              color: model.theme.medHigh,
               constraints: BoxConstraints(maxHeight: 10, maxWidth: 50),
             ),
             Container(
-              color: item.theme.med,
+              color: model.theme.med,
               constraints: BoxConstraints(maxHeight: 10, maxWidth: 50),
             ),
             Container(
-              color: item.theme.lowMed,
+              color: model.theme.lowMed,
               constraints: BoxConstraints(maxHeight: 10, maxWidth: 50),
             ),
             Container(
-              color: item.theme.low,
+              color: model.theme.low,
               constraints: BoxConstraints(maxHeight: 10, maxWidth: 50),
             ),
           ],
@@ -42,9 +45,8 @@ class ColorThemeRadioIcon extends StatelessWidget {
         margin: EdgeInsets.all(4),
       ),
       decoration: BoxDecoration(
-        //color: item.theme.low,
         shape: BoxShape.circle,
-        border: item.isSelected
+        border: model.isSelected
             ? Border.all(
                 color: Colors.white.withOpacity(0.8),
                 width: 2,
@@ -55,8 +57,13 @@ class ColorThemeRadioIcon extends StatelessWidget {
   }
 }
 
+// Displays set of [ColorThemeRadioIcon]s in a horizontally wrapping list
 class CustomColorThemeRadio extends StatefulWidget {
+  // Relays currently selected [ColorThemeOption] to [HomePage]
   final Function(ColorThemeOption) callback;
+
+  // When [CustomColorThemeRadio] is being built display this [ColorThemeOption]
+  // as the initially selected [ColorThemeRadioIcon]
   final ColorThemeOption initialSelected;
 
   CustomColorThemeRadio(this.callback, this.initialSelected);
@@ -66,12 +73,23 @@ class CustomColorThemeRadio extends StatefulWidget {
 }
 
 class _CustomColorThemeRadioState extends State<CustomColorThemeRadio> {
-  List<ColorThemeRadio> colorThemeRadios = [];
+  // List of [ColorThemeRadio] models for the [ColorThemeRadioIcon]s to be built from
+  late List<ColorThemeRadio> colorThemeRadios;
+
+  // Stores the selected [ColorThemeRadioIcon]s corresponding [ColorThemeOption]
+  // to be passed into the callback function upon selecting a [ColorThemeRadioIcons]
   late ColorThemeOption theme;
 
+  // Setup colorThemeRadios list with [ColorThemeRadio]s based on the initialSelected
+  @override
+  void initState() {
+    super.initState();
+    colorThemeRadios = generateColorThemeRadioList(widget.initialSelected);
+  }
+
+  // [SizedBox] containing [ColorThemeRadioIcon] buttons wrapped horizontally
   @override
   Widget build(BuildContext context) {
-    setupListOfColorThemeRadios(widget.initialSelected);
     return SizedBox(
       width: 250,
       child: Wrap(
@@ -81,9 +99,10 @@ class _CustomColorThemeRadioState extends State<CustomColorThemeRadio> {
           for (int i = 0; i < colorThemeRadios.length; i++)
             GestureDetector(
               child: Container(
-                padding: EdgeInsets.all(3),
                 child: ColorThemeRadioIcon(colorThemeRadios[i]),
+                padding: EdgeInsets.all(3),
               ),
+              // Ensure only one button is selected at a time & rebuild to update
               onTap: () {
                 setState(() {
                   colorThemeRadios.forEach((element) {
@@ -98,86 +117,5 @@ class _CustomColorThemeRadioState extends State<CustomColorThemeRadio> {
         ],
       ),
     );
-
-    // return SizedBox(
-    //   width: 240,
-    //   height: 50,
-    //   child: ListView.builder(
-    //     scrollDirection: Axis.horizontal,
-    //     itemCount: colorThemeRadios.length,
-    //     itemBuilder: (context, index) {
-    //       return IconButton(
-    //         splashRadius: 0.1,
-    //         onPressed: () {
-    //           setState(() {
-    //             colorThemeRadios.forEach((element) {
-    //               element.isSelected = false;
-    //             });
-    //             colorThemeRadios[index].isSelected = true;
-    //             theme = ColorThemeOption.values[index];
-    //           });
-    //           widget.callback(theme);
-    //         },
-    //         icon: ColorThemeRadioIcon(colorThemeRadios[index]),
-    //       );
-    //     },
-    //   ),
-    // );
-  }
-
-  void setupListOfColorThemeRadios(ColorThemeOption selected) {
-    final theme1Radio =
-        ColorThemeRadio(false, ColorThemeOption.theme1.colorTheme);
-    final theme2Radio =
-        ColorThemeRadio(false, ColorThemeOption.theme2.colorTheme);
-    final theme3Radio =
-        ColorThemeRadio(false, ColorThemeOption.theme3.colorTheme);
-    final theme4Radio =
-        ColorThemeRadio(false, ColorThemeOption.theme4.colorTheme);
-    final theme5Radio =
-        ColorThemeRadio(false, ColorThemeOption.theme5.colorTheme);
-    colorThemeRadios = [];
-    switch (selected) {
-      case ColorThemeOption.theme1:
-        colorThemeRadios
-            .add(ColorThemeRadio(true, ColorThemeOption.theme1.colorTheme));
-        colorThemeRadios.add(theme2Radio);
-        colorThemeRadios.add(theme3Radio);
-        colorThemeRadios.add(theme4Radio);
-        colorThemeRadios.add(theme5Radio);
-        break;
-      case ColorThemeOption.theme2:
-        colorThemeRadios.add(theme1Radio);
-        colorThemeRadios
-            .add(ColorThemeRadio(true, ColorThemeOption.theme2.colorTheme));
-        colorThemeRadios.add(theme3Radio);
-        colorThemeRadios.add(theme4Radio);
-        colorThemeRadios.add(theme5Radio);
-        break;
-      case ColorThemeOption.theme3:
-        colorThemeRadios.add(theme1Radio);
-        colorThemeRadios.add(theme2Radio);
-        colorThemeRadios
-            .add(ColorThemeRadio(true, ColorThemeOption.theme3.colorTheme));
-        colorThemeRadios.add(theme4Radio);
-        colorThemeRadios.add(theme5Radio);
-        break;
-      case ColorThemeOption.theme4:
-        colorThemeRadios.add(theme1Radio);
-        colorThemeRadios.add(theme2Radio);
-        colorThemeRadios.add(theme3Radio);
-        colorThemeRadios
-            .add(ColorThemeRadio(true, ColorThemeOption.theme4.colorTheme));
-        colorThemeRadios.add(theme5Radio);
-        break;
-      case ColorThemeOption.theme5:
-        colorThemeRadios.add(theme1Radio);
-        colorThemeRadios.add(theme2Radio);
-        colorThemeRadios.add(theme3Radio);
-        colorThemeRadios.add(theme4Radio);
-        colorThemeRadios
-            .add(ColorThemeRadio(true, ColorThemeOption.theme5.colorTheme));
-        break;
-    }
   }
 }
