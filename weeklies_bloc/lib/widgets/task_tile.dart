@@ -17,7 +17,7 @@ class TaskTile extends StatefulWidget {
 }
 
 class _TaskTileState extends State<TaskTile> {
-  // Strings that are randomly selected to be displayed when a [Task] is dismissed
+  // Strings that are randomly selected to be displayed when a [TaskTile] is dismissed
   List<String> dismissTextList = [
     "Never again...",
     "YAY 🙌",
@@ -96,7 +96,7 @@ class _TaskTileState extends State<TaskTile> {
   // [Dismissible] [ListTile] with a [PriorityRadioIcon] button, [TaskTileTextField],
   // & a [DayRadioIcon] button
   //
-  // These [TaskTile]s are the items displayed from the [TaskListView] builder
+  // [TaskTile]s are the items displayed from the [TaskListView] builder
   @override
   Widget build(BuildContext context) {
     final taskItem = widget.taskItem;

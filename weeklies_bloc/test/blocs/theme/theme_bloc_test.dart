@@ -24,7 +24,7 @@ void main() {
     });
 
     blocTest(
-      'should updated the current theme from the ThemeChanged event',
+      'should update the current theme from the ThemeChanged event',
       build: () => themeBloc,
       act: (ThemeBloc bloc) async =>
           bloc..add(ThemeChanged(ColorThemeOption.theme2)),
