@@ -95,7 +95,7 @@ class MyApp extends StatelessWidget {
                       fontWeight: FontWeight.normal),
                   // Font for priority radio icons, task text, and taskTextField
                   bodyText1: GoogleFonts.karla(
-                    fontSize: 19,
+                    fontSize: 20,
                     color: Colors.black.withOpacity(0.8),
                     fontWeight: FontWeight.bold,
                   ),

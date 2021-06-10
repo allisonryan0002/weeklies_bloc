@@ -94,6 +94,8 @@ class _TaskInputWidgetState extends State<TaskInputWidget> {
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(20.0))),
           contentPadding: EdgeInsets.fromLTRB(14, 10, 14, 10),
+          insetPadding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width / 6, vertical: 24),
         ),
       ),
     );

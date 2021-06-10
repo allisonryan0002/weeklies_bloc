@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,398 +7,124 @@ import 'package:weeklies/utility/utility.dart';
 import 'package:weeklies/widgets/widgets.dart';
 import 'package:weeklies/models/models.dart';
 
-/* ListView widget displaying all TaskItems
- * Also creates dialog windows for changing an item's priority or time values
- */
+// Custom [ListView] displaying [Task]s based on the current [SortType]
+//
+// There are two distinct ways this widget is built: one for [SortType.priority]
+// and one for [SortType.day]
 class TaskListView extends StatefulWidget {
   @override
   _TaskListViewState createState() => _TaskListViewState();
 }
 
 class _TaskListViewState extends State<TaskListView> {
-  List<String> dismissTextList = [
-    "Never again...",
-    "YAY 🙌",
-    "Productivity +1",
-    "Time for a nap... 😴",
-    "Wooohooo! 🥳",
-    "DONE 👏👏👏",
-    "Fun & done 🤩",
-    "Very Good Job 🦄",
-  ];
-  final rand = Random();
-
-  // [SimpleDialog] with [CustomPriorityRadio] to change [Task]'s [Priority]
-  changePriorityWindow(
-      BuildContext priorityContext, Task item, ColorTheme theme) {
-    updatePriority(Priority p) {
-      Navigator.pop(priorityContext);
-      BlocProvider.of<TasksBloc>(priorityContext)
-          .add(TaskUpdated(Task(item.timeStamp, item.task, p, item.day)));
-    }
-
-    return showDialog(
-      barrierColor: theme.accent.withOpacity(0.3),
-      context: priorityContext,
-      builder: (context) => BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
-        child: SimpleDialog(
-          children: <Widget>[
-            Column(
-              children: <Widget>[
-                CustomPriorityRadio(updatePriority, item.priority),
-              ],
-            )
-          ],
-          backgroundColor: theme.accent.withOpacity(0.85),
-          elevation: 1,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20.0))),
-        ),
-      ),
-    );
-  }
-
-  // Displays SimpleDialog with a time radio set to change a task's time
-  changeDayWindow(BuildContext dayContext, Task item, ColorTheme theme) {
-    updateDay(int day) {
-      Navigator.pop(dayContext);
-      BlocProvider.of<TasksBloc>(dayContext).add(
-          TaskUpdated(Task(item.timeStamp, item.task, item.priority, day)));
-    }
-
-    return showDialog(
-      barrierColor: theme.accent.withOpacity(0.3),
-      context: dayContext,
-      builder: (context) => BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
-        child: SimpleDialog(
-          children: <Widget>[
-            Column(
-              children: <Widget>[
-                CustomDayRadio(updateDay, item.day),
-              ],
-            )
-          ],
-          backgroundColor: theme.accent.withOpacity(0.85),
-          elevation: 1,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20.0))),
-        ),
-      ),
-    );
-  }
-
-  /* ListView displaying ListTiles with leading priority icon/button followed
-   * by the task text and day icon/button
-   */
   @override
   Widget build(BuildContext context) {
-    final tasks = context.select<TasksBloc, List<Task>>((bloc) =>
-        bloc.state is TasksLoadSuccess
-            ? (bloc.state as TasksLoadSuccess).tasks
-            : []);
-    final sort = context.select<TasksBloc, SortType>((bloc) =>
-        bloc.state is TasksLoadSuccess
-            ? (bloc.state as TasksLoadSuccess).sort
-            : SortType.priority);
+    // [ColorTheme] to pull theme colors from
     final theme = BlocProvider.of<ThemeBloc>(context).state.theme.colorTheme;
-    if (tasks.isEmpty) {
-      return Center(child: CircularProgressIndicator());
-    } else if (sort == SortType.priority) {
-      return SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.fromLTRB(8, 5, 8, 0),
-              margin: EdgeInsets.fromLTRB(5, 8, 5, 0),
-              decoration: BoxDecoration(
-                color: theme.accent,
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-              ),
-              child: ListView.builder(
-                padding: EdgeInsets.only(bottom: 5),
-                physics: NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: tasks.length,
-                itemBuilder: (context, index) {
-                  var taskItem = tasks[index];
-                  return getTaskTileDismissible(taskItem, index, theme);
-                },
-              ),
-            ),
-            Container(
-              height: MediaQuery.of(context).size.height / 5.5,
-            ),
-          ],
-        ),
-      );
-    } else {
-      Map<String, dynamic> taskAndIndex = getDaysAndTasks(tasks);
-      return Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: ListView.builder(
-          key: Key('day_sort_outer_list_view'),
-          itemCount: taskAndIndex.length + 1,
-          itemBuilder: (context, index) {
-            if (index == taskAndIndex.length) {
-              return Container(
-                height: MediaQuery.of(context).size.height / 6,
-              );
-            } else {
-              return Container(
-                padding: EdgeInsets.fromLTRB(8, 8, 8, 5),
-                margin: EdgeInsets.fromLTRB(5, 8, 5, 0),
-                decoration: BoxDecoration(
-                  color: theme.accent,
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
-                child: Column(
-                  children: [
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        taskAndIndex.keys.toList()[index],
-                        style: Theme.of(context)
-                            .textTheme
-                            .subtitle1
-                            ?.copyWith(fontSize: 18),
-                      ),
-                    ),
-                    ListView.builder(
-                      key: Key('day_sort_inner_list_view'),
-                      physics: const NeverScrollableScrollPhysics(),
+
+    return BlocBuilder<TasksBloc, TasksState>(
+      builder: (context, state) {
+        if (state is TasksLoadInProgress) {
+          return Center(child: CircularProgressIndicator());
+          // When there are [Task]s, build one of the sorting views
+        } else if (state is TasksLoadSuccess) {
+          final sort = state.sort;
+          final tasks = state.tasks;
+          // [SortType.priority] build - single list of [TaskTile]s by priority
+          if (sort == SortType.priority) {
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  // [TaskTile]s surrounded by colored container
+                  Container(
+                    child: ListView.builder(
+                      padding: EdgeInsets.only(bottom: 5),
+                      physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount: taskAndIndex.values.toList()[index].length,
-                      itemBuilder: (context, indexInner) {
-                        Task taskItem =
-                            taskAndIndex.values.toList()[index][indexInner][0];
-                        int taskIndex =
-                            taskAndIndex.values.toList()[index][indexInner][1];
-                        // Task is dismissed on top of gradient
-                        return getTaskTileDismissible(
-                            taskItem, taskIndex, theme);
+                      itemCount: tasks.length,
+                      itemBuilder: (context, index) {
+                        var taskItem = tasks[index];
+                        return TaskTile(taskItem, theme);
                       },
                     ),
-                  ],
-                ),
-              );
-            }
-          },
-        ),
-      );
-    }
-  }
-
-  // return BlocBuilder<TasksBloc, TasksState>(
-  //     builder: (context, tasksState) {
-  //       //print(state);
-  //       if (tasksState is TasksLoadInProgress) {
-  //         return Center(child: CircularProgressIndicator());
-  //       } else if (tasksState is TasksLoadSuccess &&
-  //           tasksState.sort == SortType.priority) {
-  //         List<Task> tasks = tasksState.tasks;
-  //         if (tasks.isNotEmpty) {
-  //           return SingleChildScrollView(
-  //             child: Column(
-  //               children: [
-  //                 BlocBuilder<ThemeBloc, ThemeState>(
-  //                   builder: (context, themeState) {
-  //                     if (themeState is ThemeLoadSuccess) {
-  //                       final theme = themeState.theme.colorTheme;
-  //                       return Container(
-  //                         padding: EdgeInsets.fromLTRB(8, 5, 8, 0),
-  //                         margin: EdgeInsets.fromLTRB(5, 8, 5, 0),
-  //                         decoration: BoxDecoration(
-  //                           color: theme.accent,
-  //                           borderRadius: BorderRadius.all(Radius.circular(10)),
-  //                         ),
-  //                         child: ListView.builder(
-  //                           padding: EdgeInsets.only(bottom: 5),
-  //                           physics: NeverScrollableScrollPhysics(),
-  //                           shrinkWrap: true,
-  //                           itemCount: tasks.length,
-  //                           itemBuilder: (context, index) {
-  //                             var taskItem = tasks[index];
-  //                             return getTaskTileDismissible(
-  //                                 taskItem, index, theme);
-  //                           },
-  //                         ),
-  //                       );
-  //                     } else {
-  //                       //TODO: better way to address this
-  //                       return Container();
-  //                     }
-  //                   },
-  //                 ),
-  //                 Container(
-  //                   height: MediaQuery.of(context).size.height / 5.5,
-  //                 ),
-  //               ],
-  //             ),
-  //           );
-  //         } else {
-  //           return Container();
-  //         }
-  //       } else if (tasksState is TasksLoadSuccess &&
-  //           tasksState.sort == SortType.day) {
-  //         List<Task> tasks = tasksState.tasks;
-  //         Map<String, dynamic> taskAndIndex = getDaysAndTasks(tasks);
-
-  //         return Scaffold(
-  //           resizeToAvoidBottomInset: false,
-  //           body: ListView.builder(
-  //             key: Key('day_sort_outer_list_view'),
-  //             itemCount: taskAndIndex.length + 1,
-  //             itemBuilder: (context, index) {
-  //               if (index == taskAndIndex.length) {
-  //                 return Container(
-  //                   height: MediaQuery.of(context).size.height / 6,
-  //                 );
-  //               } else {
-  //                 return BlocBuilder<ThemeBloc, ThemeState>(
-  //                   builder: (context, themeState) {
-  //                     if (themeState is ThemeLoadSuccess) {
-  //                       final theme = themeState.theme.colorTheme;
-  //                       return Container(
-  //                         padding: EdgeInsets.fromLTRB(8, 8, 8, 5),
-  //                         margin: EdgeInsets.fromLTRB(5, 8, 5, 0),
-  //                         decoration: BoxDecoration(
-  //                           color: theme.accent,
-  //                           borderRadius: BorderRadius.all(Radius.circular(10)),
-  //                         ),
-  //                         child: Column(
-  //                           children: [
-  //                             Align(
-  //                               alignment: Alignment.centerLeft,
-  //                               child: Text(
-  //                                 taskAndIndex.keys.toList()[index],
-  //                                 style: Theme.of(context)
-  //                                     .textTheme
-  //                                     .subtitle1
-  //                                     ?.copyWith(fontSize: 18),
-  //                               ),
-  //                             ),
-  //                             ListView.builder(
-  //                               key: Key('day_sort_inner_list_view'),
-  //                               physics: const NeverScrollableScrollPhysics(),
-  //                               shrinkWrap: true,
-  //                               itemCount:
-  //                                   taskAndIndex.values.toList()[index].length,
-  //                               itemBuilder: (context, indexInner) {
-  //                                 Task taskItem = taskAndIndex.values
-  //                                     .toList()[index][indexInner][0];
-  //                                 int taskIndex = taskAndIndex.values
-  //                                     .toList()[index][indexInner][1];
-  //                                 // Task is dismissed on top of gradient
-  //                                 return getTaskTileDismissible(
-  //                                     taskItem, taskIndex, theme);
-  //                               },
-  //                             ),
-  //                           ],
-  //                         ),
-  //                       );
-  //                     } else {
-  //                       //TODO: better way to address this
-  //                       return Container();
-  //                     }
-  //                   },
-  //                 );
-  //               }
-  //             },
-  //           ),
-  //         );
-  //       } else {
-  //         return Container();
-  //       }
-  //     },
-  //   );
-
-  Dismissible getTaskTileDismissible(
-      Task taskItem, int index, ColorTheme theme) {
-    //final _formKey = GlobalKey<FormState>();
-    //final _formKey = GlobalKey<FormState>();
-    //TODO: issue with time change giving task.day is 9??
-    //print('TaskItem day : ${taskItem.day}');
-    return Dismissible(
-      key: UniqueKey(),
-      onDismissed: (direction) {
-        BlocProvider.of<TasksBloc>(context).add(TaskDeleted(taskItem));
-      },
-      child: Container(
-        margin: EdgeInsets.fromLTRB(0, 2.5, 0, 2.5),
-        padding: EdgeInsets.fromLTRB(0, 2, 0, 2),
-        decoration: BoxDecoration(
-          color: taskItem.priority.color(theme),
-          borderRadius: BorderRadius.all(Radius.circular(6)),
-        ),
-        child: ListTile(
-          visualDensity: VisualDensity(horizontal: -1),
-          // Priority radio button
-          leading: GestureDetector(
-            onTap: () {
-              changePriorityWindow(context, taskItem, theme);
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.7), shape: BoxShape.circle),
-              child: PriorityRadioIcon(taskItem.priority.radio),
-            ),
-          ),
-          title:
-              // Form(
-              //   key: _formKey,
-              //   child:
-              Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Editable text field for task text
-              //Form(
-              //key: _formKey,
-              //child:
-              TaskTileTextField(taskItem),
-              //),
-              Padding(padding: EdgeInsets.only(top: 5)),
-              // Time radio button
-              GestureDetector(
-                onTap: () {
-                  changeDayWindow(context, taskItem, theme);
-                },
-                child: DayRadioIconTileSize(
-                  DayRadio(false,
-                      Day(DateTime.now().weekday).dayOptions[taskItem.day]),
-                ),
+                    padding: EdgeInsets.fromLTRB(8, 5, 8, 0),
+                    margin: EdgeInsets.fromLTRB(5, 8, 5, 0),
+                    decoration: BoxDecoration(
+                      color: theme.accent,
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                  ),
+                  // Invisible container to let [TaskTile]s sit above white gradient
+                  Container(
+                    height: MediaQuery.of(context).size.height / 5.5,
+                  ),
+                ],
               ),
-            ],
-          ),
-          //),
-          contentPadding: EdgeInsets.fromLTRB(20, 5, 0, 0),
-        ),
-      ),
-      background: Container(
-        margin: EdgeInsets.fromLTRB(0, 2.5, 0, 2.5),
-        alignment: Alignment.centerLeft,
-        child: Text(
-          dismissTextList[rand.nextInt(dismissTextList.length)],
-          style: Theme.of(context).textTheme.headline2,
-        ),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.centerRight,
-            end: Alignment.centerLeft,
-            colors: [
-              theme.low,
-              theme.lowMed,
-              theme.med,
-              theme.medHigh,
-              theme.high,
-            ],
-          ),
-          borderRadius: BorderRadius.all(Radius.circular(6)),
-        ),
-        padding: EdgeInsets.only(left: 20),
-      ),
-      resizeDuration: Duration(milliseconds: 550),
+            );
+            // [SortType.day] build - list of days containing [TaskTile] sublists
+          } else {
+            // Days paired with their corresponding [Task]s
+            Map<String, dynamic> taskAndIndex = getDaysAndTasks(tasks);
+
+            return Scaffold(
+              resizeToAvoidBottomInset: false,
+              body: ListView.builder(
+                key: Key('day_sort_outer_list_view'),
+                itemCount: taskAndIndex.length + 1,
+                itemBuilder: (context, index) {
+                  // Invisible container to let [TaskTile]s sit above white gradient
+                  if (index == taskAndIndex.length) {
+                    return Container(
+                      height: MediaQuery.of(context).size.height / 5.5,
+                    );
+                  } else {
+                    // Box surrounding sublist of [TaskTile]s
+                    return Container(
+                      child: Column(
+                        children: [
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            // Display the day corresponding to the [Task] sublist
+                            child: Text(
+                              taskAndIndex.keys.toList()[index],
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle1
+                                  ?.copyWith(fontSize: 18),
+                            ),
+                          ),
+                          // Building sublist of [TaskTile]s
+                          ListView.builder(
+                            key: Key('day_sort_inner_list_view'),
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount:
+                                taskAndIndex.values.toList()[index].length,
+                            itemBuilder: (context, indexInner) {
+                              Task taskItem = taskAndIndex.values
+                                  .toList()[index][indexInner][0];
+                              return TaskTile(taskItem, theme);
+                            },
+                          ),
+                        ],
+                      ),
+                      padding: EdgeInsets.fromLTRB(8, 8, 8, 5),
+                      margin: EdgeInsets.fromLTRB(5, 8, 5, 0),
+                      decoration: BoxDecoration(
+                        color: theme.accent,
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                    );
+                  }
+                },
+              ),
+            );
+          }
+          // Both [TaskState]s are evaluated above - this condition won't be reached
+        } else {
+          return Container();
+        }
+      },
     );
   }
 }

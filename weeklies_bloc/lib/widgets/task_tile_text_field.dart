@@ -46,7 +46,7 @@ class _TaskTileTextFieldState extends State<TaskTileTextField> {
       textInputAction: TextInputAction.done,
       // Add [TaskUpdated] event with the modified [Task] to the [TasksBloc]
       onEditingComplete: () {
-        print('editing complete');
+        //print('editing complete');
         Task task = Task(widget.item.timeStamp, controller.text,
             widget.item.priority, widget.item.day);
         BlocProvider.of<TasksBloc>(context).add(TaskUpdated(task));
