@@ -40,7 +40,7 @@ void main() {
         .thenAnswer((_) => ThemeState(theme: ColorThemeOption.theme1));
   });
 
-  group('TaskInputWidget', () {
+  group('TaskInput', () {
     testWidgets(
       'renders correctly',
       (WidgetTester tester) async {

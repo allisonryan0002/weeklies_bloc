@@ -66,7 +66,7 @@ class MyApp extends StatelessWidget {
         providers: [
           BlocProvider(
             create: (context) => TasksBloc(
-              tasksRepository: RepositoryProvider.of<TaskRepository>(context),
+              taskRepository: RepositoryProvider.of<TaskRepository>(context),
             )..add(TasksLoaded()),
           ),
           BlocProvider(

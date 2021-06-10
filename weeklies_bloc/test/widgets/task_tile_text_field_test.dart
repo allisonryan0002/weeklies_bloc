@@ -27,7 +27,7 @@ void main() {
   //   tasksBloc = MockTaskBloc();
   // });
 
-  group('TaskTextField', () {
+  group('TaskTileTextField', () {
     testWidgets(
       'renders correctly',
       (WidgetTester tester) async {

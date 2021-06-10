@@ -14,24 +14,24 @@ void main() {
   group('TasksBloc', () {
     late Task task;
     late TasksBloc tasksBloc;
-    late TaskRepository tasksRepository;
+    late TaskRepository taskRepository;
 
     setUp(() {
       task = Task(DateTime.utc(2021, 6, 1), 'Test', Priority.low, 1);
-      tasksRepository = MockTaskRepository();
-      when(() => tasksRepository.loadTasks())
+      taskRepository = MockTaskRepository();
+      when(() => taskRepository.loadTasks())
           .thenAnswer((_) => Future.value([]));
-      when(() => tasksRepository.loadSort())
+      when(() => taskRepository.loadSort())
           .thenAnswer((_) => Future.value(SortType.priority));
-      when(() => tasksRepository.saveTasks([]))
+      when(() => taskRepository.saveTasks([]))
           .thenAnswer((_) => Future.value(MockFile()));
-      tasksBloc = TasksBloc(tasksRepository: tasksRepository);
+      tasksBloc = TasksBloc(taskRepository: taskRepository);
     });
 
     blocTest(
       'should load tasks from the TasksLoaded event',
       build: () {
-        when(() => tasksRepository.loadTasks())
+        when(() => taskRepository.loadTasks())
             .thenAnswer((_) => Future.value([task]));
         return tasksBloc;
       },

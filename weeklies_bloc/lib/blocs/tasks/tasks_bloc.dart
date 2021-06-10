@@ -4,10 +4,11 @@ import 'package:weeklies/blocs/tasks/tasks.dart';
 import 'package:weeklies/models/models.dart';
 import 'package:weeklies/repositories/repositories.dart';
 
+// Manage the state of the [Task]s list and the [SortType]
 class TasksBloc extends Bloc<TasksEvent, TasksState> {
-  final TaskRepository tasksRepository;
+  final TaskRepository taskRepository;
 
-  TasksBloc({required this.tasksRepository}) : super(TasksLoadInProgress());
+  TasksBloc({required this.taskRepository}) : super(TasksLoadInProgress());
 
   @override
   Stream<TasksState> mapEventToState(TasksEvent event) async* {
@@ -26,12 +27,14 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
     }
   }
 
+  // Load [SortType] & [Task]s from [TaskRepository]
   Stream<TasksState> _mapTasksLoadedToState() async* {
-    final tasks = await this.tasksRepository.loadTasks();
-    final sort = await this.tasksRepository.loadSort();
+    final tasks = await this.taskRepository.loadTasks();
+    final sort = await this.taskRepository.loadSort();
     yield TasksLoadSuccess(tasks, sort);
   }
 
+  // Add new [Task], resort, & save
   Stream<TasksState> _mapTaskAddedToState(TaskAdded event) async* {
     if (state is TasksLoadSuccess) {
       if ((state as TasksLoadSuccess).sort == SortType.priority) {
@@ -48,6 +51,8 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
     }
   }
 
+  // Swap existing [Task] for updated [Task] where [Task.timeStamp] matches
+  // resort, & save
   Stream<TasksState> _mapTaskUpdatedToState(TaskUpdated event) async* {
     if (state is TasksLoadSuccess) {
       if ((state as TasksLoadSuccess).sort == SortType.priority) {
@@ -72,6 +77,7 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
     }
   }
 
+  // Permanently remove [Task] & save
   Stream<TasksState> _mapTaskDeletedToState(TaskDeleted event) async* {
     if (state is TasksLoadSuccess) {
       if ((state as TasksLoadSuccess).sort == SortType.priority) {
@@ -92,9 +98,7 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
     }
   }
 
-//TODO: Use these map sorted functions in above functions to reduce redundancy?
-//      Get rid of timeSort b/c tasks are sorted by time in taskListView?
-
+  // Sort [Task]s by [Priority]
   Stream<TasksState> _mapPrioritySortedToState() async* {
     if (state is TasksLoadSuccess) {
       if ((state as TasksLoadSuccess).sort == SortType.day) {
@@ -107,6 +111,7 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
     }
   }
 
+  // Sort [Task]s by [Day]
   Stream<TasksState> _mapDaySortedToState() async* {
     if (state is TasksLoadSuccess) {
       if ((state as TasksLoadSuccess).sort == SortType.priority) {
@@ -118,6 +123,7 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
     }
   }
 
+  // Sort [Task]s by [Priority] then by [Day] within each priority level
   List<Task> _prioritySort(List<Task> tasks) {
     if (tasks.isEmpty) return [];
     tasks.sort((a, b) => a.priority.compareTo(b.priority));
@@ -147,6 +153,7 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
     return finalSort;
   }
 
+  // Sort [Task]s by [Day] then by [Priority] within each day
   List<Task> _timeSort(List<Task> tasks) {
     List<Task> sortedTasks = _prioritySort((state as TasksLoadSuccess).tasks);
     sortedTasks.sort((a, b) => a.day.compareTo(b.day));
@@ -154,10 +161,10 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
   }
 
   void _saveTasks(List<Task> tasks) {
-    tasksRepository.saveTasks(tasks);
+    taskRepository.saveTasks(tasks);
   }
 
   void _saveSort(SortType sort) {
-    tasksRepository.saveSort(sort);
+    taskRepository.saveSort(sort);
   }
 }

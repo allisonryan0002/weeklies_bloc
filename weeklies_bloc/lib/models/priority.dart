@@ -1,25 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:weeklies/models/models.dart';
 
+// Five custom priority levels for the [Task]s
 enum Priority { high, med_high, med, low_med, low }
 
-// Produces a radio model corresponding with the ItemPriority
+// Convenience extensions
 extension PriorityExtension on Priority {
+  // Get a radio model corresponding with the [Priority]
   PriorityRadio get radio {
     switch (this) {
       case Priority.low:
-        return new PriorityRadio(false, '5');
+        return PriorityRadio(false, '5');
       case Priority.low_med:
-        return new PriorityRadio(false, '4');
+        return PriorityRadio(false, '4');
       case Priority.med:
-        return new PriorityRadio(false, '3');
+        return PriorityRadio(false, '3');
       case Priority.med_high:
-        return new PriorityRadio(false, '2');
+        return PriorityRadio(false, '2');
       case Priority.high:
-        return new PriorityRadio(false, '1');
+        return PriorityRadio(false, '1');
     }
   }
 
+  // Get the [ColorTheme] color corresponding to a [Priority] value
   Color color(ColorTheme theme) {
     switch (this) {
       case Priority.low:
@@ -35,6 +38,7 @@ extension PriorityExtension on Priority {
     }
   }
 
+  // Custom comparision function for sorting [Task]s by [Priority]
   int compareTo(Priority other) {
     switch (this) {
       case Priority.low:
@@ -70,8 +74,7 @@ extension PriorityExtension on Priority {
     }
   }
 
-  // Conversion functions to and from JSON
-
+  // Conversion functions to and from json
   int toJson() {
     switch (this) {
       case Priority.low:

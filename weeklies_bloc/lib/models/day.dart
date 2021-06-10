@@ -1,12 +1,11 @@
 class Day {
-  /* List of possible time choices based on the current day
-   * There are 9 options, listed with their indices below:
-   * 0 = Overdue, 1 = Today, Tomorrow = 2, (3-7) = other days (in their
-   * respective order), 8 = Someday
-   */
+  // List of possible day choices based on the current day
+  // There are 9 options, listed with their indices below:
+  // 0 = Overdue, 1 = Today, Tomorrow = 2, (3-7) = other week days (in their
+  // respective order), 8 = Someday
   List<String> dayOptions = ['Overdue', 'Today', 'Tomorrow'];
 
-  // Select the days options based on the current day
+  // Select the day options based on the current day
   Day(int currDay) {
     List<String> daysToAdd = [];
     switch (currDay) {

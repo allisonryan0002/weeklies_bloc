@@ -1,5 +1,7 @@
+// Two custom sorting types to sort [Task]s by
 enum SortType { priority, day }
 
+// Conversion functions to and from json
 extension SortTypeExtension on SortType {
   int toJson() {
     switch (this) {

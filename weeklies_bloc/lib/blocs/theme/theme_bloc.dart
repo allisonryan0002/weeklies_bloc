@@ -3,6 +3,7 @@ import 'package:weeklies/blocs/theme/theme.dart';
 import 'package:weeklies/models/models.dart';
 import 'package:weeklies/repositories/repositories.dart';
 
+// Manage the state of the app [ColorThemeOption]
 class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
   final TaskRepository tasksRepository;
   final ColorThemeOption initialTheme;
@@ -17,6 +18,7 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
     }
   }
 
+  // Change app's current [ColorThemeOption] & save change
   Stream<ThemeState> _mapThemeChangedToState(ThemeChanged event) async* {
     if (state is ThemeState) {
       yield ThemeState(theme: event.theme);

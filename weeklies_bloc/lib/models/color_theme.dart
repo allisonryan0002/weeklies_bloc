@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 
+// Five custom themes for theming the app
 enum ColorThemeOption { theme1, theme2, theme3, theme4, theme5 }
 
+// Class for storing [ColorThemeOption]'s individual [Color]s
 class ColorTheme {
+  // [Color]s aligning with [Priority] levels
   Color low;
   Color lowMed;
   Color med;
   Color medHigh;
   Color high;
+
+  // Accent [Color] for containers surrounding lists of [TaskTile]s
   Color accent;
 
   ColorTheme(
@@ -19,7 +24,9 @@ class ColorTheme {
       required this.accent});
 }
 
+// Convenience extensions
 extension ColorThemeOptionExtension on ColorThemeOption {
+  // Set [Color]s for each [ColorTheme] corresponding to a [ColorThemeOption]
   ColorTheme get colorTheme {
     switch (this) {
       case ColorThemeOption.theme1:
@@ -70,6 +77,7 @@ extension ColorThemeOptionExtension on ColorThemeOption {
     }
   }
 
+  // Conversion functions to and from json
   String toJson() {
     switch (this) {
       case ColorThemeOption.theme1:
