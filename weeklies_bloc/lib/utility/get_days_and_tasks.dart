@@ -1,80 +1,78 @@
 import 'package:weeklies/models/models.dart';
 
+// Organize [Task]s by [Task.day]
+//
+// For each [Day], map a list of [Task]s with corresponding [Day]s to it
 Map<String, List<dynamic>> getDaysAndTasks(List<Task> tasks) {
-  Map<String, List<dynamic>> map = Map();
-  List<dynamic> zero = [];
-  List<dynamic> one = [];
-  List<dynamic> two = [];
-  List<dynamic> three = [];
-  List<dynamic> four = [];
-  List<dynamic> five = [];
-  List<dynamic> six = [];
-  List<dynamic> seven = [];
-  List<dynamic> eight = [];
+  // List with sublist for every [Day] option
+  List<List<dynamic>> tasksByDay = [[], [], [], [], [], [], [], [], []];
+  // [Day] options based on the current day of the week
+  List<String> dayList = Day(DateTime.now().weekday).dayOptions;
+  // List for collecting all non-empty map entries
+  List<MapEntry<String, List<dynamic>>> entries = [];
+
+  // Add [Task]s to list position associated with their [Task.day] value
   for (int i = 0; i < tasks.length; i++) {
     Task task = tasks[i];
     switch (task.day) {
       case 0:
-        zero.add([task, i]);
+        tasksByDay[0].add([task, i]);
         break;
       case 1:
-        one.add([task, i]);
+        tasksByDay[1].add([task, i]);
         break;
       case 2:
-        two.add([task, i]);
+        tasksByDay[2].add([task, i]);
         break;
       case 3:
-        three.add([task, i]);
+        tasksByDay[3].add([task, i]);
         break;
       case 4:
-        four.add([task, i]);
+        tasksByDay[4].add([task, i]);
         break;
       case 5:
-        five.add([task, i]);
+        tasksByDay[5].add([task, i]);
         break;
       case 6:
-        six.add([task, i]);
+        tasksByDay[6].add([task, i]);
         break;
       case 7:
-        seven.add([task, i]);
+        tasksByDay[7].add([task, i]);
         break;
       case 8:
-        eight.add([task, i]);
+        tasksByDay[8].add([task, i]);
         break;
     }
   }
 
-  List<String> dayList = Day(DateTime.now().weekday).dayOptions;
-  List<MapEntry<String, List<dynamic>>> entries = [];
-
-  if (zero.isNotEmpty) {
-    entries.add(MapEntry<String, List<dynamic>>(dayList[0], zero));
+  // Pair [Day] text with associated [Task]s
+  if (tasksByDay[0].isNotEmpty) {
+    entries.add(MapEntry<String, List<dynamic>>(dayList[0], tasksByDay[0]));
   }
-  if (one.isNotEmpty) {
-    entries.add(MapEntry<String, List<dynamic>>(dayList[1], one));
+  if (tasksByDay[1].isNotEmpty) {
+    entries.add(MapEntry<String, List<dynamic>>(dayList[1], tasksByDay[1]));
   }
-  if (two.isNotEmpty) {
-    entries.add(MapEntry<String, List<dynamic>>(dayList[2], two));
+  if (tasksByDay[2].isNotEmpty) {
+    entries.add(MapEntry<String, List<dynamic>>(dayList[2], tasksByDay[2]));
   }
-  if (three.isNotEmpty) {
-    entries.add(MapEntry<String, List<dynamic>>(dayList[3], three));
+  if (tasksByDay[3].isNotEmpty) {
+    entries.add(MapEntry<String, List<dynamic>>(dayList[3], tasksByDay[3]));
   }
-  if (four.isNotEmpty) {
-    entries.add(MapEntry<String, List<dynamic>>(dayList[4], four));
+  if (tasksByDay[4].isNotEmpty) {
+    entries.add(MapEntry<String, List<dynamic>>(dayList[4], tasksByDay[4]));
   }
-  if (five.isNotEmpty) {
-    entries.add(MapEntry<String, List<dynamic>>(dayList[5], five));
+  if (tasksByDay[5].isNotEmpty) {
+    entries.add(MapEntry<String, List<dynamic>>(dayList[5], tasksByDay[5]));
   }
-  if (six.isNotEmpty) {
-    entries.add(MapEntry<String, List<dynamic>>(dayList[6], six));
+  if (tasksByDay[6].isNotEmpty) {
+    entries.add(MapEntry<String, List<dynamic>>(dayList[6], tasksByDay[6]));
   }
-  if (seven.isNotEmpty) {
-    entries.add(MapEntry<String, List<dynamic>>(dayList[7], seven));
+  if (tasksByDay[7].isNotEmpty) {
+    entries.add(MapEntry<String, List<dynamic>>(dayList[7], tasksByDay[7]));
   }
-  if (eight.isNotEmpty) {
-    entries.add(MapEntry<String, List<dynamic>>(dayList[8], eight));
+  if (tasksByDay[8].isNotEmpty) {
+    entries.add(MapEntry<String, List<dynamic>>(dayList[8], tasksByDay[8]));
   }
 
-  map.addEntries(entries);
-  return map;
+  return Map()..addEntries(entries);
 }

@@ -1,13 +1,16 @@
-//
 import 'package:weeklies/models/models.dart';
 
+// Given the selected [Priority], generate [List<PriorityRadio>]
+// reflecting the radio that is currently selected
 List<PriorityRadio> generatePriorityRadioList(Priority selected) {
+  // Unselected [PriorityRadio]s
   final highPriorityRadio = Priority.high.radio;
   final medHighPriorityRadio = Priority.med_high.radio;
   final medPriorityRadio = Priority.med.radio;
   final lowMedPriorityRadio = Priority.low_med.radio;
   final lowPriorityRadio = Priority.low.radio;
 
+  // Return selected [PriorityRadio] with other unselected radios
   switch (selected) {
     case Priority.low:
       return [

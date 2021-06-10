@@ -1,6 +1,9 @@
 import 'package:weeklies/models/models.dart';
 
+// Given the selected [ColorThemeOption], generate [List<ColorThemeRadio>]
+// reflecting the radio that is currently selected
 List<ColorThemeRadio> generateColorThemeRadioList(ColorThemeOption selected) {
+  // Unselected [ColorThemeRadio]s
   final theme1Radio =
       ColorThemeRadio(false, ColorThemeOption.theme1.colorTheme);
   final theme2Radio =
@@ -11,6 +14,8 @@ List<ColorThemeRadio> generateColorThemeRadioList(ColorThemeOption selected) {
       ColorThemeRadio(false, ColorThemeOption.theme4.colorTheme);
   final theme5Radio =
       ColorThemeRadio(false, ColorThemeOption.theme5.colorTheme);
+
+  // Return selected [ColorThemeRadio] with other unselected radios
   switch (selected) {
     case ColorThemeOption.theme1:
       return [
