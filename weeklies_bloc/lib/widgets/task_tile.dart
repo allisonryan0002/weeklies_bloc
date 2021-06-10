@@ -17,7 +17,6 @@ class TaskTile extends StatefulWidget {
 }
 
 class _TaskTileState extends State<TaskTile> {
-  //TODO: more of these!
   // Strings that are randomly selected to be displayed when a [Task] is dismissed
   List<String> dismissTextList = [
     "Never again...",
@@ -26,7 +25,8 @@ class _TaskTileState extends State<TaskTile> {
     "Time for a nap... 😴",
     "Wooohooo! 🥳",
     "DONE 👏👏👏",
-    "Fun & done 🤩",
+    "Like it never happened... 👀",
+    "Goodbye 👋",
     "Very Good Job 🦄",
   ];
   // For selecting a random string from the dismissTextList
@@ -108,7 +108,7 @@ class _TaskTileState extends State<TaskTile> {
       onDismissed: (direction) {
         BlocProvider.of<TasksBloc>(context).add(TaskDeleted(taskItem));
       },
-      resizeDuration: Duration(milliseconds: 550),
+      resizeDuration: Duration(milliseconds: 750),
       child: Container(
         child: ListTile(
           visualDensity: VisualDensity(horizontal: -1),
