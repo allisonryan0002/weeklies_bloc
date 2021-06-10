@@ -23,9 +23,8 @@ class _TaskTileTextFieldState extends State<TaskTileTextField> {
   void initState() {
     super.initState();
     controller.text = widget.item.task;
-    controller.selection =
-        TextSelection.collapsed(offset: controller.text.length);
-    //(TextPosition(offset: controller.text.length));
+    controller.selection = TextSelection.fromPosition(
+        TextPosition(offset: controller.text.length));
     //_formKey = GlobalKey<FormState>();
   }
 
@@ -39,7 +38,7 @@ class _TaskTileTextFieldState extends State<TaskTileTextField> {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      key: UniqueKey(),
+      key: GlobalKey(),
       //autofocus: true,
       controller: this.controller,
       style: Theme.of(context).textTheme.bodyText1,
