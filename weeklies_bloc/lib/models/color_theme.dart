@@ -36,7 +36,7 @@ extension ColorThemeOptionExtension on ColorThemeOption {
           med: Color.fromRGBO(254, 203, 93, 1),
           medHigh: Color.fromRGBO(250, 164, 91, 1),
           high: Color.fromRGBO(225, 113, 76, 1),
-          accent: Color.fromRGBO(52, 85, 103, 1),
+          accent: Color.fromRGBO(32, 76, 107, 1),
         );
       case ColorThemeOption.theme2:
         return ColorTheme(
