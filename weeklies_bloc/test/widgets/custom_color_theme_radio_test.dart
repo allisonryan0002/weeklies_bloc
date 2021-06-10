@@ -7,18 +7,27 @@ import 'package:weeklies/blocs/theme/theme.dart';
 import 'package:weeklies/models/models.dart';
 import 'package:weeklies/widgets/widgets.dart';
 
-class MockThemeBloc extends Mock implements ThemeBloc {}
+class MockThemeBloc extends MockBloc<ThemeEvent, ThemeState>
+    implements ThemeBloc {}
+
+class FakeThemeEvent extends Fake implements ThemeEvent {}
+
+class FakeThemeState extends Fake implements ThemeState {}
 
 void main() {
   group('CustomColorThemeRadio', () {
     late ThemeBloc themeBloc;
 
+    setUpAll(() {
+      registerFallbackValue(FakeThemeEvent());
+      registerFallbackValue(FakeThemeState());
+    });
+
     setUp(() {
       themeBloc = MockThemeBloc();
-      when(() => themeBloc.state)
-          .thenAnswer((_) => ThemeState(theme: ColorThemeOption.theme1));
-      whenListen(themeBloc,
-          Stream.fromIterable([ThemeState(theme: ColorThemeOption.theme1)]));
+      when(() => themeBloc.state).thenAnswer(
+        (_) => ThemeState(theme: ColorThemeOption.theme1),
+      );
     });
 
     group('ColorThemeRadioIcon', () {
