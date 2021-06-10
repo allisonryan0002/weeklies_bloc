@@ -41,76 +41,86 @@ void main() async {
   final fileClient = FileClient(dir: dir, fileSystem: LocalFileSystem());
 
   // Setup [TaskRepository] & load stored [ColorThemeOption] from it
-  final repository = TaskRepository(client: fileClient);
-  final theme = await repository.loadTheme();
+  final tasksRepository = TaskRepository(client: fileClient);
+  final themeRepository = ThemeRepository(client: fileClient);
+  final theme = await themeRepository.loadTheme();
 
   // Start the app with the repository & loaded theme
   runApp(MyApp(
-    taskRepository: repository,
+    tasksRepository: tasksRepository,
+    themeRepository: themeRepository,
     theme: theme,
   ));
 }
 
 class MyApp extends StatelessWidget {
-  final TaskRepository taskRepository;
+  final TaskRepository tasksRepository;
+  final ThemeRepository themeRepository;
   final ColorThemeOption theme;
 
-  MyApp({required this.taskRepository, required this.theme});
+  MyApp(
+      {required this.tasksRepository,
+      required this.themeRepository,
+      required this.theme});
 
   @override
   Widget build(BuildContext context) {
     // Provide [TasksRepository], [TasksBloc], & [ThemeBloc] to tree
     return RepositoryProvider.value(
-      value: this.taskRepository,
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => TasksBloc(
-              taskRepository: RepositoryProvider.of<TaskRepository>(context),
-            )..add(TasksLoaded()),
-          ),
-          BlocProvider(
-            create: (context) => ThemeBloc(
-                tasksRepository: RepositoryProvider.of<TaskRepository>(context),
-                initialTheme: theme),
-          ),
-        ],
-        child: BlocBuilder<ThemeBloc, ThemeState>(
-          builder: (context, state) {
-            return MaterialApp(
-              title: 'Weeklies',
-              // TextThemes for all text components
-              theme: ThemeData(
-                textTheme: TextTheme(
-                  // AppBar title
-                  headline1: GoogleFonts.rockSalt(
-                      fontSize: 28,
-                      color: Colors.white,
-                      letterSpacing: 4,
-                      fontWeight: FontWeight.bold),
-                  // Text behind dismissing task
-                  headline2: GoogleFonts.righteous(
-                      fontSize: 24,
-                      color: Colors.white,
-                      fontWeight: FontWeight.normal),
-                  // Font for priority radio icons, task text, and taskTextField
-                  bodyText1: GoogleFonts.karla(
-                    fontSize: 20,
-                    color: Colors.black.withOpacity(0.8),
-                    fontWeight: FontWeight.bold,
+      value: this.themeRepository,
+      child: RepositoryProvider.value(
+        value: this.tasksRepository,
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => TasksBloc(
+                taskRepository: RepositoryProvider.of<TaskRepository>(context),
+              )..add(TasksLoaded()),
+            ),
+            BlocProvider(
+              create: (context) => ThemeBloc(
+                  themeRepository:
+                      RepositoryProvider.of<ThemeRepository>(context),
+                  initialTheme: theme),
+            ),
+          ],
+          child: BlocBuilder<ThemeBloc, ThemeState>(
+            builder: (context, state) {
+              return MaterialApp(
+                title: 'Weeklies',
+                // TextThemes for all text components
+                theme: ThemeData(
+                  textTheme: TextTheme(
+                    // AppBar title
+                    headline1: GoogleFonts.rockSalt(
+                        fontSize: 28,
+                        color: Colors.white,
+                        letterSpacing: 4,
+                        fontWeight: FontWeight.bold),
+                    // Text behind dismissing task
+                    headline2: GoogleFonts.righteous(
+                        fontSize: 24,
+                        color: Colors.white,
+                        fontWeight: FontWeight.normal),
+                    // Font for priority radio icons, task text, and taskTextField
+                    bodyText1: GoogleFonts.karla(
+                      fontSize: 20,
+                      color: Colors.black.withOpacity(0.8),
+                      fontWeight: FontWeight.bold,
+                    ),
+                    // Font for time radio icons
+                    subtitle1: GoogleFonts.righteous(
+                        fontSize: 12,
+                        color: Colors.white,
+                        fontWeight: FontWeight.normal),
                   ),
-                  // Font for time radio icons
-                  subtitle1: GoogleFonts.righteous(
-                      fontSize: 12,
-                      color: Colors.white,
-                      fontWeight: FontWeight.normal),
+                  visualDensity: VisualDensity.adaptivePlatformDensity,
                 ),
-                visualDensity: VisualDensity.adaptivePlatformDensity,
-              ),
-              debugShowCheckedModeBanner: false,
-              home: HomePage(),
-            );
-          },
+                debugShowCheckedModeBanner: false,
+                home: HomePage(),
+              );
+            },
+          ),
         ),
       ),
     );

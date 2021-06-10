@@ -5,21 +5,21 @@ import 'package:weeklies/blocs/theme/theme.dart';
 import 'package:weeklies/models/models.dart';
 import 'package:weeklies/repositories/repositories.dart';
 
-class MockTaskRepository extends Mock implements TaskRepository {}
+class MockThemeRepository extends Mock implements ThemeRepository {}
 
 class MockFile extends Mock implements File {}
 
 void main() {
   group('ThemeBloc', () {
     late ThemeBloc themeBloc;
-    late TaskRepository tasksRepository;
+    late ThemeRepository tasksRepository;
 
     setUp(() {
-      tasksRepository = MockTaskRepository();
+      tasksRepository = MockThemeRepository();
       when(() => tasksRepository.saveTheme(ColorThemeOption.theme1))
           .thenAnswer((_) => Future.value(MockFile()));
       themeBloc = ThemeBloc(
-          tasksRepository: tasksRepository,
+          themeRepository: tasksRepository,
           initialTheme: ColorThemeOption.theme1);
     });
 

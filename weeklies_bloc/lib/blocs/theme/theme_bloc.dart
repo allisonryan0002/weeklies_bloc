@@ -5,10 +5,10 @@ import 'package:weeklies/repositories/repositories.dart';
 
 // Manage the state of the app [ColorThemeOption]
 class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
-  final TaskRepository tasksRepository;
+  final ThemeRepository themeRepository;
   final ColorThemeOption initialTheme;
 
-  ThemeBloc({required this.tasksRepository, required this.initialTheme})
+  ThemeBloc({required this.themeRepository, required this.initialTheme})
       : super(ThemeState(theme: initialTheme));
 
   @override
@@ -27,6 +27,6 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
   }
 
   void _saveTheme(ColorThemeOption theme) {
-    tasksRepository.saveTheme(theme);
+    themeRepository.saveTheme(theme);
   }
 }
