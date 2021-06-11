@@ -32,6 +32,9 @@ class _TaskListViewState extends State<TaskListView> {
           final tasks = state.tasks;
           // [SortType.priority] build - single list of [TaskTile]s by priority
           if (sort == SortType.priority) {
+            if (tasks.isEmpty) {
+              return Container();
+            }
             return SingleChildScrollView(
               child: Column(
                 children: [
