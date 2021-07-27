@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sizer/sizer.dart';
 import 'package:weeklies/blocs/tasks/tasks.dart';
 import 'package:weeklies/blocs/theme/theme.dart';
 import 'package:weeklies/models/models.dart';
@@ -21,11 +22,7 @@ class _DaySortButtonState extends State<DaySortButton> {
         BlocProvider.of<TasksBloc>(context).add(DaySorted());
       },
       child: Container(
-        child: Icon(
-          Icons.access_time_rounded,
-          color: theme.med,
-          size: MediaQuery.of(context).size.height / 24,
-        ),
+        child: Icon(Icons.access_time_rounded, color: theme.med, size: 4.2.h),
         padding: EdgeInsets.all(8),
       ),
     );

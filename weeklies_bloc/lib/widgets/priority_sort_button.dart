@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sizer/sizer.dart';
 import 'package:weeklies/blocs/tasks/tasks.dart';
 import 'package:weeklies/blocs/theme/theme.dart';
 import 'package:weeklies/models/models.dart';
@@ -24,7 +25,7 @@ class _PrioritySortButtonState extends State<PrioritySortButton> {
         child: Icon(
           Icons.format_list_numbered_rounded,
           color: theme.high,
-          size: MediaQuery.of(context).size.height / 24,
+          size: 4.2.h,
         ),
         padding: EdgeInsets.all(8),
       ),

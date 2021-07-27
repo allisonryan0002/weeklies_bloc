@@ -1,7 +1,9 @@
-import 'dart:ui';
 import 'dart:async';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sizer/sizer.dart';
 import 'package:weeklies/blocs/tasks/tasks.dart';
 import 'package:weeklies/blocs/theme/theme.dart';
 import 'package:weeklies/models/models.dart';
@@ -42,90 +44,98 @@ class _HomePageState extends State<HomePage> {
     final currentTheme = BlocProvider.of<ThemeBloc>(context).state.theme;
 
     // Main screen of app
-    return Scaffold(
-      appBar: AppBar(
-        actions: [
-          IconButton(
-            onPressed: () {
-              changeThemeWindow(context, currentTheme);
-            },
-            icon:
-                Icon(Icons.swap_horizontal_circle_rounded, color: Colors.white),
-            iconSize: 30,
-            padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).size.height / 50, right: 15),
-          )
-        ],
-        title: Column(
-          children: <Widget>[
-            Text(
-              'Weeklies',
-              style: Theme.of(context).textTheme.headline1,
+    return Sizer(
+      builder: (context, orientation, deviceType) {
+        return GestureDetector(
+          onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+          child: Scaffold(
+            appBar: AppBar(
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    changeThemeWindow(context, currentTheme);
+                  },
+                  icon: Icon(Icons.swap_horizontal_circle_rounded,
+                      color: Colors.white),
+                  iconSize: 30,
+                  padding: EdgeInsets.only(bottom: 2.h, right: 4.w),
+                )
+              ],
+              title: Column(
+                children: <Widget>[
+                  Text(
+                    'Weeklies',
+                    style: Theme.of(context).textTheme.headline1,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 2.h),
+                  )
+                ],
+              ),
+              centerTitle: true,
+              backgroundColor: BlocProvider.of<ThemeBloc>(context)
+                  .state
+                  .theme
+                  .colorTheme
+                  .low,
+              shape: ContinuousRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(1000),
+                      bottomRight: Radius.circular(1000))),
+              toolbarHeight: 6.7.h,
             ),
-            Padding(
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).size.height / 50),
-            )
-          ],
-        ),
-        centerTitle: true,
-        backgroundColor:
-            BlocProvider.of<ThemeBloc>(context).state.theme.colorTheme.low,
-        shape: ContinuousRectangleBorder(
-            borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(1000),
-                bottomRight: Radius.circular(1000))),
-        toolbarHeight: MediaQuery.of(context).size.height / 15,
-      ),
-      // App body stacking the [TaskListView] underneath the bottom button panel
-      body: Stack(
-        fit: StackFit.expand,
-        children: <Widget>[
-          // [TaskListView] at the bottom of the [Stack]
-          Flex(
-            direction: Axis.vertical,
-            children: <Widget>[Expanded(child: TaskListView())],
-          ),
-
-          // Bottom button panel with [PrioritySortButton],
-          // [TaskInputWidget](button), & [TimeSortButton]
-          //
-          // This panel sits on top of the [TaskListView] with a white gradient
-          // so the task list seamlessly disappears under the button panel
-          Positioned(
-            bottom: 0,
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height / 5,
-              width: MediaQuery.of(context).size.width,
-              child: Container(
-                padding: EdgeInsets.only(top: 80, bottom: 15),
-                child: Row(
-                  children: <Widget>[
-                    PrioritySortButton(),
-                    TaskInputWidget(),
-                    DaySortButton(),
-                  ],
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            // App body stacking the [TaskListView] underneath the bottom button panel
+            body: Stack(
+              fit: StackFit.expand,
+              children: <Widget>[
+                // [TaskListView] at the bottom of the [Stack]
+                Flex(
+                  direction: Axis.vertical,
+                  children: <Widget>[Expanded(child: TaskListView())],
                 ),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.white.withOpacity(0),
-                      Colors.white.withOpacity(0.9),
-                      Colors.white.withOpacity(0.97),
-                      Colors.white,
-                    ],
+
+                // Bottom button panel with [PrioritySortButton],
+                // [TaskInputWidget](button), & [TimeSortButton]
+                //
+                // This panel sits on top of the [TaskListView] with a white gradient
+                // so the task list seamlessly disappears under the button panel
+                Positioned(
+                  bottom: 0,
+                  child: SizedBox(
+                    height: 20.h,
+                    width: 100.w,
+                    child: Container(
+                      padding: EdgeInsets.only(top: 80, bottom: 15),
+                      child: Row(
+                        children: <Widget>[
+                          PrioritySortButton(),
+                          TaskInputWidget(),
+                          DaySortButton(),
+                        ],
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      ),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.white.withOpacity(0),
+                            Colors.white.withOpacity(0.9),
+                            Colors.white.withOpacity(0.97),
+                            Colors.white,
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
+            // Prevent keyboard from covering existing task when editing its text
+            resizeToAvoidBottomInset: false,
           ),
-        ],
-      ),
-      // Prevent keyboard from covering existing task when editing its text
-      resizeToAvoidBottomInset: false,
+        );
+      },
     );
   }
 
@@ -150,9 +160,8 @@ class _HomePageState extends State<HomePage> {
           elevation: 1,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(20.0))),
-          insetPadding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width / 4.6,
-              vertical: 24),
+          insetPadding:
+              EdgeInsets.symmetric(horizontal: 21.7.w, vertical: 30.h),
         ),
       ),
       barrierColor: currentTheme.colorTheme.accent.withOpacity(0.3),

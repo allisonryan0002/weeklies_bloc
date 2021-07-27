@@ -1,5 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -53,9 +54,13 @@ void main() {
             ),
           ),
         );
-        final textFieldfinder = find.byType(TaskTileTextField);
-        await tester.enterText(textFieldfinder, 'Updated');
-        expect(find.text('Updated'), findsOneWidget);
+
+        final testTextInput = TestTextInput()..register();
+        await tester.showKeyboard(find.byType(TaskTileTextField));
+        testTextInput.updateEditingValue(TextEditingValue(text: 'Text'));
+        // final textFieldfinder = find.byType(TaskTileTextField);
+        // await tester.enterText(textFieldfinder, 'Updated');
+        expect(find.text('Text'), findsOneWidget);
       },
     );
 

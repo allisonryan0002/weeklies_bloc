@@ -1,10 +1,12 @@
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sizer/sizer.dart';
 import 'package:weeklies/blocs/tasks/tasks.dart';
 import 'package:weeklies/blocs/theme/theme.dart';
-import 'package:weeklies/widgets/widgets.dart';
 import 'package:weeklies/models/models.dart';
+import 'package:weeklies/widgets/widgets.dart';
 
 // [IconButton] that displays a task input dialog window
 //
@@ -94,8 +96,7 @@ class _TaskInputWidgetState extends State<TaskInputWidget> {
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(20.0))),
           contentPadding: EdgeInsets.fromLTRB(14, 10, 14, 10),
-          insetPadding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width / 6, vertical: 24),
+          insetPadding: EdgeInsets.symmetric(horizontal: 17.w, vertical: 10.h),
         ),
       ),
     );
@@ -118,7 +119,7 @@ class _TaskInputWidgetState extends State<TaskInputWidget> {
         child: Icon(
           Icons.add_circle_outline_rounded,
           color: theme.low,
-          size: MediaQuery.of(context).size.height / 14,
+          size: 7.2.h,
         ),
         padding: EdgeInsets.all(6),
       ),

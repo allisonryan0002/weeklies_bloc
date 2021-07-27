@@ -1,11 +1,13 @@
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sizer/sizer.dart';
 import 'package:weeklies/blocs/tasks/tasks.dart';
 import 'package:weeklies/blocs/theme/theme.dart';
+import 'package:weeklies/models/models.dart';
 import 'package:weeklies/utility/utility.dart';
 import 'package:weeklies/widgets/widgets.dart';
-import 'package:weeklies/models/models.dart';
 
 // Custom [ListView] displaying [Task]s based on the current [SortType]
 //
@@ -59,7 +61,7 @@ class _TaskListViewState extends State<TaskListView> {
                   ),
                   // Invisible container to let [TaskTile]s sit above white gradient
                   Container(
-                    height: MediaQuery.of(context).size.height / 5.5,
+                    height: 18.2.h,
                   ),
                 ],
               ),
@@ -78,7 +80,7 @@ class _TaskListViewState extends State<TaskListView> {
                   // Invisible container to let [TaskTile]s sit above white gradient
                   if (index == taskAndIndex.length) {
                     return Container(
-                      height: MediaQuery.of(context).size.height / 5.5,
+                      height: 18.2.h,
                     );
                   } else {
                     // Box surrounding sublist of [TaskTile]s

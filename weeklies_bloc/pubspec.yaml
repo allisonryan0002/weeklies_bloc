@@ -17,6 +17,7 @@ dependencies:
   flutter_bloc: ^7.0.1
   mocktail: ^0.1.4
   file: ^6.1.1
+  sizer: ^2.0.13
 
 
 dev_dependencies:

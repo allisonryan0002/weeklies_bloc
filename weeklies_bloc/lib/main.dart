@@ -34,6 +34,8 @@ import 'package:weeklies/models/color_theme.dart';
 import 'package:weeklies/repositories/repositories.dart';
 import 'package:weeklies/widgets/widgets.dart';
 
+//TODO: fix random "resorts"
+
 void main() async {
   // Setup [FileClient] for application access to local storage
   WidgetsFlutterBinding.ensureInitialized();

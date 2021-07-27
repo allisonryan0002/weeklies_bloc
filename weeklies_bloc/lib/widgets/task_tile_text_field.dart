@@ -16,7 +16,6 @@ class TaskTileTextField extends StatefulWidget {
 
 class _TaskTileTextFieldState extends State<TaskTileTextField> {
   final controller = new TextEditingController();
-  //late final _formKey;
 
   // Initialize to display [Task] text and start editing at the end of the text
   @override
@@ -25,7 +24,6 @@ class _TaskTileTextFieldState extends State<TaskTileTextField> {
     controller.text = widget.item.task;
     controller.selection = TextSelection.fromPosition(
         TextPosition(offset: controller.text.length));
-    //_formKey = GlobalKey<FormState>();
   }
 
   @override
@@ -38,18 +36,19 @@ class _TaskTileTextFieldState extends State<TaskTileTextField> {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      key: GlobalKey(),
-      //autofocus: true,
       controller: this.controller,
       style: Theme.of(context).textTheme.bodyText1,
       textInputAction: TextInputAction.done,
       // Add [TaskUpdated] event with the modified [Task] to the [TasksBloc]
       onEditingComplete: () {
-        //print('editing complete');
         Task task = Task(widget.item.timeStamp, controller.text,
             widget.item.priority, widget.item.day);
         BlocProvider.of<TasksBloc>(context).add(TaskUpdated(task));
-        FocusScope.of(context).unfocus();
+      },
+      onSubmitted: (_) {
+        Task task = Task(widget.item.timeStamp, controller.text,
+            widget.item.priority, widget.item.day);
+        BlocProvider.of<TasksBloc>(context).add(TaskUpdated(task));
       },
       keyboardType: TextInputType.multiline,
       maxLines: null,
