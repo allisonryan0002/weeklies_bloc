@@ -3,6 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:weeklies/blocs/tasks/tasks.dart';
 import 'package:weeklies/models/models.dart';
 import 'package:weeklies/repositories/repositories.dart';
+import 'package:weeklies/utility/utility.dart';
 
 // Manage the state of the [Task]s list and the [SortType]
 class TasksBloc extends Bloc<TasksEvent, TasksState> {
@@ -55,24 +56,50 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
   // resort, & save
   Stream<TasksState> _mapTaskUpdatedToState(TaskUpdated event) async* {
     if (state is TasksLoadSuccess) {
-      if ((state as TasksLoadSuccess).sort == SortType.priority) {
-        List<Task> updatedTasks =
-            _prioritySort((state as TasksLoadSuccess).tasks.map((task) {
-          return task.timeStamp == event.updatedTask.timeStamp
-              ? event.updatedTask
-              : task;
-        }).toList());
-        yield TasksLoadSuccess(updatedTasks, SortType.priority);
-        _saveTasks(updatedTasks);
-      } else {
-        List<Task> updatedTasks =
-            _prioritySort((state as TasksLoadSuccess).tasks.map((task) {
-          return task.timeStamp == event.updatedTask.timeStamp
-              ? event.updatedTask
-              : task;
-        }).toList());
-        yield TasksLoadSuccess(updatedTasks, SortType.day);
-        _saveTasks(updatedTasks);
+      switch (event.taskUpdateType) {
+        case TaskUpdateType.text:
+          if ((state as TasksLoadSuccess).sort == SortType.priority) {
+            List<Task> updatedTasks =
+                (state as TasksLoadSuccess).tasks.map((task) {
+              return task.timeStamp == event.updatedTask.timeStamp
+                  ? event.updatedTask
+                  : task;
+            }).toList();
+            yield TasksLoadSuccess(updatedTasks, SortType.priority);
+            _saveTasks(updatedTasks);
+          } else {
+            List<Task> updatedTasks =
+                (state as TasksLoadSuccess).tasks.map((task) {
+              return task.timeStamp == event.updatedTask.timeStamp
+                  ? event.updatedTask
+                  : task;
+            }).toList();
+            yield TasksLoadSuccess(updatedTasks, SortType.day);
+            _saveTasks(updatedTasks);
+          }
+          break;
+        case TaskUpdateType.priority:
+        case TaskUpdateType.day:
+          if ((state as TasksLoadSuccess).sort == SortType.priority) {
+            List<Task> updatedTasks =
+                _prioritySort((state as TasksLoadSuccess).tasks.map((task) {
+              return task.timeStamp == event.updatedTask.timeStamp
+                  ? event.updatedTask
+                  : task;
+            }).toList());
+            yield TasksLoadSuccess(updatedTasks, SortType.priority);
+            _saveTasks(updatedTasks);
+          } else {
+            List<Task> updatedTasks =
+                _prioritySort((state as TasksLoadSuccess).tasks.map((task) {
+              return task.timeStamp == event.updatedTask.timeStamp
+                  ? event.updatedTask
+                  : task;
+            }).toList());
+            yield TasksLoadSuccess(updatedTasks, SortType.day);
+            _saveTasks(updatedTasks);
+          }
+          break;
       }
     }
   }

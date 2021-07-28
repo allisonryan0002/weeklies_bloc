@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weeklies/blocs/tasks/tasks.dart';
 import 'package:weeklies/blocs/tasks/tasks_bloc.dart';
 import 'package:weeklies/models/models.dart';
+import 'package:weeklies/utility/utility.dart';
 
 // Custom [TextField] used to edit [Task]s in the [TaskListView] [ListTile]s
 class TaskTileTextField extends StatefulWidget {
@@ -43,12 +44,8 @@ class _TaskTileTextFieldState extends State<TaskTileTextField> {
       onEditingComplete: () {
         Task task = Task(widget.item.timeStamp, controller.text,
             widget.item.priority, widget.item.day);
-        BlocProvider.of<TasksBloc>(context).add(TaskUpdated(task));
-      },
-      onSubmitted: (_) {
-        Task task = Task(widget.item.timeStamp, controller.text,
-            widget.item.priority, widget.item.day);
-        BlocProvider.of<TasksBloc>(context).add(TaskUpdated(task));
+        BlocProvider.of<TasksBloc>(context)
+            .add(TaskUpdated(task, TaskUpdateType.text));
       },
       keyboardType: TextInputType.multiline,
       maxLines: null,

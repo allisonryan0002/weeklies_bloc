@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:weeklies/models/models.dart';
+import 'package:weeklies/utility/utility.dart';
 
 abstract class TasksEvent extends Equatable {
   const TasksEvent();
@@ -24,14 +25,15 @@ class TaskAdded extends TasksEvent {
 
 class TaskUpdated extends TasksEvent {
   final Task updatedTask;
+  final TaskUpdateType taskUpdateType;
 
-  const TaskUpdated(this.updatedTask);
-
-  @override
-  List<Object> get props => [updatedTask];
+  const TaskUpdated(this.updatedTask, this.taskUpdateType);
 
   @override
-  String toString() => 'TaskUpdated { Task: $updatedTask }';
+  List<Object> get props => [updatedTask, taskUpdateType];
+
+  @override
+  String toString() => 'TaskUpdated { Task: $updatedTask with $taskUpdateType}';
 }
 
 class TaskDeleted extends TasksEvent {

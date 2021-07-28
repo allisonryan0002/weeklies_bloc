@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weeklies/blocs/tasks/tasks.dart';
 import 'package:weeklies/models/models.dart';
+import 'package:weeklies/utility/utility.dart';
 import 'package:weeklies/widgets/widgets.dart';
 
 class TaskTile extends StatefulWidget {
@@ -37,8 +38,9 @@ class _TaskTileState extends State<TaskTile> {
       BuildContext priorityContext, Task item, ColorTheme theme) {
     updatePriority(Priority p) {
       Navigator.pop(priorityContext);
-      BlocProvider.of<TasksBloc>(priorityContext)
-          .add(TaskUpdated(Task(item.timeStamp, item.task, p, item.day)));
+      BlocProvider.of<TasksBloc>(priorityContext).add(TaskUpdated(
+          Task(item.timeStamp, item.task, p, item.day),
+          TaskUpdateType.priority));
     }
 
     return showDialog(
@@ -67,8 +69,9 @@ class _TaskTileState extends State<TaskTile> {
   changeDayWindow(BuildContext dayContext, Task item, ColorTheme theme) {
     updateDay(int day) {
       Navigator.pop(dayContext);
-      BlocProvider.of<TasksBloc>(dayContext).add(
-          TaskUpdated(Task(item.timeStamp, item.task, item.priority, day)));
+      BlocProvider.of<TasksBloc>(dayContext).add(TaskUpdated(
+          Task(item.timeStamp, item.task, item.priority, day),
+          TaskUpdateType.day));
     }
 
     return showDialog(

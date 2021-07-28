@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:weeklies/blocs/tasks/tasks.dart';
 import 'package:weeklies/models/models.dart';
+import 'package:weeklies/utility/utility.dart';
 
 void main() {
   group('TasksEvent', () {
@@ -26,9 +27,10 @@ void main() {
     group('TaskUpdated', () {
       test('toString returns correct value', () {
         expect(
-          TaskUpdated(Task(DateTime(2021, 6, 1), 'Test', Priority.low, 1))
+          TaskUpdated(Task(DateTime(2021, 6, 1), 'Test', Priority.low, 1),
+                  TaskUpdateType.text)
               .toString(),
-          'TaskUpdated { Task: ${Task(DateTime(2021, 6, 1), 'Test', Priority.low, 1)} }',
+          'TaskUpdated { Task: ${Task(DateTime(2021, 6, 1), 'Test', Priority.low, 1)} with ${TaskUpdateType.text}}',
         );
       });
     });
