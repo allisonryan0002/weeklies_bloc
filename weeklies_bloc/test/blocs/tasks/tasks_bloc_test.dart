@@ -5,7 +5,6 @@ import 'package:weeklies/blocs/tasks/tasks.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:weeklies/models/models.dart';
 import 'package:weeklies/repositories/repositories.dart';
-import 'package:weeklies/utility/utility.dart';
 
 class MockTaskRepository extends Mock implements TaskRepository {}
 
@@ -60,8 +59,7 @@ void main() {
         ..add(TasksLoaded())
         ..add(TaskAdded(task))
         ..add(TaskUpdated(
-            Task(task.timeStamp, 'UpdatedTest', task.priority, task.day),
-            TaskUpdateType.text)),
+            Task(task.timeStamp, 'UpdatedTest', task.priority, task.day))),
       expect: () => <TasksState>[
         TasksLoadSuccess([], SortType.priority),
         TasksLoadSuccess([task], SortType.priority),

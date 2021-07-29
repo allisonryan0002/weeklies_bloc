@@ -5,7 +5,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:weeklies/blocs/tasks/tasks.dart';
 import 'package:weeklies/blocs/theme/theme.dart';
 import 'package:weeklies/models/models.dart';
-import 'package:weeklies/utility/utility.dart';
 import 'package:weeklies/widgets/widgets.dart';
 
 class MockTaskBloc extends MockBloc<TasksEvent, TasksState>
@@ -169,8 +168,7 @@ void main() {
       (WidgetTester tester) async {
         final newTaskToEmit =
             Task(task.timeStamp, task.task, Priority.med, task.day);
-        when(() => tasksBloc
-                .add(TaskUpdated(newTaskToEmit, TaskUpdateType.priority)))
+        when(() => tasksBloc.add(TaskUpdated(newTaskToEmit)))
             .thenAnswer((_) => TasksLoadSuccess([newTaskToEmit]));
         when(() => tasksBloc.state).thenAnswer((_) => TasksLoadSuccess([task]));
         await tester.pumpWidget(
