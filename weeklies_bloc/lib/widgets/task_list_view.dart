@@ -37,33 +37,36 @@ class _TaskListViewState extends State<TaskListView> {
             if (tasks.isEmpty) {
               return Container();
             }
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  // [TaskTile]s surrounded by colored container
-                  Container(
-                    child: ListView.builder(
-                      padding: EdgeInsets.only(bottom: 5),
-                      physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: tasks.length,
-                      itemBuilder: (context, index) {
-                        var taskItem = tasks[index];
-                        return TaskTile(taskItem, theme);
-                      },
+            return Scaffold(
+              resizeToAvoidBottomInset: true,
+              body: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    // [TaskTile]s surrounded by colored container
+                    Container(
+                      child: ListView.builder(
+                        padding: EdgeInsets.only(bottom: 5),
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: tasks.length,
+                        itemBuilder: (context, index) {
+                          var taskItem = tasks[index];
+                          return TaskTile(taskItem, theme);
+                        },
+                      ),
+                      padding: EdgeInsets.fromLTRB(8, 5, 8, 0),
+                      margin: EdgeInsets.fromLTRB(5, 8, 5, 0),
+                      decoration: BoxDecoration(
+                        color: theme.accent,
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
                     ),
-                    padding: EdgeInsets.fromLTRB(8, 5, 8, 0),
-                    margin: EdgeInsets.fromLTRB(5, 8, 5, 0),
-                    decoration: BoxDecoration(
-                      color: theme.accent,
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    // Invisible container to let [TaskTile]s sit above white gradient
+                    Container(
+                      height: 18.2.h,
                     ),
-                  ),
-                  // Invisible container to let [TaskTile]s sit above white gradient
-                  Container(
-                    height: 18.2.h,
-                  ),
-                ],
+                  ],
+                ),
               ),
             );
             // [SortType.day] build - list of days containing [TaskTile] sublists
@@ -72,7 +75,7 @@ class _TaskListViewState extends State<TaskListView> {
             Map<String, dynamic> taskAndIndex = getDaysAndTasks(tasks);
 
             return Scaffold(
-              resizeToAvoidBottomInset: false,
+              resizeToAvoidBottomInset: true,
               body: ListView.builder(
                 key: Key('day_sort_outer_list_view'),
                 itemCount: taskAndIndex.length + 1,
