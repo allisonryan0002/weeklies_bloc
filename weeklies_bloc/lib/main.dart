@@ -92,6 +92,7 @@ class MyApp extends StatelessWidget {
                 title: 'Weeklies',
                 // TextThemes for all text components
                 theme: ThemeData(
+                  scaffoldBackgroundColor: state.theme.colorTheme.background,
                   textTheme: TextTheme(
                     // AppBar title
                     headline1: GoogleFonts.rockSalt(

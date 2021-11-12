@@ -15,13 +15,17 @@ class ColorTheme {
   // Accent [Color] for containers surrounding lists of [TaskTile]s
   Color accent;
 
-  ColorTheme(
-      {required this.low,
-      required this.lowMed,
-      required this.med,
-      required this.medHigh,
-      required this.high,
-      required this.accent});
+  Color background;
+
+  ColorTheme({
+    required this.low,
+    required this.lowMed,
+    required this.med,
+    required this.medHigh,
+    required this.high,
+    required this.accent,
+    required this.background,
+  });
 }
 
 // Convenience extensions
@@ -37,6 +41,8 @@ extension ColorThemeOptionExtension on ColorThemeOption {
           medHigh: Color.fromRGBO(250, 164, 91, 1),
           high: Color.fromRGBO(225, 113, 76, 1),
           accent: Color.fromRGBO(32, 76, 107, 1),
+          background: Color.fromRGBO(
+              241, 245, 248, 1), //Color.fromRGBO(228, 236, 242, 1),
         );
       case ColorThemeOption.theme2:
         return ColorTheme(
@@ -46,6 +52,8 @@ extension ColorThemeOptionExtension on ColorThemeOption {
           medHigh: Color.fromRGBO(244, 157, 108, 1),
           high: Color.fromRGBO(234, 98, 72, 1),
           accent: Color.fromRGBO(52, 47, 87, 1),
+          background: Color.fromRGBO(
+              246, 243, 247, 1), //Color.fromRGBO(236, 231, 238, 1),
         );
       case ColorThemeOption.theme3:
         return ColorTheme(
@@ -55,6 +63,8 @@ extension ColorThemeOptionExtension on ColorThemeOption {
           medHigh: Color.fromRGBO(242, 112, 89, 1),
           high: Color.fromRGBO(242, 92, 84, 1),
           accent: Color.fromRGBO(153, 72, 67, 1),
+          background: Color.fromRGBO(
+              254, 233, 236, 1), //Color.fromRGBO(253, 235, 216, 1),
         );
       case ColorThemeOption.theme4:
         return ColorTheme(
@@ -64,6 +74,8 @@ extension ColorThemeOptionExtension on ColorThemeOption {
           medHigh: Color.fromRGBO(176, 106, 174, 1),
           high: Color.fromRGBO(156, 76, 153, 1),
           accent: Color.fromRGBO(46, 40, 93, 1),
+          background: Color.fromRGBO(
+              241, 241, 249, 1), //Color.fromRGBO(227, 227, 242, 1),
         );
       case ColorThemeOption.theme5:
         return ColorTheme(
@@ -73,6 +85,8 @@ extension ColorThemeOptionExtension on ColorThemeOption {
           medHigh: Color.fromRGBO(237, 143, 96, 1),
           high: Color.fromRGBO(239, 187, 108, 1),
           accent: Color.fromRGBO(103, 40, 100, 1),
+          background: Color.fromRGBO(
+              249, 240, 244, 1), //Color.fromRGBO(244, 225, 234, 1),
         );
     }
   }

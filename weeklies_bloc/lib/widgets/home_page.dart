@@ -42,6 +42,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     // [ColorThemeOption] to pull app component colors from
     final currentTheme = BlocProvider.of<ThemeBloc>(context).state.theme;
+    final backgroundColor = currentTheme.colorTheme.background;
 
     // Main screen of app
     return Sizer(
@@ -119,10 +120,10 @@ class _HomePageState extends State<HomePage> {
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                           colors: [
-                            Colors.white.withOpacity(0),
-                            Colors.white.withOpacity(0.9),
-                            Colors.white.withOpacity(0.97),
-                            Colors.white,
+                            backgroundColor.withOpacity(0),
+                            backgroundColor.withOpacity(0.9),
+                            backgroundColor.withOpacity(0.97),
+                            backgroundColor,
                           ],
                         ),
                       ),
