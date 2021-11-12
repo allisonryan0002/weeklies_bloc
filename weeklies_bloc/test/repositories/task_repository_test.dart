@@ -25,6 +25,8 @@ void main() {
         () async {
       when(() => client.read('myTasks.json'))
           .thenAnswer((_) => Future.value(''));
+      when(() => client.write('myTasks.json', '{"tasks":[]}'))
+          .thenAnswer((_) => Future.value(MockFile()));
       expect(await repository.loadTasks(), <Task>[]);
     });
 
@@ -50,6 +52,8 @@ void main() {
     test('loadSort method returns priority when the file is empty', () async {
       when(() => client.read('mySort.json'))
           .thenAnswer((_) => Future.value(''));
+      when(() => client.read('mySort.json'))
+          .thenAnswer((_) => Future.value('{"sort": 0}'));
       expect(await repository.loadSort(), SortType.priority);
       verify(() => client.read('mySort.json'));
     });

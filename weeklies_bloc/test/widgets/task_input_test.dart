@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:sizer/sizer.dart';
 import 'package:weeklies/blocs/tasks/tasks.dart';
 import 'package:weeklies/blocs/theme/theme.dart';
 import 'package:weeklies/models/models.dart';
@@ -45,16 +46,20 @@ void main() {
       'renders correctly',
       (WidgetTester tester) async {
         await tester.pumpWidget(
-          BlocProvider.value(
-            value: tasksBloc,
-            child: BlocProvider.value(
-              value: themeBloc,
-              child: MaterialApp(
-                home: Scaffold(
-                  body: TaskInputWidget(),
+          Sizer(
+            builder: (context, orientation, deviceType) {
+              return MultiBlocProvider(
+                providers: [
+                  BlocProvider<ThemeBloc>.value(value: themeBloc),
+                  BlocProvider.value(value: tasksBloc),
+                ],
+                child: MaterialApp(
+                  home: Scaffold(
+                    body: TaskInputWidget(),
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
         );
         expect(
@@ -68,13 +73,17 @@ void main() {
       'displays createTaskWindow on tap',
       (WidgetTester tester) async {
         await tester.pumpWidget(
-          BlocProvider.value(
-            value: themeBloc,
-            child: MaterialApp(
-              home: Scaffold(
-                body: TaskInputWidget(),
-              ),
-            ),
+          Sizer(
+            builder: (context, orientation, deviceType) {
+              return BlocProvider.value(
+                value: themeBloc,
+                child: MaterialApp(
+                  home: Scaffold(
+                    body: TaskInputWidget(),
+                  ),
+                ),
+              );
+            },
           ),
         );
         final taskInputFinder = find.byType(TaskInputWidget);

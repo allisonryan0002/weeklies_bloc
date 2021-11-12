@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:sizer/sizer.dart';
 import 'package:weeklies/blocs/tasks/tasks.dart';
 import 'package:weeklies/blocs/theme/theme.dart';
 import 'package:weeklies/models/models.dart';
@@ -43,13 +44,17 @@ void main() {
   group('PrioritySortButton', () {
     testWidgets('renders correctly', (WidgetTester tester) async {
       await tester.pumpWidget(
-        BlocProvider<ThemeBloc>.value(
-          value: themeBloc,
-          child: MaterialApp(
-            home: Scaffold(
-              body: PrioritySortButton(),
-            ),
-          ),
+        Sizer(
+          builder: (context, orientation, deviceType) {
+            return BlocProvider<ThemeBloc>.value(
+              value: themeBloc,
+              child: MaterialApp(
+                home: Scaffold(
+                  body: PrioritySortButton(),
+                ),
+              ),
+            );
+          },
         ),
       );
       expect(
@@ -60,16 +65,20 @@ void main() {
 
     testWidgets('triggers sorting by priority', (WidgetTester tester) async {
       await tester.pumpWidget(
-        BlocProvider<TasksBloc>.value(
-          value: tasksBloc,
-          child: BlocProvider<ThemeBloc>.value(
-            value: themeBloc,
-            child: MaterialApp(
-              home: Scaffold(
-                body: PrioritySortButton(),
+        Sizer(
+          builder: (context, orientation, deviceType) {
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider<ThemeBloc>.value(value: themeBloc),
+                BlocProvider.value(value: tasksBloc),
+              ],
+              child: MaterialApp(
+                home: Scaffold(
+                  body: PrioritySortButton(),
+                ),
               ),
-            ),
-          ),
+            );
+          },
         ),
       );
       var prioritySortButtonFinder = find.widgetWithIcon(
