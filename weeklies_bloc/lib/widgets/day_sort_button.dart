@@ -17,11 +17,12 @@ class DaySortButtonState extends State<DaySortButton> {
   @override
   Widget build(BuildContext context) {
     // [ColorTheme] to pull colors from
-    final theme = BlocProvider.of<ThemeBloc>(context).state.theme.colorTheme;
+    final theme =
+        context.select((ThemeBloc bloc) => bloc.state.theme.colorTheme);
 
     return GestureDetector(
       onTap: () {
-        BlocProvider.of<TasksBloc>(context).add(DaySorted());
+        context.read<TasksBloc>().add(DaySorted());
       },
       child: Container(
         padding: const EdgeInsets.all(8),

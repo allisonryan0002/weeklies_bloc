@@ -14,7 +14,8 @@ class PriorityRadioIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // [ColorTheme] to pull colors from
-    final theme = BlocProvider.of<ThemeBloc>(context).state.theme.colorTheme;
+    final theme =
+        context.select((ThemeBloc bloc) => bloc.state.theme.colorTheme);
 
     // Outer [Container] for displaying border indicating the model is selected
     return Container(

@@ -24,7 +24,8 @@ class TaskListViewState extends State<TaskListView> {
   @override
   Widget build(BuildContext context) {
     // [ColorTheme] to pull theme colors from
-    final theme = BlocProvider.of<ThemeBloc>(context).state.theme.colorTheme;
+    final theme =
+        context.select((ThemeBloc bloc) => bloc.state.theme.colorTheme);
 
     return BlocBuilder<TasksBloc, TasksState>(
       builder: (context, state) {

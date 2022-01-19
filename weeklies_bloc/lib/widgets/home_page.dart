@@ -33,10 +33,10 @@ class HomePageState extends State<HomePage> {
     // [Timer] counts down minutes until midnight
     Timer(Duration(minutes: midnight.difference(now).inMinutes + 3), () {
       // At midnight, trigger [TasksLoaded] event to update [Task.day]
-      BlocProvider.of<TasksBloc>(context).add(TasksLoaded());
+      context.read<TasksBloc>().add(TasksLoaded());
       // Periodic [Timer] set for subsequent days that the app is left open
       Timer.periodic(const Duration(hours: 24), (timer) {
-        BlocProvider.of<TasksBloc>(context).add(TasksLoaded());
+        context.read<TasksBloc>().add(TasksLoaded());
       });
     });
   }
@@ -44,7 +44,7 @@ class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     // [ColorThemeOption] to pull app component colors from
-    final currentTheme = BlocProvider.of<ThemeBloc>(context).state.theme;
+    final currentTheme = context.select((ThemeBloc bloc) => bloc.state.theme);
     final backgroundColor = currentTheme.colorTheme.background;
 
     // Main screen of app
@@ -79,11 +79,7 @@ class HomePageState extends State<HomePage> {
                 ],
               ),
               centerTitle: true,
-              backgroundColor: BlocProvider.of<ThemeBloc>(context)
-                  .state
-                  .theme
-                  .colorTheme
-                  .low,
+              backgroundColor: currentTheme.colorTheme.low,
               shape: const ContinuousRectangleBorder(
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(1000),
@@ -159,7 +155,7 @@ class HomePageState extends State<HomePage> {
     // closes [SimpleDialog]
     void changeTheme(ColorThemeOption theme) {
       Navigator.pop(themeContext);
-      BlocProvider.of<ThemeBloc>(themeContext).add(ThemeChanged(theme));
+      themeContext.read<ThemeBloc>().add(ThemeChanged(theme));
     }
 
     return showDialog<void>(

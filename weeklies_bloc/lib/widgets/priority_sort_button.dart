@@ -17,11 +17,12 @@ class PrioritySortButtonState extends State<PrioritySortButton> {
   @override
   Widget build(BuildContext context) {
     // [ColorTheme] to pull colors from
-    final theme = BlocProvider.of<ThemeBloc>(context).state.theme.colorTheme;
+    final theme =
+        context.select((ThemeBloc bloc) => bloc.state.theme.colorTheme);
 
     return GestureDetector(
       onTap: () {
-        BlocProvider.of<TasksBloc>(context).add(PrioritySorted());
+        context.read<TasksBloc>().add(PrioritySorted());
       },
       child: Container(
         padding: const EdgeInsets.all(8),

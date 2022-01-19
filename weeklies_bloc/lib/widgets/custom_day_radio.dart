@@ -16,7 +16,8 @@ class DayRadioIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // [ColorTheme] to pull colors from
-    final theme = BlocProvider.of<ThemeBloc>(context).state.theme.colorTheme;
+    final theme =
+        context.select((ThemeBloc bloc) => bloc.state.theme.colorTheme);
 
     // Rounded box displaying the model.dayText
     return Container(

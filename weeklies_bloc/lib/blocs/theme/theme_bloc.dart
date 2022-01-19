@@ -18,7 +18,7 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
     ThemeChanged event,
     Emitter<ThemeState> emit,
   ) async {
-    if (state is ThemeState) emit(ThemeState(theme: event.theme));
+    emit(ThemeState(theme: event.theme));
     _saveTheme(event.theme);
   }
 

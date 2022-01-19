@@ -48,7 +48,7 @@ class TaskTileTextFieldState extends State<TaskTileTextField> {
           widget.item.priority,
           widget.item.day,
         );
-        BlocProvider.of<TasksBloc>(context).add(TaskUpdated(task));
+        context.read<TasksBloc>().add(TaskUpdated(task));
       },
       onSubmitted: (_) {
         final task = Task(
@@ -57,7 +57,7 @@ class TaskTileTextFieldState extends State<TaskTileTextField> {
           widget.item.priority,
           widget.item.day,
         );
-        BlocProvider.of<TasksBloc>(context).add(TaskUpdated(task));
+        context.read<TasksBloc>().add(TaskUpdated(task));
       },
       keyboardType: TextInputType.multiline,
       maxLines: null,

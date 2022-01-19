@@ -19,8 +19,9 @@ class ThemeRepository {
     }
 
     final jsonContent =
-        const JsonDecoder().convert(fileContents) as Map<String, String>;
-    return ColorThemeOptionExtension.fromJson(jsonContent['theme']!);
+        const JsonDecoder().convert(fileContents) as Map<String, dynamic>;
+    final themeString = jsonContent['theme'] as String;
+    return ColorThemeOptionExtension.fromJson(themeString);
   }
 
   // Convert [ColorThemeOption] to json & write to theme file

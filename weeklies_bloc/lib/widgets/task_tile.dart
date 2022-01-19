@@ -41,7 +41,8 @@ class TaskTileState extends State<TaskTile> {
   ) {
     void updatePriority(Priority p) {
       Navigator.pop(priorityContext);
-      BlocProvider.of<TasksBloc>(priorityContext)
+      priorityContext
+          .read<TasksBloc>()
           .add(TaskUpdated(Task(item.timeStamp, item.task, p, item.day)));
     }
 
@@ -76,9 +77,9 @@ class TaskTileState extends State<TaskTile> {
   ) {
     void updateDay(int day) {
       Navigator.pop(dayContext);
-      BlocProvider.of<TasksBloc>(dayContext).add(
-        TaskUpdated(Task(item.timeStamp, item.task, item.priority, day)),
-      );
+      dayContext.read<TasksBloc>().add(
+            TaskUpdated(Task(item.timeStamp, item.task, item.priority, day)),
+          );
     }
 
     return showDialog(
@@ -117,7 +118,7 @@ class TaskTileState extends State<TaskTile> {
       key: UniqueKey(),
       // Add [TaskDeleted] event to [TasksBloc] when a tile is removed
       onDismissed: (direction) {
-        BlocProvider.of<TasksBloc>(context).add(TaskDeleted(taskItem));
+        context.read<TasksBloc>().add(TaskDeleted(taskItem));
       },
       resizeDuration: const Duration(milliseconds: 750),
       // [Gradient] & [Text] to be displayed behind the [TaskTile] on dismissal

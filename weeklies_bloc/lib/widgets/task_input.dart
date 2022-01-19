@@ -43,11 +43,11 @@ class TaskInputWidgetState extends State<TaskInputWidget> {
   // Adds [TaskAdded] event with user's input and closes the input window
   void createTask(BuildContext taskInputContext) {
     Navigator.pop(taskInputContext);
-    BlocProvider.of<TasksBloc>(taskInputContext).add(
-      TaskAdded(
-        Task(DateTime.now(), controller.text, priority, day),
-      ),
-    );
+    taskInputContext.read<TasksBloc>().add(
+          TaskAdded(
+            Task(DateTime.now(), controller.text, priority, day),
+          ),
+        );
     controller.clear();
   }
 
@@ -117,7 +117,8 @@ class TaskInputWidgetState extends State<TaskInputWidget> {
   @override
   Widget build(BuildContext context) {
     // [ColorThemeOption] to pull colors from
-    final theme = BlocProvider.of<ThemeBloc>(context).state.theme.colorTheme;
+    final theme =
+        context.select((ThemeBloc bloc) => bloc.state.theme.colorTheme);
 
     return GestureDetector(
       onTap: () {
