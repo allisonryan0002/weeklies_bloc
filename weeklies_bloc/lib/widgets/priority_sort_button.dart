@@ -7,11 +7,13 @@ import 'package:weeklies/models/models.dart';
 
 // Simple button that calls [PrioritySorted] [TasksBloc] event when tapped
 class PrioritySortButton extends StatefulWidget {
+  const PrioritySortButton({Key? key}) : super(key: key);
+
   @override
-  _PrioritySortButtonState createState() => _PrioritySortButtonState();
+  PrioritySortButtonState createState() => PrioritySortButtonState();
 }
 
-class _PrioritySortButtonState extends State<PrioritySortButton> {
+class PrioritySortButtonState extends State<PrioritySortButton> {
   @override
   Widget build(BuildContext context) {
     // [ColorTheme] to pull colors from
@@ -22,12 +24,12 @@ class _PrioritySortButtonState extends State<PrioritySortButton> {
         BlocProvider.of<TasksBloc>(context).add(PrioritySorted());
       },
       child: Container(
+        padding: const EdgeInsets.all(8),
         child: Icon(
           Icons.format_list_numbered_rounded,
           color: theme.high,
           size: 4.2.h,
         ),
-        padding: EdgeInsets.all(8),
       ),
     );
   }

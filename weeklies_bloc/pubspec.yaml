@@ -10,21 +10,22 @@ environment:
   flutter: 2.5.3
 
 dependencies:
+  equatable: ^2.0.3
+  file: ^6.1.1
   flutter:
     sdk: flutter
-  path_provider: ^2.0.2
+  flutter_bloc: ^8.0.1
   google_fonts: ^2.1.0
-  equatable: ^2.0.2
-  flutter_bloc: ^7.0.1
-  mocktail: ^0.1.4
-  file: ^6.1.1
+  mocktail: ^0.2.0
+  path_provider: ^2.0.2
   sizer: ^2.0.13
+  very_good_analysis: ^2.4.0
 
 
 dev_dependencies:
+  bloc_test: ^9.0.2
   flutter_test:
     sdk: flutter
-  bloc_test: ^8.0.1
 
 flutter:
   uses-material-design: true

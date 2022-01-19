@@ -2,6 +2,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:sizer/sizer.dart';
 import 'package:weeklies/blocs/tasks/tasks.dart';
 import 'package:weeklies/blocs/theme/theme.dart';
@@ -25,20 +26,20 @@ class FakeThemeState extends Fake implements ThemeState {}
 void main() {
   late TasksBloc tasksBloc;
   late ThemeBloc themeBloc;
-  final task = Task(DateTime(2021, 6, 1), 'Test', Priority.low, 1);
+  final task = Task(DateTime(2021, 6), 'Test', Priority.low, 1);
 
   setUpAll(() {
-    registerFallbackValue<TasksEvent>(FakeTasksEvent());
-    registerFallbackValue<TasksState>(FakeTasksState());
-    registerFallbackValue<ThemeEvent>(FakeThemeEvent());
-    registerFallbackValue<ThemeState>(FakeThemeState());
+    registerFallbackValue(FakeTasksEvent());
+    registerFallbackValue(FakeTasksState());
+    registerFallbackValue(FakeThemeEvent());
+    registerFallbackValue(FakeThemeState());
   });
 
   setUp(() {
     tasksBloc = MockTaskBloc();
     themeBloc = MockThemeBloc();
     when(() => themeBloc.state)
-        .thenAnswer((_) => ThemeState(theme: ColorThemeOption.theme1));
+        .thenAnswer((_) => const ThemeState(theme: ColorThemeOption.theme1));
   });
 
   group('TaskListView', () {
@@ -51,7 +52,7 @@ void main() {
             value: tasksBloc,
             child: BlocProvider.value(
               value: themeBloc,
-              child: MaterialApp(
+              child: const MaterialApp(
                 home: Scaffold(
                   body: TaskListView(),
                 ),
@@ -67,13 +68,13 @@ void main() {
     testWidgets(
       'renders empty container when state is TasksLoadSuccess with no tasks',
       (WidgetTester tester) async {
-        when(() => tasksBloc.state).thenAnswer((_) => TasksLoadSuccess());
+        when(() => tasksBloc.state).thenAnswer((_) => const TasksLoadSuccess());
         await tester.pumpWidget(
           BlocProvider.value(
             value: tasksBloc,
             child: BlocProvider.value(
               value: themeBloc,
-              child: MaterialApp(
+              child: const MaterialApp(
                 home: Scaffold(
                   body: TaskListView(),
                 ),
@@ -99,7 +100,7 @@ void main() {
                   BlocProvider<ThemeBloc>.value(value: themeBloc),
                   BlocProvider.value(value: tasksBloc),
                 ],
-                child: MaterialApp(
+                child: const MaterialApp(
                   home: Scaffold(
                     body: TaskListView(),
                   ),
@@ -126,7 +127,7 @@ void main() {
                   BlocProvider<ThemeBloc>.value(value: themeBloc),
                   BlocProvider.value(value: tasksBloc),
                 ],
-                child: MaterialApp(
+                child: const MaterialApp(
                   home: Scaffold(
                     body: TaskListView(),
                   ),
@@ -138,7 +139,9 @@ void main() {
         expect(find.widgetWithText(TaskTileTextField, 'Test'), findsOneWidget);
         expect(find.widgetWithText(PriorityRadioIcon, '5'), findsOneWidget);
         expect(
-            find.widgetWithText(DayRadioIconTileSize, 'Today'), findsOneWidget);
+          find.widgetWithText(DayRadioIconTileSize, 'Today'),
+          findsOneWidget,
+        );
       },
     );
 
@@ -210,10 +213,10 @@ void main() {
     // );
 
     testWidgets(
-      'renders list view sorted in priority format when state is TasksLoadSuccess with SortType.priority',
+      'renders list view sorted in priority format when state is '
+      'TasksLoadSuccess with SortType.priority',
       (WidgetTester tester) async {
-        when(() => tasksBloc.state)
-            .thenAnswer((_) => TasksLoadSuccess([task], SortType.priority));
+        when(() => tasksBloc.state).thenAnswer((_) => TasksLoadSuccess([task]));
         await tester.pumpWidget(
           Sizer(
             builder: (context, orientation, deviceType) {
@@ -222,7 +225,7 @@ void main() {
                   BlocProvider<ThemeBloc>.value(value: themeBloc),
                   BlocProvider.value(value: tasksBloc),
                 ],
-                child: MaterialApp(
+                child: const MaterialApp(
                   home: Scaffold(
                     body: TaskListView(),
                   ),
@@ -239,7 +242,8 @@ void main() {
     );
 
     testWidgets(
-      'renders list view sorted in day format when state is TasksLoadSuccess with SortType.day',
+      'renders list view sorted in day format when state is TasksLoadSuccess '
+      'with SortType.day',
       (WidgetTester tester) async {
         when(() => tasksBloc.state)
             .thenAnswer((_) => TasksLoadSuccess([task], SortType.day));
@@ -251,7 +255,7 @@ void main() {
                   BlocProvider<ThemeBloc>.value(value: themeBloc),
                   BlocProvider.value(value: tasksBloc),
                 ],
-                child: MaterialApp(
+                child: const MaterialApp(
                   home: Scaffold(
                     body: TaskListView(),
                   ),
@@ -261,8 +265,14 @@ void main() {
           ),
         );
         expect(find.byType(TaskListView), findsOneWidget);
-        expect(find.byKey(Key('day_sort_outer_list_view')), findsOneWidget);
-        expect(find.byKey(Key('day_sort_inner_list_view')), findsOneWidget);
+        expect(
+          find.byKey(const Key('day_sort_outer_list_view')),
+          findsOneWidget,
+        );
+        expect(
+          find.byKey(const Key('day_sort_inner_list_view')),
+          findsOneWidget,
+        );
         expect(find.text('Test'), findsOneWidget);
         expect(find.text('Today'), findsNWidgets(2));
       },

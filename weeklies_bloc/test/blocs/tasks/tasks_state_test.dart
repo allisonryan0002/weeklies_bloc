@@ -4,6 +4,8 @@ import 'package:weeklies/models/models.dart';
 
 void main() {
   group('TasksState', () {
+    final task = Task(DateTime(2021, 6), 'Test', Priority.low, 1);
+
     group('TasksLoadInProgress', () {
       test('toString returns correct value', () {
         expect(
@@ -16,9 +18,8 @@ void main() {
     group('TasksLoadSuccess', () {
       test('toString returns correct value', () {
         expect(
-          TasksLoadSuccess(
-              [Task(DateTime(2021, 6, 1), 'Test', Priority.low, 1)]).toString(),
-          'TasksLoadSuccess { tasks: [${Task(DateTime(2021, 6, 1), 'Test', Priority.low, 1)}] }',
+          TasksLoadSuccess([task]).toString(),
+          'TasksLoadSuccess { tasks: [$task] }',
         );
       });
     });

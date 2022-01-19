@@ -2,48 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:weeklies/models/models.dart';
 import 'package:weeklies/utility/utility.dart';
 
-// Circular material element representing 5 colors of the [ColorThemeRadio] model
+// Circular material element representing 5 colors of the [ColorThemeRadio]
+// model
 class ColorThemeRadioIcon extends StatelessWidget {
-  final ColorThemeRadio model;
+  const ColorThemeRadioIcon(this.model, {Key? key}) : super(key: key);
 
-  ColorThemeRadioIcon(this.model);
+  final ColorThemeRadio model;
 
   // Each of the 5 colors are layered in a column that is clipped into a circle
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Container(
-        child: Column(
-          children: [
-            Container(
-              color: model.theme.high,
-              constraints: BoxConstraints(maxHeight: 10, maxWidth: 50),
-            ),
-            Container(
-              color: model.theme.medHigh,
-              constraints: BoxConstraints(maxHeight: 10, maxWidth: 50),
-            ),
-            Container(
-              color: model.theme.med,
-              constraints: BoxConstraints(maxHeight: 10, maxWidth: 50),
-            ),
-            Container(
-              color: model.theme.lowMed,
-              constraints: BoxConstraints(maxHeight: 10, maxWidth: 50),
-            ),
-            Container(
-              color: model.theme.low,
-              constraints: BoxConstraints(maxHeight: 10, maxWidth: 50),
-            ),
-          ],
-        ),
-        constraints: BoxConstraints(maxHeight: 50, maxWidth: 50),
-        clipBehavior: Clip.hardEdge,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-        ),
-        margin: EdgeInsets.all(4),
-      ),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: model.isSelected
@@ -53,12 +22,47 @@ class ColorThemeRadioIcon extends StatelessWidget {
               )
             : null,
       ),
+      child: Container(
+        constraints: const BoxConstraints(maxHeight: 50, maxWidth: 50),
+        clipBehavior: Clip.hardEdge,
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+        ),
+        margin: const EdgeInsets.all(4),
+        child: Column(
+          children: [
+            Container(
+              color: model.theme.high,
+              constraints: const BoxConstraints(maxHeight: 10, maxWidth: 50),
+            ),
+            Container(
+              color: model.theme.medHigh,
+              constraints: const BoxConstraints(maxHeight: 10, maxWidth: 50),
+            ),
+            Container(
+              color: model.theme.med,
+              constraints: const BoxConstraints(maxHeight: 10, maxWidth: 50),
+            ),
+            Container(
+              color: model.theme.lowMed,
+              constraints: const BoxConstraints(maxHeight: 10, maxWidth: 50),
+            ),
+            Container(
+              color: model.theme.low,
+              constraints: const BoxConstraints(maxHeight: 10, maxWidth: 50),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
 
 // Displays set of [ColorThemeRadioIcon]s in a horizontally wrapping list
 class CustomColorThemeRadio extends StatefulWidget {
+  const CustomColorThemeRadio(this.callback, this.initialSelected, {Key? key})
+      : super(key: key);
+
   // Relays currently selected [ColorThemeOption] to [HomePage]
   final Function(ColorThemeOption) callback;
 
@@ -66,21 +70,22 @@ class CustomColorThemeRadio extends StatefulWidget {
   // as the initially selected [ColorThemeRadioIcon]
   final ColorThemeOption initialSelected;
 
-  CustomColorThemeRadio(this.callback, this.initialSelected);
-
   @override
-  _CustomColorThemeRadioState createState() => _CustomColorThemeRadioState();
+  CustomColorThemeRadioState createState() => CustomColorThemeRadioState();
 }
 
-class _CustomColorThemeRadioState extends State<CustomColorThemeRadio> {
-  // List of [ColorThemeRadio] models for the [ColorThemeRadioIcon]s to be built from
+class CustomColorThemeRadioState extends State<CustomColorThemeRadio> {
+  // List of [ColorThemeRadio] models for the [ColorThemeRadioIcon]s to be built
+  // from
   late List<ColorThemeRadio> colorThemeRadios;
 
   // Stores the selected [ColorThemeRadioIcon]s corresponding [ColorThemeOption]
-  // to be passed into the callback function upon selecting a [ColorThemeRadioIcons]
+  // to be passed into the callback function upon selecting a
+  // [ColorThemeRadioIcons]
   late ColorThemeOption theme;
 
-  // Setup colorThemeRadios list with [ColorThemeRadio]s based on the initialSelected
+  // Setup colorThemeRadios list with [ColorThemeRadio]s based on the
+  // initialSelected
   @override
   void initState() {
     super.initState();
@@ -99,15 +104,16 @@ class _CustomColorThemeRadioState extends State<CustomColorThemeRadio> {
           for (int i = 0; i < colorThemeRadios.length; i++)
             GestureDetector(
               child: Container(
+                padding: const EdgeInsets.all(3),
                 child: ColorThemeRadioIcon(colorThemeRadios[i]),
-                padding: EdgeInsets.all(3),
               ),
-              // Ensure only one button is selected at a time & rebuild to update
+              // Ensure only one button is selected at a time & rebuild to
+              // update
               onTap: () {
                 setState(() {
-                  colorThemeRadios.forEach((element) {
-                    element.isSelected = false;
-                  });
+                  for (final radio in colorThemeRadios) {
+                    radio.isSelected = false;
+                  }
                   colorThemeRadios[i].isSelected = true;
                   theme = ColorThemeOption.values[i];
                 });

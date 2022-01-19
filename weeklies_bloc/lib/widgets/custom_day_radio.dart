@@ -9,9 +9,9 @@ import 'package:weeklies/utility/utility.dart';
 //
 // Used in the [CustomDayRadio] widget
 class DayRadioIcon extends StatelessWidget {
-  final DayRadio model;
+  const DayRadioIcon(this.model, {Key? key}) : super(key: key);
 
-  DayRadioIcon(this.model);
+  final DayRadio model;
 
   @override
   Widget build(BuildContext context) {
@@ -20,34 +20,32 @@ class DayRadioIcon extends StatelessWidget {
 
     // Rounded box displaying the model.dayText
     return Container(
+      padding: const EdgeInsets.all(1.5),
+      decoration: BoxDecoration(
+        color: theme.med,
+        borderRadius: const BorderRadius.all(Radius.circular(8)),
+      ),
       child: Container(
-        child: FittedBox(
-          fit: BoxFit.contain,
-          child: Text(
-            model.dayText,
-            style: Theme.of(context).textTheme.subtitle1?.copyWith(
-                fontSize: 15,
-                color: Colors.black.withOpacity(0.7),
-                fontWeight: FontWeight.w100),
-            textAlign: TextAlign.center,
-          ),
-        ),
         decoration: BoxDecoration(
-          shape: BoxShape.rectangle,
           color: theme.med,
           // Conditional border indicating the model's selection status
           border: model.isSelected
               ? Border.all(color: Colors.black.withOpacity(0.8), width: 1.3)
               : null,
-          borderRadius: BorderRadius.all(Radius.circular(7)),
+          borderRadius: const BorderRadius.all(Radius.circular(7)),
         ),
-        padding: EdgeInsets.fromLTRB(5, 4, 5, 4),
-      ),
-      padding: EdgeInsets.all(1.5),
-      decoration: BoxDecoration(
-        shape: BoxShape.rectangle,
-        color: theme.med,
-        borderRadius: BorderRadius.all(Radius.circular(8)),
+        padding: const EdgeInsets.fromLTRB(5, 4, 5, 4),
+        child: FittedBox(
+          child: Text(
+            model.dayText,
+            style: Theme.of(context).textTheme.subtitle1?.copyWith(
+                  fontSize: 15,
+                  color: Colors.black.withOpacity(0.7),
+                  fontWeight: FontWeight.w100,
+                ),
+            textAlign: TextAlign.center,
+          ),
+        ),
       ),
     );
   }
@@ -58,15 +56,19 @@ class DayRadioIcon extends StatelessWidget {
 // Only used on the [Task] [ListTile]s as buttons, not in the [CustomDayRadio]
 // so they do not have conditional selection borders
 class DayRadioIconTileSize extends StatelessWidget {
-  final DayRadio item;
+  const DayRadioIconTileSize(this.item, {Key? key}) : super(key: key);
 
-  DayRadioIconTileSize(this.item);
+  final DayRadio item;
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: const EdgeInsets.fromLTRB(5, 2.5, 5, 2.5),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.8),
+        borderRadius: const BorderRadius.all(Radius.circular(6)),
+      ),
       child: FittedBox(
-        fit: BoxFit.contain,
         child: Text(
           item.dayText,
           style: Theme.of(context)
@@ -76,17 +78,15 @@ class DayRadioIconTileSize extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
       ),
-      padding: EdgeInsets.fromLTRB(5, 2.5, 5, 2.5),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.8),
-        borderRadius: BorderRadius.all(Radius.circular(6)),
-      ),
     );
   }
 }
 
 // Displays set of [DyRadioIcon]s in a horizontally wrapping list
 class CustomDayRadio extends StatefulWidget {
+  const CustomDayRadio(this.callback, this.initialSelected, {Key? key})
+      : super(key: key);
+
   // Relays currently selected [Day](as int) to [TaskInputWidget]
   final Function(int) callback;
 
@@ -94,13 +94,11 @@ class CustomDayRadio extends StatefulWidget {
   // this [Day](as int) as the initially selected [DayRadioIcon]
   final int initialSelected;
 
-  CustomDayRadio(this.callback, this.initialSelected);
-
   @override
-  _CustomDayRadioState createState() => _CustomDayRadioState();
+  CustomDayRadioState createState() => CustomDayRadioState();
 }
 
-class _CustomDayRadioState extends State<CustomDayRadio> {
+class CustomDayRadioState extends State<CustomDayRadio> {
   // List of [DayRadio] models for the [DayRadioIcon]s to be built from
   late List<DayRadio> dayRadios = [];
 
@@ -130,15 +128,16 @@ class _CustomDayRadioState extends State<CustomDayRadio> {
           for (int i = 0; i < dayRadios.length; i++)
             GestureDetector(
               child: Container(
+                padding: const EdgeInsets.all(2),
                 child: DayRadioIcon(dayRadios[i]),
-                padding: EdgeInsets.all(2),
               ),
-              // Ensure only one button is selected at a time & rebuild to update
+              // Ensure only one button is selected at a time & rebuild to
+              // update
               onTap: () {
                 setState(() {
-                  dayRadios.forEach((element) {
-                    element.isSelected = false;
-                  });
+                  for (final radio in dayRadios) {
+                    radio.isSelected = false;
+                  }
                   dayRadios[i].isSelected = true;
                   day = dayList.indexOf(dayRadios[i].dayText);
                 });

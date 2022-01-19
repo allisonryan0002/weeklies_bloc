@@ -28,17 +28,17 @@ void main() {
   late ThemeBloc themeBloc;
 
   setUpAll(() {
-    registerFallbackValue<TasksEvent>(FakeTasksEvent());
-    registerFallbackValue<TasksState>(FakeTasksState());
-    registerFallbackValue<ThemeEvent>(FakeThemeEvent());
-    registerFallbackValue<ThemeState>(FakeThemeState());
+    registerFallbackValue(FakeTasksEvent());
+    registerFallbackValue(FakeTasksState());
+    registerFallbackValue(FakeThemeEvent());
+    registerFallbackValue(FakeThemeState());
   });
 
   setUp(() {
     tasksBloc = MockTaskBloc();
     themeBloc = MockThemeBloc();
     when(() => themeBloc.state)
-        .thenAnswer((_) => ThemeState(theme: ColorThemeOption.theme1));
+        .thenAnswer((_) => const ThemeState(theme: ColorThemeOption.theme1));
   });
 
   group('PrioritySortButton', () {
@@ -48,7 +48,7 @@ void main() {
           builder: (context, orientation, deviceType) {
             return BlocProvider<ThemeBloc>.value(
               value: themeBloc,
-              child: MaterialApp(
+              child: const MaterialApp(
                 home: Scaffold(
                   body: PrioritySortButton(),
                 ),
@@ -58,9 +58,12 @@ void main() {
         ),
       );
       expect(
-          find.widgetWithIcon(
-              PrioritySortButton, Icons.format_list_numbered_rounded),
-          findsOneWidget);
+        find.widgetWithIcon(
+          PrioritySortButton,
+          Icons.format_list_numbered_rounded,
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('triggers sorting by priority', (WidgetTester tester) async {
@@ -72,7 +75,7 @@ void main() {
                 BlocProvider<ThemeBloc>.value(value: themeBloc),
                 BlocProvider.value(value: tasksBloc),
               ],
-              child: MaterialApp(
+              child: const MaterialApp(
                 home: Scaffold(
                   body: PrioritySortButton(),
                 ),
@@ -81,8 +84,10 @@ void main() {
           },
         ),
       );
-      var prioritySortButtonFinder = find.widgetWithIcon(
-          PrioritySortButton, Icons.format_list_numbered_rounded);
+      final prioritySortButtonFinder = find.widgetWithIcon(
+        PrioritySortButton,
+        Icons.format_list_numbered_rounded,
+      );
       await tester.tap(prioritySortButtonFinder);
       verify(() => tasksBloc.add(PrioritySorted())).called(1);
     });

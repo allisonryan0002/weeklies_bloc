@@ -16,7 +16,7 @@ import 'package:weeklies/widgets/task_tile_text_field.dart';
 // class FakeTasksState extends Fake implements TasksState {}
 
 void main() {
-  Task testerTask = Task(DateTime.now(), 'Test', Priority.low, 1);
+  final testerTask = Task(DateTime.now(), 'Test', Priority.low, 1);
   // late TasksBloc tasksBloc;
 
   // setUpAll(() {
@@ -57,7 +57,7 @@ void main() {
 
         final testTextInput = TestTextInput()..register();
         await tester.showKeyboard(find.byType(TaskTileTextField));
-        testTextInput.updateEditingValue(TextEditingValue(text: 'Text'));
+        testTextInput.updateEditingValue(const TextEditingValue(text: 'Text'));
         // final textFieldfinder = find.byType(TaskTileTextField);
         // await tester.enterText(textFieldfinder, 'Updated');
         expect(find.text('Text'), findsOneWidget);

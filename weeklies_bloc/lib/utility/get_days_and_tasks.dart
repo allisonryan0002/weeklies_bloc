@@ -5,15 +5,25 @@ import 'package:weeklies/models/models.dart';
 // For each [Day], map a list of [Task]s with corresponding [Day]s to it
 Map<String, List<dynamic>> getDaysAndTasks(List<Task> tasks) {
   // List with sublist for every [Day] option
-  List<List<dynamic>> tasksByDay = [[], [], [], [], [], [], [], [], []];
+  final tasksByDay = [
+    <dynamic>[],
+    <dynamic>[],
+    <dynamic>[],
+    <dynamic>[],
+    <dynamic>[],
+    <dynamic>[],
+    <dynamic>[],
+    <dynamic>[],
+    <dynamic>[],
+  ];
   // [Day] options based on the current day of the week
-  List<String> dayList = Day(DateTime.now().weekday).dayOptions;
+  final dayList = Day(DateTime.now().weekday).dayOptions;
   // List for collecting all non-empty map entries
-  List<MapEntry<String, List<dynamic>>> entries = [];
+  final entries = <MapEntry<String, List<dynamic>>>[];
 
   // Add [Task]s to list position associated with their [Task.day] value
-  for (int i = 0; i < tasks.length; i++) {
-    Task task = tasks[i];
+  for (var i = 0; i < tasks.length; i++) {
+    final task = tasks[i];
     switch (task.day) {
       case 0:
         tasksByDay[0].add([task, i]);
@@ -74,5 +84,5 @@ Map<String, List<dynamic>> getDaysAndTasks(List<Task> tasks) {
     entries.add(MapEntry<String, List<dynamic>>(dayList[8], tasksByDay[8]));
   }
 
-  return Map()..addEntries(entries);
+  return {}..addEntries(entries);
 }

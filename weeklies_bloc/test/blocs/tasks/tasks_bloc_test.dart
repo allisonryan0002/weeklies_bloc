@@ -1,8 +1,9 @@
 import 'dart:io';
-import 'package:flutter_test/flutter_test.dart';
+
 import 'package:bloc_test/bloc_test.dart';
-import 'package:weeklies/blocs/tasks/tasks.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:weeklies/blocs/tasks/tasks.dart';
 import 'package:weeklies/models/models.dart';
 import 'package:weeklies/repositories/repositories.dart';
 
@@ -17,7 +18,7 @@ void main() {
     late TaskRepository taskRepository;
 
     setUp(() {
-      task = Task(DateTime.utc(2021, 6, 1), 'Test', Priority.low, 1);
+      task = Task(DateTime.utc(2021, 6), 'Test', Priority.low, 1);
       taskRepository = MockTaskRepository();
       when(() => taskRepository.loadTasks())
           .thenAnswer((_) => Future.value([]));
@@ -25,11 +26,11 @@ void main() {
           .thenAnswer((_) => Future.value(SortType.priority));
       when(() => taskRepository.saveTasks([]))
           .thenAnswer((_) => Future.value(MockFile()));
-      tasksBloc = TasksBloc(taskRepository: taskRepository);
+      tasksBloc = TasksBloc(taskRepository);
     });
 
-    blocTest(
-      'should load tasks from the TasksLoaded event',
+    blocTest<TasksBloc, TasksState>(
+      'loads tasks from the TasksLoaded event',
       build: () {
         when(() => taskRepository.loadTasks())
             .thenAnswer((_) => Future.value([task]));
@@ -37,71 +38,64 @@ void main() {
       },
       act: (TasksBloc bloc) async => bloc..add(TasksLoaded()),
       expect: () => <TasksState>[
-        TasksLoadSuccess([task], SortType.priority),
+        TasksLoadSuccess([task]),
       ],
     );
 
-    blocTest(
-      'should add a task to the list from the TaskAdded event',
+    blocTest<TasksBloc, TasksState>(
+      'adds a task to the list from the TaskAdded event',
       build: () => tasksBloc,
-      act: (TasksBloc bloc) async =>
-          bloc..add(TasksLoaded())..add(TaskAdded(task)),
+      act: (TasksBloc bloc) async => bloc..add(TaskAdded(task)),
+      seed: () => const TasksLoadSuccess(),
       expect: () => <TasksState>[
-        TasksLoadSuccess([], SortType.priority),
-        TasksLoadSuccess([task], SortType.priority),
+        TasksLoadSuccess([task]),
       ],
     );
 
-    blocTest(
-      'should update task from TaskUpdated event',
+    blocTest<TasksBloc, TasksState>(
+      'updates task from TaskUpdated event',
       build: () => tasksBloc,
       act: (TasksBloc bloc) async => bloc
-        ..add(TasksLoaded())
-        ..add(TaskAdded(task))
-        ..add(TaskUpdated(
-            Task(task.timeStamp, 'UpdatedTest', task.priority, task.day))),
+        ..add(
+          TaskUpdated(
+            Task(task.timeStamp, 'UpdatedTest', task.priority, task.day),
+          ),
+        ),
+      seed: () => TasksLoadSuccess([task]),
       expect: () => <TasksState>[
-        TasksLoadSuccess([], SortType.priority),
-        TasksLoadSuccess([task], SortType.priority),
         TasksLoadSuccess(
-            [Task(task.timeStamp, 'UpdatedTest', task.priority, task.day)],
-            SortType.priority),
+          [Task(task.timeStamp, 'UpdatedTest', task.priority, task.day)],
+        ),
       ],
     );
 
-    blocTest(
-      'should remove task from the list from TaskDeleted event',
+    blocTest<TasksBloc, TasksState>(
+      'removes task from the list from TaskDeleted event',
       build: () => tasksBloc,
-      act: (TasksBloc bloc) async => bloc
-        ..add(TasksLoaded())
-        ..add(TaskAdded(task))
-        ..add(TaskDeleted(task)),
+      act: (TasksBloc bloc) async => bloc..add(TaskDeleted(task)),
+      seed: () => TasksLoadSuccess([task]),
       expect: () => <TasksState>[
-        TasksLoadSuccess([], SortType.priority),
-        TasksLoadSuccess([task], SortType.priority),
-        TasksLoadSuccess([], SortType.priority),
+        const TasksLoadSuccess(),
       ],
     );
 
-    blocTest(
-      'should set sort to day',
+    blocTest<TasksBloc, TasksState>(
+      'sets sort to priority',
       build: () => tasksBloc,
-      act: (TasksBloc bloc) async => bloc..add(TasksLoaded())..add(DaySorted()),
+      act: (TasksBloc bloc) async => bloc..add(PrioritySorted()),
+      seed: () => const TasksLoadSuccess([], SortType.day),
       expect: () => <TasksState>[
-        TasksLoadSuccess([], SortType.priority),
-        TasksLoadSuccess([], SortType.day),
+        const TasksLoadSuccess(),
       ],
     );
 
-    blocTest(
-      'should set sort to priority',
+    blocTest<TasksBloc, TasksState>(
+      'sets sort to day',
       build: () => tasksBloc,
-      act: (TasksBloc bloc) async =>
-          bloc..add(TasksLoaded())..add(DaySorted())..add(PrioritySorted()),
+      act: (TasksBloc bloc) async => bloc..add(DaySorted()),
+      seed: () => const TasksLoadSuccess(),
       expect: () => <TasksState>[
-        TasksLoadSuccess([], SortType.priority),
-        TasksLoadSuccess([], SortType.day),
-        TasksLoadSuccess([], SortType.priority),
+        const TasksLoadSuccess([], SortType.day),
       ],
     );
   });

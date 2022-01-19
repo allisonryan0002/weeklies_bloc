@@ -1,13 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:weeklies/models/models.dart';
+
 import 'package:weeklies/clients/clients.dart';
+import 'package:weeklies/models/models.dart';
 
 class TaskRepository {
+  TaskRepository({required this.client});
+
   // [FileClient] provides access to local storage
   FileClient client;
-
-  TaskRepository({required this.client});
 
   // Read task file contents & convert from json
   Future<List<Task>> loadTasks() async {
@@ -16,17 +17,22 @@ class TaskRepository {
       saveTasks([]);
       return [];
     }
-    final jsonContent = JsonDecoder().convert(fileContents);
-    return (jsonContent['tasks'])
-        .map<Task>((task) => Task.fromJson(task))
-        .toList();
+    final jsonContent =
+        const JsonDecoder().convert(fileContents) as Map<String, dynamic>;
+    final tasksJsonList = jsonContent['tasks']! as List<dynamic>;
+    final list = <Task>[];
+    for (final taskJson in tasksJsonList) {
+      list.add(Task.fromJson(taskJson as Map<String, dynamic>));
+    }
+    return list;
   }
 
   // Convert [Task] list to json & write to task file
+  // ignore: avoid_void_async
   void saveTasks(List<Task> tasks) async {
-    final contents = JsonEncoder()
+    final contents = const JsonEncoder()
         .convert({'tasks': tasks.map((task) => task.toJson()).toList()});
-    client.write('myTasks.json', contents);
+    await client.write('myTasks.json', contents);
   }
 
   // Read sort file contents & convert from json
@@ -37,13 +43,15 @@ class TaskRepository {
       return SortType.priority;
     }
 
-    final jsonContent = JsonDecoder().convert(fileContents);
-    return (SortTypeExtension.fromJson(jsonContent['sort']));
+    final jsonContent =
+        const JsonDecoder().convert(fileContents) as Map<String, dynamic>;
+    return SortTypeExtension.fromJson(jsonContent['sort']! as int);
   }
 
   // Convert [SortType] to json & write to sort file
+  // ignore: avoid_void_async
   void saveSort(SortType sort) async {
-    final contents = JsonEncoder().convert({'sort': sort.toJson()});
-    client.write('mySort.json', contents);
+    final contents = const JsonEncoder().convert({'sort': sort.toJson()});
+    await client.write('mySort.json', contents);
   }
 }

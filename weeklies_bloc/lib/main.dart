@@ -34,13 +34,14 @@ import 'package:weeklies/models/color_theme.dart';
 import 'package:weeklies/repositories/repositories.dart';
 import 'package:weeklies/widgets/widgets.dart';
 
-//TODO: fix random "resorts"
+//TODO: fix random "re-sorts"
 
+// ignore: avoid_void_async
 void main() async {
   // Setup [FileClient] for application access to local storage
   WidgetsFlutterBinding.ensureInitialized();
   final dir = await getApplicationDocumentsDirectory();
-  final fileClient = FileClient(dir: dir, fileSystem: LocalFileSystem());
+  final fileClient = FileClient(dir: dir, fileSystem: const LocalFileSystem());
 
   // Setup [TaskRepository] & load stored [ColorThemeOption] from it
   final tasksRepository = TaskRepository(client: fileClient);
@@ -48,42 +49,47 @@ void main() async {
   final theme = await themeRepository.loadTheme();
 
   // Start the app with the repository & loaded theme
-  runApp(MyApp(
-    tasksRepository: tasksRepository,
-    themeRepository: themeRepository,
-    theme: theme,
-  ));
+  runApp(
+    MyApp(
+      tasksRepository: tasksRepository,
+      themeRepository: themeRepository,
+      theme: theme,
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({
+    Key? key,
+    required this.tasksRepository,
+    required this.themeRepository,
+    required this.theme,
+  }) : super(key: key);
+
   final TaskRepository tasksRepository;
   final ThemeRepository themeRepository;
   final ColorThemeOption theme;
-
-  MyApp(
-      {required this.tasksRepository,
-      required this.themeRepository,
-      required this.theme});
 
   @override
   Widget build(BuildContext context) {
     // Provide [TasksRepository], [TasksBloc], & [ThemeBloc] to tree
     return RepositoryProvider.value(
-      value: this.themeRepository,
+      value: themeRepository,
       child: RepositoryProvider.value(
-        value: this.tasksRepository,
+        value: tasksRepository,
         child: MultiBlocProvider(
           providers: [
             BlocProvider(
               create: (context) => TasksBloc(
-                taskRepository: RepositoryProvider.of<TaskRepository>(context),
+                RepositoryProvider.of<TaskRepository>(context),
               )..add(TasksLoaded()),
             ),
             BlocProvider(
               create: (context) => ThemeBloc(
-                  themeRepository:
-                      RepositoryProvider.of<ThemeRepository>(context),
-                  initialTheme: theme),
+                themeRepository:
+                    RepositoryProvider.of<ThemeRepository>(context),
+                initialTheme: theme,
+              ),
             ),
           ],
           child: BlocBuilder<ThemeBloc, ThemeState>(
@@ -96,16 +102,19 @@ class MyApp extends StatelessWidget {
                   textTheme: TextTheme(
                     // AppBar title
                     headline1: GoogleFonts.rockSalt(
-                        fontSize: 28,
-                        color: Colors.white,
-                        letterSpacing: 4,
-                        fontWeight: FontWeight.bold),
+                      fontSize: 28,
+                      color: Colors.white,
+                      letterSpacing: 4,
+                      fontWeight: FontWeight.bold,
+                    ),
                     // Text behind dismissing task
                     headline2: GoogleFonts.righteous(
-                        fontSize: 24,
-                        color: Colors.white,
-                        fontWeight: FontWeight.normal),
-                    // Font for priority radio icons, task text, and taskTextField
+                      fontSize: 24,
+                      color: Colors.white,
+                      fontWeight: FontWeight.normal,
+                    ),
+                    // Font for priority radio icons, task text, and
+                    // taskTextField
                     bodyText1: GoogleFonts.karla(
                       fontSize: 20,
                       color: Colors.black.withOpacity(0.8),
@@ -113,14 +122,15 @@ class MyApp extends StatelessWidget {
                     ),
                     // Font for time radio icons
                     subtitle1: GoogleFonts.righteous(
-                        fontSize: 12,
-                        color: Colors.white,
-                        fontWeight: FontWeight.normal),
+                      fontSize: 12,
+                      color: Colors.white,
+                      fontWeight: FontWeight.normal,
+                    ),
                   ),
                   visualDensity: VisualDensity.adaptivePlatformDensity,
                 ),
                 debugShowCheckedModeBanner: false,
-                home: HomePage(),
+                home: const HomePage(),
               );
             },
           ),

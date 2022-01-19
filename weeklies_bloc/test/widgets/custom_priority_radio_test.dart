@@ -26,13 +26,13 @@ void main() {
     setUp(() {
       themeBloc = MockThemeBloc();
       when(() => themeBloc.state).thenAnswer(
-        (_) => ThemeState(theme: ColorThemeOption.theme1),
+        (_) => const ThemeState(theme: ColorThemeOption.theme1),
       );
     });
 
     group('PriorityRadioIcon', () {
       testWidgets(
-        "renders correctly",
+        'renders correctly',
         (WidgetTester tester) async {
           await tester.pumpWidget(
             BlocProvider.value(
@@ -51,7 +51,7 @@ void main() {
     });
 
     group('CustomPriorityRadioWidget', () {
-      testWidgets("renders correctly", (WidgetTester tester) async {
+      testWidgets('renders correctly', (WidgetTester tester) async {
         await tester.pumpWidget(
           BlocProvider<ThemeBloc>.value(
             value: themeBloc,
@@ -69,22 +69,23 @@ void main() {
         expect(find.byType(PriorityRadioIcon), findsNWidgets(5));
       });
 
-      testWidgets("callback function is called on tap",
+      testWidgets('callback function is called on tap',
           (WidgetTester tester) async {
-        bool called = false;
+        var called = false;
         await tester.pumpWidget(
           BlocProvider.value(
-              value: themeBloc,
-              child: MaterialApp(
-                home: Scaffold(
-                  body: CustomPriorityRadio(
-                    (_) {
-                      called = true;
-                    },
-                    Priority.med,
-                  ),
+            value: themeBloc,
+            child: MaterialApp(
+              home: Scaffold(
+                body: CustomPriorityRadio(
+                  (_) {
+                    called = true;
+                  },
+                  Priority.med,
                 ),
-              )),
+              ),
+            ),
+          ),
         );
         final radioIconFinder = find.widgetWithText(PriorityRadioIcon, '2');
         await tester.tap(radioIconFinder);

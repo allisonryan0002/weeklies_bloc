@@ -28,10 +28,10 @@ void main() {
   late ThemeBloc themeBloc;
 
   setUpAll(() {
-    registerFallbackValue<TasksEvent>(FakeTasksEvent());
-    registerFallbackValue<TasksState>(FakeTasksState());
-    registerFallbackValue<ThemeEvent>(FakeThemeEvent());
-    registerFallbackValue<ThemeState>(FakeThemeState());
+    registerFallbackValue(FakeTasksEvent());
+    registerFallbackValue(FakeTasksState());
+    registerFallbackValue(FakeThemeEvent());
+    registerFallbackValue(FakeThemeState());
   });
 
   group('DaySortButton', () {
@@ -39,7 +39,7 @@ void main() {
       tasksBloc = MockTaskBloc();
       themeBloc = MockThemeBloc();
       when(() => themeBloc.state)
-          .thenAnswer((_) => ThemeState(theme: ColorThemeOption.theme1));
+          .thenAnswer((_) => const ThemeState(theme: ColorThemeOption.theme1));
     });
 
     testWidgets('renders correctly', (WidgetTester tester) async {
@@ -48,7 +48,7 @@ void main() {
           builder: (context, orientation, deviceType) {
             return BlocProvider<ThemeBloc>.value(
               value: themeBloc,
-              child: MaterialApp(
+              child: const MaterialApp(
                 home: Scaffold(
                   body: DaySortButton(),
                 ),
@@ -57,8 +57,10 @@ void main() {
           },
         ),
       );
-      expect(find.widgetWithIcon(DaySortButton, Icons.access_time_rounded),
-          findsOneWidget);
+      expect(
+        find.widgetWithIcon(DaySortButton, Icons.access_time_rounded),
+        findsOneWidget,
+      );
     });
 
     testWidgets('triggers sorting by day', (WidgetTester tester) async {
@@ -70,7 +72,7 @@ void main() {
                 BlocProvider<ThemeBloc>.value(value: themeBloc),
                 BlocProvider.value(value: tasksBloc),
               ],
-              child: MaterialApp(
+              child: const MaterialApp(
                 home: Scaffold(
                   body: DaySortButton(),
                 ),
@@ -79,7 +81,7 @@ void main() {
           },
         ),
       );
-      var daySortButtonFinder =
+      final daySortButtonFinder =
           find.widgetWithIcon(DaySortButton, Icons.access_time_rounded);
       await tester.tap(daySortButtonFinder);
       verify(() => tasksBloc.add(DaySorted())).called(1);

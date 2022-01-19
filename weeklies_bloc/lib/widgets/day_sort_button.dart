@@ -7,11 +7,13 @@ import 'package:weeklies/models/models.dart';
 
 // Simple button that adds [DaySorted] [TasksBloc] event when tapped
 class DaySortButton extends StatefulWidget {
+  const DaySortButton({Key? key}) : super(key: key);
+
   @override
-  _DaySortButtonState createState() => _DaySortButtonState();
+  DaySortButtonState createState() => DaySortButtonState();
 }
 
-class _DaySortButtonState extends State<DaySortButton> {
+class DaySortButtonState extends State<DaySortButton> {
   @override
   Widget build(BuildContext context) {
     // [ColorTheme] to pull colors from
@@ -22,8 +24,8 @@ class _DaySortButtonState extends State<DaySortButton> {
         BlocProvider.of<TasksBloc>(context).add(DaySorted());
       },
       child: Container(
+        padding: const EdgeInsets.all(8),
         child: Icon(Icons.access_time_rounded, color: theme.med, size: 4.2.h),
-        padding: EdgeInsets.all(8),
       ),
     );
   }

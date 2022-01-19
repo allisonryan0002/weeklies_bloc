@@ -5,9 +5,9 @@ import 'package:weeklies/models/models.dart';
 List<PriorityRadio> generatePriorityRadioList(Priority selected) {
   // Unselected [PriorityRadio]s
   final highPriorityRadio = Priority.high.radio;
-  final medHighPriorityRadio = Priority.med_high.radio;
+  final medHighPriorityRadio = Priority.medHigh.radio;
   final medPriorityRadio = Priority.med.radio;
-  final lowMedPriorityRadio = Priority.low_med.radio;
+  final lowMedPriorityRadio = Priority.lowMed.radio;
   final lowPriorityRadio = Priority.low.radio;
 
   // Return selected [PriorityRadio] with other unselected radios
@@ -18,14 +18,14 @@ List<PriorityRadio> generatePriorityRadioList(Priority selected) {
         medHighPriorityRadio,
         medPriorityRadio,
         lowMedPriorityRadio,
-        PriorityRadio(true, '5')
+        PriorityRadio(radioNumText: '5', isSelected: true)
       ];
-    case Priority.low_med:
+    case Priority.lowMed:
       return [
         highPriorityRadio,
         medHighPriorityRadio,
         medPriorityRadio,
-        PriorityRadio(true, '4'),
+        PriorityRadio(radioNumText: '4', isSelected: true),
         lowPriorityRadio
       ];
 
@@ -33,15 +33,15 @@ List<PriorityRadio> generatePriorityRadioList(Priority selected) {
       return [
         highPriorityRadio,
         medHighPriorityRadio,
-        PriorityRadio(true, '3'),
+        PriorityRadio(radioNumText: '3', isSelected: true),
         lowMedPriorityRadio,
         lowPriorityRadio
       ];
 
-    case Priority.med_high:
+    case Priority.medHigh:
       return [
         highPriorityRadio,
-        PriorityRadio(true, '2'),
+        PriorityRadio(radioNumText: '2', isSelected: true),
         medPriorityRadio,
         lowMedPriorityRadio,
         lowPriorityRadio
@@ -49,7 +49,7 @@ List<PriorityRadio> generatePriorityRadioList(Priority selected) {
 
     case Priority.high:
       return [
-        PriorityRadio(true, '1'),
+        PriorityRadio(radioNumText: '1', isSelected: true),
         medHighPriorityRadio,
         medPriorityRadio,
         lowMedPriorityRadio,

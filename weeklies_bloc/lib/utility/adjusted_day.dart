@@ -2,9 +2,9 @@
 //
 // Days are in terms of the number of midnights within the time range
 // For example, between 11:59 PM and 12:01 AM, one 'day' will be counted
-dynamic adjustedDay(DateTime prevTime, DateTime currTime, int day) {
+int adjustedDay(DateTime prevTime, DateTime currTime, int day) {
   // Map of months and their respective number of days
-  Map<dynamic, dynamic> daysInMonth = {
+  const daysInMonth = <int, int>{
     1: 31,
     2: 28,
     3: 31,
@@ -20,7 +20,7 @@ dynamic adjustedDay(DateTime prevTime, DateTime currTime, int day) {
   };
 
   // Compute days elapsed taking monthly day changes into account
-  dynamic calculatedDay;
+  int calculatedDay;
   // When the day is Someday, return Someday
   if (day == 8) {
     return day;
@@ -29,8 +29,9 @@ dynamic adjustedDay(DateTime prevTime, DateTime currTime, int day) {
   if (prevTime.day != currTime.day) {
     // Calculation taking month changes into account
     if (prevTime.month != currTime.month) {
-      calculatedDay = day +
-          ((-currTime.day) + (prevTime.day - daysInMonth[prevTime.month]));
+      final daysInPreviousMonth = daysInMonth[prevTime.month];
+      calculatedDay =
+          day + ((-currTime.day) + (prevTime.day - daysInPreviousMonth!));
       return (calculatedDay > 0) ? calculatedDay : 0;
     } else {
       // Calculation within the same month

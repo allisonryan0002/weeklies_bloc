@@ -29,16 +29,18 @@ void main() {
     });
 
     test('fromJson method produces Task from valid json input', () {
-      Task actual = Task.fromJson(json);
-      DateTime now = DateTime.now();
-      Duration difference = now.difference(actual.timeStamp);
-      assert(difference.inSeconds <= 0);
-      expect([actual.task, actual.priority, actual.day],
-          [task.task, task.priority, task.day]);
+      final actual = Task.fromJson(json);
+      final now = DateTime.now();
+      final difference = now.difference(actual.timeStamp);
+      assert(difference.inSeconds <= 0, 'This task is from the future');
+      expect(
+        [actual.task, actual.priority, actual.day],
+        [task.task, task.priority, task.day],
+      );
     });
 
     test('fromJson method throws error for invalid json input', () {
-      expect(() => Task.fromJson({}), throwsException);
+      expect(() => Task.fromJson(<String, dynamic>{}), throwsException);
     });
   });
 }

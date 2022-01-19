@@ -28,17 +28,17 @@ void main() {
   late ThemeBloc themeBloc;
 
   setUpAll(() {
-    registerFallbackValue<TasksEvent>(FakeTasksEvent());
-    registerFallbackValue<TasksState>(FakeTasksState());
-    registerFallbackValue<ThemeEvent>(FakeThemeEvent());
-    registerFallbackValue<ThemeState>(FakeThemeState());
+    registerFallbackValue(FakeTasksEvent());
+    registerFallbackValue(FakeTasksState());
+    registerFallbackValue(FakeThemeEvent());
+    registerFallbackValue(FakeThemeState());
   });
 
   setUp(() {
     tasksBloc = MockTaskBloc();
     themeBloc = MockThemeBloc();
     when(() => themeBloc.state)
-        .thenAnswer((_) => ThemeState(theme: ColorThemeOption.theme1));
+        .thenAnswer((_) => const ThemeState(theme: ColorThemeOption.theme1));
   });
 
   group('TaskInput', () {
@@ -53,7 +53,7 @@ void main() {
                   BlocProvider<ThemeBloc>.value(value: themeBloc),
                   BlocProvider.value(value: tasksBloc),
                 ],
-                child: MaterialApp(
+                child: const MaterialApp(
                   home: Scaffold(
                     body: TaskInputWidget(),
                   ),
@@ -63,9 +63,12 @@ void main() {
           ),
         );
         expect(
-            find.widgetWithIcon(
-                TaskInputWidget, Icons.add_circle_outline_rounded),
-            findsOneWidget);
+          find.widgetWithIcon(
+            TaskInputWidget,
+            Icons.add_circle_outline_rounded,
+          ),
+          findsOneWidget,
+        );
       },
     );
 
@@ -77,7 +80,7 @@ void main() {
             builder: (context, orientation, deviceType) {
               return BlocProvider.value(
                 value: themeBloc,
-                child: MaterialApp(
+                child: const MaterialApp(
                   home: Scaffold(
                     body: TaskInputWidget(),
                   ),

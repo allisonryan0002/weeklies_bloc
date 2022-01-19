@@ -5,24 +5,20 @@ import 'package:weeklies/repositories/repositories.dart';
 
 // Manage the state of the app [ColorThemeOption]
 class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
+  ThemeBloc({required this.themeRepository, required this.initialTheme})
+      : super(ThemeState(theme: initialTheme)) {
+    on<ThemeChanged>(_onThemeChanged);
+  }
+
   final ThemeRepository themeRepository;
   final ColorThemeOption initialTheme;
 
-  ThemeBloc({required this.themeRepository, required this.initialTheme})
-      : super(ThemeState(theme: initialTheme));
-
-  @override
-  Stream<ThemeState> mapEventToState(ThemeEvent event) async* {
-    if (event is ThemeChanged) {
-      yield* _mapThemeChangedToState(event);
-    }
-  }
-
   // Change app's current [ColorThemeOption] & save change
-  Stream<ThemeState> _mapThemeChangedToState(ThemeChanged event) async* {
-    if (state is ThemeState) {
-      yield ThemeState(theme: event.theme);
-    }
+  Future<void> _onThemeChanged(
+    ThemeChanged event,
+    Emitter<ThemeState> emit,
+  ) async {
+    if (state is ThemeState) emit(ThemeState(theme: event.theme));
     _saveTheme(event.theme);
   }
 

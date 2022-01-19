@@ -11,13 +11,13 @@ abstract class TasksState extends Equatable {
 class TasksLoadInProgress extends TasksState {}
 
 class TasksLoadSuccess extends TasksState {
-  final List<Task> tasks;
-  final SortType sort;
-
   const TasksLoadSuccess([
     this.tasks = const [],
     this.sort = SortType.priority,
   ]);
+
+  final List<Task> tasks;
+  final SortType sort;
 
   @override
   List<Object> get props => [tasks, sort];

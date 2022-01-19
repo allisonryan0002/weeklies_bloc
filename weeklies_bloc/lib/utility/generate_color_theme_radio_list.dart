@@ -4,22 +4,35 @@ import 'package:weeklies/models/models.dart';
 // reflecting the radio that is currently selected
 List<ColorThemeRadio> generateColorThemeRadioList(ColorThemeOption selected) {
   // Unselected [ColorThemeRadio]s
-  final theme1Radio =
-      ColorThemeRadio(false, ColorThemeOption.theme1.colorTheme);
-  final theme2Radio =
-      ColorThemeRadio(false, ColorThemeOption.theme2.colorTheme);
-  final theme3Radio =
-      ColorThemeRadio(false, ColorThemeOption.theme3.colorTheme);
-  final theme4Radio =
-      ColorThemeRadio(false, ColorThemeOption.theme4.colorTheme);
-  final theme5Radio =
-      ColorThemeRadio(false, ColorThemeOption.theme5.colorTheme);
+  final theme1Radio = ColorThemeRadio(
+    theme: ColorThemeOption.theme1.colorTheme,
+    isSelected: false,
+  );
+  final theme2Radio = ColorThemeRadio(
+    theme: ColorThemeOption.theme2.colorTheme,
+    isSelected: false,
+  );
+  final theme3Radio = ColorThemeRadio(
+    theme: ColorThemeOption.theme3.colorTheme,
+    isSelected: false,
+  );
+  final theme4Radio = ColorThemeRadio(
+    theme: ColorThemeOption.theme4.colorTheme,
+    isSelected: false,
+  );
+  final theme5Radio = ColorThemeRadio(
+    theme: ColorThemeOption.theme5.colorTheme,
+    isSelected: false,
+  );
 
   // Return selected [ColorThemeRadio] with other unselected radios
   switch (selected) {
     case ColorThemeOption.theme1:
       return [
-        ColorThemeRadio(true, ColorThemeOption.theme1.colorTheme),
+        ColorThemeRadio(
+          theme: ColorThemeOption.theme1.colorTheme,
+          isSelected: true,
+        ),
         theme2Radio,
         theme3Radio,
         theme4Radio,
@@ -29,7 +42,10 @@ List<ColorThemeRadio> generateColorThemeRadioList(ColorThemeOption selected) {
     case ColorThemeOption.theme2:
       return [
         theme1Radio,
-        ColorThemeRadio(true, ColorThemeOption.theme2.colorTheme),
+        ColorThemeRadio(
+          theme: ColorThemeOption.theme2.colorTheme,
+          isSelected: true,
+        ),
         theme3Radio,
         theme4Radio,
         theme5Radio
@@ -39,7 +55,10 @@ List<ColorThemeRadio> generateColorThemeRadioList(ColorThemeOption selected) {
       return [
         theme1Radio,
         theme2Radio,
-        ColorThemeRadio(true, ColorThemeOption.theme3.colorTheme),
+        ColorThemeRadio(
+          theme: ColorThemeOption.theme3.colorTheme,
+          isSelected: true,
+        ),
         theme4Radio,
         theme5Radio
       ];
@@ -49,7 +68,10 @@ List<ColorThemeRadio> generateColorThemeRadioList(ColorThemeOption selected) {
         theme1Radio,
         theme2Radio,
         theme3Radio,
-        ColorThemeRadio(true, ColorThemeOption.theme4.colorTheme),
+        ColorThemeRadio(
+          theme: ColorThemeOption.theme4.colorTheme,
+          isSelected: true,
+        ),
         theme5Radio
       ];
 
@@ -59,7 +81,10 @@ List<ColorThemeRadio> generateColorThemeRadioList(ColorThemeOption selected) {
         theme2Radio,
         theme3Radio,
         theme4Radio,
-        ColorThemeRadio(true, ColorThemeOption.theme5.colorTheme)
+        ColorThemeRadio(
+          theme: ColorThemeOption.theme5.colorTheme,
+          isSelected: true,
+        )
       ];
   }
 }

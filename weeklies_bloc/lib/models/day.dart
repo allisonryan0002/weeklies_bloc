@@ -1,13 +1,7 @@
 class Day {
-  // List of possible day choices based on the current day
-  // There are 9 options, listed with their indices below:
-  // 0 = Overdue, 1 = Today, Tomorrow = 2, (3-7) = other week days (in their
-  // respective order), 8 = Someday
-  List<String> dayOptions = ['Overdue', 'Today', 'Tomorrow'];
-
   // Select the day options based on the current day
   Day(int currDay) {
-    List<String> daysToAdd = [];
+    var daysToAdd = <String>[];
     switch (currDay) {
       case 1: //Monday
         daysToAdd = ['Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -33,7 +27,14 @@ class Day {
       default:
         throw ArgumentError('Invalid int option for a day of the week');
     }
-    dayOptions.addAll(daysToAdd);
-    dayOptions.add('Someday');
+    dayOptions
+      ..addAll(daysToAdd)
+      ..add('Someday');
   }
+
+  // List of possible day choices based on the current day
+  // There are 9 options, listed with their indices below:
+  // 0 = Overdue, 1 = Today, Tomorrow = 2, (3-7) = other week days (in their
+  // respective order), 8 = Someday
+  List<String> dayOptions = ['Overdue', 'Today', 'Tomorrow'];
 }

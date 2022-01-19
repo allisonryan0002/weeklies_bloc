@@ -14,11 +14,13 @@ import 'package:weeklies/widgets/widgets.dart';
 // There are two distinct ways this widget is built: one for [SortType.priority]
 // and one for [SortType.day]
 class TaskListView extends StatefulWidget {
+  const TaskListView({Key? key}) : super(key: key);
+
   @override
-  _TaskListViewState createState() => _TaskListViewState();
+  TaskListViewState createState() => TaskListViewState();
 }
 
-class _TaskListViewState extends State<TaskListView> {
+class TaskListViewState extends State<TaskListView> {
   @override
   Widget build(BuildContext context) {
     // [ColorTheme] to pull theme colors from
@@ -27,7 +29,7 @@ class _TaskListViewState extends State<TaskListView> {
     return BlocBuilder<TasksBloc, TasksState>(
       builder: (context, state) {
         if (state is TasksLoadInProgress) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
           // When there are [Task]s, build one of the sorting views
         } else if (state is TasksLoadSuccess) {
           final sort = state.sort;
@@ -44,24 +46,26 @@ class _TaskListViewState extends State<TaskListView> {
                   children: [
                     // [TaskTile]s surrounded by colored container
                     Container(
+                      padding: const EdgeInsets.fromLTRB(8, 5, 8, 0),
+                      margin: const EdgeInsets.fromLTRB(5, 8, 5, 0),
+                      decoration: BoxDecoration(
+                        color: theme.accent,
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(10)),
+                      ),
                       child: ListView.builder(
-                        padding: EdgeInsets.only(bottom: 5),
-                        physics: NeverScrollableScrollPhysics(),
+                        padding: const EdgeInsets.only(bottom: 5),
+                        physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         itemCount: tasks.length,
                         itemBuilder: (context, index) {
-                          var taskItem = tasks[index];
+                          final taskItem = tasks[index];
                           return TaskTile(taskItem, theme);
                         },
                       ),
-                      padding: EdgeInsets.fromLTRB(8, 5, 8, 0),
-                      margin: EdgeInsets.fromLTRB(5, 8, 5, 0),
-                      decoration: BoxDecoration(
-                        color: theme.accent,
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                      ),
                     ),
-                    // Invisible container to let [TaskTile]s sit above white gradient
+                    // Invisible container to let [TaskTile]s sit above white
+                    // gradient
                     Container(
                       height: 18.2.h,
                     ),
@@ -69,18 +73,19 @@ class _TaskListViewState extends State<TaskListView> {
                 ),
               ),
             );
-            // [SortType.day] build - list of days containing [TaskTile] sublists
+            // [SortType.day] builds list of days containing [TaskTile] sublists
           } else {
             // Days paired with their corresponding [Task]s
-            Map<String, dynamic> taskAndIndex = getDaysAndTasks(tasks);
+            final taskAndIndex = getDaysAndTasks(tasks);
 
             return Scaffold(
               resizeToAvoidBottomInset: true,
               body: ListView.builder(
-                key: Key('day_sort_outer_list_view'),
+                key: const Key('day_sort_outer_list_view'),
                 itemCount: taskAndIndex.length + 1,
                 itemBuilder: (context, index) {
-                  // Invisible container to let [TaskTile]s sit above white gradient
+                  // Invisible container to let [TaskTile]s sit above white
+                  // gradient
                   if (index == taskAndIndex.length) {
                     return Container(
                       height: 18.2.h,
@@ -88,11 +93,19 @@ class _TaskListViewState extends State<TaskListView> {
                   } else {
                     // Box surrounding sublist of [TaskTile]s
                     return Container(
+                      padding: const EdgeInsets.fromLTRB(8, 8, 8, 5),
+                      margin: const EdgeInsets.fromLTRB(5, 8, 5, 0),
+                      decoration: BoxDecoration(
+                        color: theme.accent,
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(10)),
+                      ),
                       child: Column(
                         children: [
                           Align(
                             alignment: Alignment.centerLeft,
-                            // Display the day corresponding to the [Task] sublist
+                            // Display the day corresponding to the [Task]
+                            // sublist
                             child: Text(
                               taskAndIndex.keys.toList()[index],
                               style: Theme.of(context)
@@ -103,24 +116,18 @@ class _TaskListViewState extends State<TaskListView> {
                           ),
                           // Building sublist of [TaskTile]s
                           ListView.builder(
-                            key: Key('day_sort_inner_list_view'),
+                            key: const Key('day_sort_inner_list_view'),
                             physics: const NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
                             itemCount:
                                 taskAndIndex.values.toList()[index].length,
                             itemBuilder: (context, indexInner) {
-                              Task taskItem = taskAndIndex.values
-                                  .toList()[index][indexInner][0];
+                              final taskItem = taskAndIndex.values
+                                  .toList()[index][indexInner][0] as Task;
                               return TaskTile(taskItem, theme);
                             },
                           ),
                         ],
-                      ),
-                      padding: EdgeInsets.fromLTRB(8, 8, 8, 5),
-                      margin: EdgeInsets.fromLTRB(5, 8, 5, 0),
-                      decoration: BoxDecoration(
-                        color: theme.accent,
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
                       ),
                     );
                   }
@@ -128,9 +135,10 @@ class _TaskListViewState extends State<TaskListView> {
               ),
             );
           }
-          // Both [TaskState]s are evaluated above - this condition won't be reached
+          // Both [TaskState]s are evaluated above - this condition won't be
+          // reached
         } else {
-          return Container();
+          return const SizedBox();
         }
       },
     );

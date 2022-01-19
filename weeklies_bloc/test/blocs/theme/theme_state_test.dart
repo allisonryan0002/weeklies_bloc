@@ -6,7 +6,7 @@ void main() {
   group('ThemeState', () {
     test('toString returns correct value', () {
       expect(
-        ThemeState(theme: ColorThemeOption.theme1).toString(),
+        const ThemeState(theme: ColorThemeOption.theme1).toString(),
         'ThemeState { theme: ${ColorThemeOption.theme1} }',
       );
     });

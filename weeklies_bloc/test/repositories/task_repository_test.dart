@@ -31,13 +31,22 @@ void main() {
     });
 
     test('loadTasks method returns list of Tasks', () async {
-      when(() => client.read('myTasks.json')).thenAnswer((_) => Future.value(
-          '{"tasks": [{"timeStamp": "${DateTime.now()}", "task": "Test", "priority": 0, "day": 1}]}'));
+      final tasksData = <String, dynamic>{
+        'tasks':
+            '[{"timeStamp": "${DateTime.now()}", "task": "Test", "priority": 0, "day": 1}]'
+      };
+      when(() => client.read('myTasks.json')).thenAnswer(
+        (_) => Future.value(
+          '{"tasks": [{"timeStamp": "${DateTime.now()}", "task": "Test", "priority": 0, "day": 1}]}',
+        ),
+      );
       final expectedTask = Task(DateTime.now(), 'Test', Priority.low, 1);
       final actualList = await repository.loadTasks();
       final actualTask = actualList[0];
-      expect([actualTask.task, actualTask.priority, actualTask.day],
-          [expectedTask.task, expectedTask.priority, expectedTask.day]);
+      expect(
+        [actualTask.task, actualTask.priority, actualTask.day],
+        [expectedTask.task, expectedTask.priority, expectedTask.day],
+      );
       verify(() => client.read('myTasks.json'));
     });
 

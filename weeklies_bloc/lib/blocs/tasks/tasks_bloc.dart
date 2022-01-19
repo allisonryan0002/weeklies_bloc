@@ -6,46 +6,44 @@ import 'package:weeklies/repositories/repositories.dart';
 
 // Manage the state of the [Task]s list and the [SortType]
 class TasksBloc extends Bloc<TasksEvent, TasksState> {
-  final TaskRepository taskRepository;
-
-  TasksBloc({required this.taskRepository}) : super(TasksLoadInProgress());
-
-  @override
-  Stream<TasksState> mapEventToState(TasksEvent event) async* {
-    if (event is TasksLoaded) {
-      yield* _mapTasksLoadedToState();
-    } else if (event is TaskAdded) {
-      yield* _mapTaskAddedToState(event);
-    } else if (event is TaskUpdated) {
-      yield* _mapTaskUpdatedToState(event);
-    } else if (event is TaskDeleted) {
-      yield* _mapTaskDeletedToState(event);
-    } else if (event is PrioritySorted) {
-      yield* _mapPrioritySortedToState();
-    } else if (event is DaySorted) {
-      yield* _mapDaySortedToState();
-    }
+  TasksBloc(this._taskRepository) : super(TasksLoadInProgress()) {
+    on(_onTasksLoaded);
+    on(_onTaskAdded);
+    on(_onTaskUpdated);
+    on(_onTaskDeleted);
+    on(_onPrioritySorted);
+    on(_onDaySorted);
   }
 
+  final TaskRepository _taskRepository;
+
   // Load [SortType] & [Task]s from [TaskRepository]
-  Stream<TasksState> _mapTasksLoadedToState() async* {
-    final tasks = await this.taskRepository.loadTasks();
-    final sort = await this.taskRepository.loadSort();
-    yield TasksLoadSuccess(tasks, sort);
+  Future<void> _onTasksLoaded(
+    TasksLoaded event,
+    Emitter<TasksState> emit,
+  ) async {
+    final tasks = await _taskRepository.loadTasks();
+    final sort = await _taskRepository.loadSort();
+    emit(TasksLoadSuccess(tasks, sort));
   }
 
   // Add new [Task], resort, & save
-  Stream<TasksState> _mapTaskAddedToState(TaskAdded event) async* {
+  Future<void> _onTaskAdded(
+    TaskAdded event,
+    Emitter<TasksState> emit,
+  ) async {
     if (state is TasksLoadSuccess) {
       if ((state as TasksLoadSuccess).sort == SortType.priority) {
-        List<Task> updatedTasks = _prioritySort(
-            List.from((state as TasksLoadSuccess).tasks)..add(event.task));
-        yield TasksLoadSuccess(updatedTasks, SortType.priority);
+        final updatedTasks = _prioritySort(
+          List.from((state as TasksLoadSuccess).tasks)..add(event.task),
+        );
+        emit(TasksLoadSuccess(updatedTasks));
         _saveTasks(updatedTasks);
       } else {
-        List<Task> updatedTasks = _prioritySort(
-            List.from((state as TasksLoadSuccess).tasks)..add(event.task));
-        yield TasksLoadSuccess(updatedTasks, SortType.day);
+        final updatedTasks = _prioritySort(
+          List.from((state as TasksLoadSuccess).tasks)..add(event.task),
+        );
+        emit(TasksLoadSuccess(updatedTasks, SortType.day));
         _saveTasks(updatedTasks);
       }
     }
@@ -53,58 +51,68 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
 
   // Swap existing [Task] for updated [Task] where [Task.timeStamp] matches
   // resort, & save
-  Stream<TasksState> _mapTaskUpdatedToState(TaskUpdated event) async* {
+  Future<void> _onTaskUpdated(
+    TaskUpdated event,
+    Emitter<TasksState> emit,
+  ) async {
     if (state is TasksLoadSuccess) {
       if ((state as TasksLoadSuccess).sort == SortType.priority) {
-        List<Task> updatedTasks =
-            _prioritySort((state as TasksLoadSuccess).tasks.map((task) {
-          return task.timeStamp == event.updatedTask.timeStamp
-              ? event.updatedTask
-              : task;
-        }).toList());
-        yield TasksLoadSuccess(updatedTasks, SortType.priority);
+        final updatedTasks = _prioritySort(
+          (state as TasksLoadSuccess).tasks.map((task) {
+            return task.timeStamp == event.updatedTask.timeStamp
+                ? event.updatedTask
+                : task;
+          }).toList(),
+        );
+        emit(TasksLoadSuccess(updatedTasks));
         _saveTasks(updatedTasks);
       } else {
-        List<Task> updatedTasks =
-            _prioritySort((state as TasksLoadSuccess).tasks.map((task) {
-          return task.timeStamp == event.updatedTask.timeStamp
-              ? event.updatedTask
-              : task;
-        }).toList());
-        yield TasksLoadSuccess(updatedTasks, SortType.day);
+        final updatedTasks = _prioritySort(
+          (state as TasksLoadSuccess).tasks.map((task) {
+            return task.timeStamp == event.updatedTask.timeStamp
+                ? event.updatedTask
+                : task;
+          }).toList(),
+        );
+        emit(TasksLoadSuccess(updatedTasks, SortType.day));
         _saveTasks(updatedTasks);
       }
     }
   }
 
   // Permanently remove [Task] & save
-  Stream<TasksState> _mapTaskDeletedToState(TaskDeleted event) async* {
+  Future<void> _onTaskDeleted(
+    TaskDeleted event,
+    Emitter<TasksState> emit,
+  ) async {
     if (state is TasksLoadSuccess) {
       if ((state as TasksLoadSuccess).sort == SortType.priority) {
-        final List<Task> updatedTasks = (state as TasksLoadSuccess)
+        final updatedTasks = (state as TasksLoadSuccess)
             .tasks
             .where((task) => task.timeStamp != event.task.timeStamp)
             .toList();
-        yield TasksLoadSuccess(updatedTasks, SortType.priority);
+        emit(TasksLoadSuccess(updatedTasks));
         _saveTasks(updatedTasks);
       } else {
-        final List<Task> updatedTasks = (state as TasksLoadSuccess)
+        final updatedTasks = (state as TasksLoadSuccess)
             .tasks
             .where((task) => task.timeStamp != event.task.timeStamp)
             .toList();
-        yield TasksLoadSuccess(updatedTasks, SortType.day);
+        emit(TasksLoadSuccess(updatedTasks, SortType.day));
         _saveTasks(updatedTasks);
       }
     }
   }
 
   // Sort [Task]s by [Priority]
-  Stream<TasksState> _mapPrioritySortedToState() async* {
+  Future<void> _onPrioritySorted(
+    PrioritySorted event,
+    Emitter<TasksState> emit,
+  ) async {
     if (state is TasksLoadSuccess) {
       if ((state as TasksLoadSuccess).sort == SortType.day) {
-        List<Task> sortedTasks =
-            _prioritySort((state as TasksLoadSuccess).tasks);
-        yield TasksLoadSuccess(sortedTasks, SortType.priority);
+        final sortedTasks = _prioritySort((state as TasksLoadSuccess).tasks);
+        emit(TasksLoadSuccess(sortedTasks));
         _saveTasks(sortedTasks);
         _saveSort(SortType.priority);
       }
@@ -112,11 +120,14 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
   }
 
   // Sort [Task]s by [Day]
-  Stream<TasksState> _mapDaySortedToState() async* {
+  Future<void> _onDaySorted(
+    DaySorted event,
+    Emitter<TasksState> emit,
+  ) async {
     if (state is TasksLoadSuccess) {
       if ((state as TasksLoadSuccess).sort == SortType.priority) {
-        List<Task> sortedTasks = _timeSort((state as TasksLoadSuccess).tasks);
-        yield TasksLoadSuccess(sortedTasks, SortType.day);
+        final sortedTasks = _timeSort((state as TasksLoadSuccess).tasks);
+        emit(TasksLoadSuccess(sortedTasks, SortType.day));
         _saveSort(SortType.day);
         _saveTasks(sortedTasks);
       }
@@ -127,18 +138,19 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
   List<Task> _prioritySort(List<Task> tasks) {
     if (tasks.isEmpty) return [];
     tasks.sort((a, b) => a.priority.compareTo(b.priority));
-    List<Task> finalSort = [];
-    List<Task> intermedSort = [];
-    Task prev = tasks[0];
-    for (Task item in tasks) {
+    final finalSort = <Task>[];
+    final intermedSort = <Task>[];
+    var prev = tasks[0];
+    for (final item in tasks) {
       if (item.priority == prev.priority) {
         intermedSort.add(item);
       } else {
         if (intermedSort.isNotEmpty) {
           intermedSort.sort((a, b) => a.day.compareTo(b.day));
           finalSort.addAll(intermedSort);
-          intermedSort.clear();
-          intermedSort.add(item);
+          intermedSort
+            ..clear()
+            ..add(item);
         } else {
           intermedSort.add(item);
         }
@@ -155,16 +167,15 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
 
   // Sort [Task]s by [Day] then by [Priority] within each day
   List<Task> _timeSort(List<Task> tasks) {
-    List<Task> sortedTasks = _prioritySort((state as TasksLoadSuccess).tasks);
-    sortedTasks.sort((a, b) => a.day.compareTo(b.day));
-    return sortedTasks;
+    return _prioritySort((state as TasksLoadSuccess).tasks)
+      ..sort((a, b) => a.day.compareTo(b.day));
   }
 
   void _saveTasks(List<Task> tasks) {
-    taskRepository.saveTasks(tasks);
+    _taskRepository.saveTasks(tasks);
   }
 
   void _saveSort(SortType sort) {
-    taskRepository.saveSort(sort);
+    _taskRepository.saveSort(sort);
   }
 }

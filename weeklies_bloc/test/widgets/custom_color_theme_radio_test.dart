@@ -26,21 +26,25 @@ void main() {
     setUp(() {
       themeBloc = MockThemeBloc();
       when(() => themeBloc.state).thenAnswer(
-        (_) => ThemeState(theme: ColorThemeOption.theme1),
+        (_) => const ThemeState(theme: ColorThemeOption.theme1),
       );
     });
 
     group('ColorThemeRadioIcon', () {
       testWidgets(
-        "renders correctly",
+        'renders correctly',
         (WidgetTester tester) async {
           await tester.pumpWidget(
             BlocProvider.value(
               value: themeBloc,
               child: MaterialApp(
                 home: Scaffold(
-                  body: ColorThemeRadioIcon(ColorThemeRadio(
-                      false, ColorThemeOption.theme1.colorTheme)),
+                  body: ColorThemeRadioIcon(
+                    ColorThemeRadio(
+                      theme: ColorThemeOption.theme1.colorTheme,
+                      isSelected: false,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -51,7 +55,7 @@ void main() {
     });
 
     group('CustomColorThemeRadioWidget', () {
-      testWidgets("renders correctly", (WidgetTester tester) async {
+      testWidgets('renders correctly', (WidgetTester tester) async {
         await tester.pumpWidget(
           BlocProvider<ThemeBloc>.value(
             value: themeBloc,
@@ -66,19 +70,23 @@ void main() {
         expect(find.byType(ColorThemeRadioIcon), findsNWidgets(5));
       });
 
-      testWidgets("callback function is called on tap",
+      testWidgets('callback function is called on tap',
           (WidgetTester tester) async {
-        bool called = false;
+        var called = false;
         await tester.pumpWidget(
           BlocProvider.value(
-              value: themeBloc,
-              child: MaterialApp(
-                home: Scaffold(
-                  body: CustomColorThemeRadio((_) {
+            value: themeBloc,
+            child: MaterialApp(
+              home: Scaffold(
+                body: CustomColorThemeRadio(
+                  (_) {
                     called = true;
-                  }, ColorThemeOption.theme1),
+                  },
+                  ColorThemeOption.theme1,
                 ),
-              )),
+              ),
+            ),
+          ),
         );
         final radioIconFinder = find.byType(ColorThemeRadioIcon).last;
         await tester.tap(radioIconFinder);

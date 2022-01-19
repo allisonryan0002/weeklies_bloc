@@ -13,17 +13,20 @@ import 'package:weeklies/widgets/widgets.dart';
 // Maintains user's selections/inputs and adds [TaskAdded] event to [TasksBloc]
 // to create a [Task] with inputted values
 class TaskInputWidget extends StatefulWidget {
+  const TaskInputWidget({Key? key}) : super(key: key);
+
   @override
-  _TaskInputWidgetState createState() => _TaskInputWidgetState();
+  TaskInputWidgetState createState() => TaskInputWidgetState();
 }
 
-class _TaskInputWidgetState extends State<TaskInputWidget> {
+class TaskInputWidgetState extends State<TaskInputWidget> {
   // Variables for storing and maintaining [Priority], [Day], & text input
   Priority priority = Priority.med;
   int day = 1;
-  final controller = new TextEditingController();
+  final controller = TextEditingController();
 
-  // Callback function passed to [CustomPriorityRadio] for reflecting user selection
+  // Callback function passed to [CustomPriorityRadio] for reflecting user
+  // selection
   void updatePriority(Priority priority) {
     setState(() {
       this.priority = priority;
@@ -40,32 +43,52 @@ class _TaskInputWidgetState extends State<TaskInputWidget> {
   // Adds [TaskAdded] event with user's input and closes the input window
   void createTask(BuildContext taskInputContext) {
     Navigator.pop(taskInputContext);
-    BlocProvider.of<TasksBloc>(taskInputContext).add(TaskAdded(
-        Task(DateTime.now(), controller.text, this.priority, this.day)));
+    BlocProvider.of<TasksBloc>(taskInputContext).add(
+      TaskAdded(
+        Task(DateTime.now(), controller.text, priority, day),
+      ),
+    );
     controller.clear();
   }
 
-  // [SimpleDialog] window with [CustomPriorityRadio], [CustomDayRadio], & [TextField]
-  createTaskWindow(BuildContext taskInputContext, ColorTheme theme) {
-    return showDialog(
+  // [SimpleDialog] window with [CustomPriorityRadio], [CustomDayRadio], &
+  // [TextField]
+  Future<void> createTaskWindow(
+    BuildContext taskInputContext,
+    ColorTheme theme,
+  ) {
+    return showDialog<void>(
       barrierColor: theme.accent.withOpacity(0.3),
       context: taskInputContext,
       builder: (context) => BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
         child: SimpleDialog(
-          children: <Widget>[
+          backgroundColor: theme.accent.withOpacity(0.85),
+          elevation: 1,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+          ),
+          contentPadding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
+          insetPadding: EdgeInsets.symmetric(horizontal: 17.w, vertical: 10.h),
+          children: [
             Column(
-              children: <Widget>[
-                CustomPriorityRadio(this.updatePriority, this.priority),
-                CustomDayRadio(this.updateDay, this.day),
+              children: [
+                CustomPriorityRadio(updatePriority, priority),
+                CustomDayRadio(updateDay, day),
                 Container(
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(6)),
+                    color: Colors.black12.withOpacity(0.2),
+                  ),
+                  padding: const EdgeInsets.fromLTRB(6, 0, 6, 0),
+                  margin: const EdgeInsets.fromLTRB(2, 6, 2, 6),
                   child: TextField(
-                    controller: this.controller,
+                    controller: controller,
                     autofocus: true,
                     textInputAction: TextInputAction.done,
                     onEditingComplete: () => createTask(taskInputContext),
                     textCapitalization: TextCapitalization.sentences,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       border: InputBorder.none,
                       floatingLabelBehavior: FloatingLabelBehavior.never,
                       contentPadding: EdgeInsets.fromLTRB(4, 6, 4, 6),
@@ -79,24 +102,12 @@ class _TaskInputWidgetState extends State<TaskInputWidget> {
                         ?.copyWith(color: Colors.white),
                     cursorColor: Colors.white,
                   ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(6)),
-                    color: Colors.black12.withOpacity(0.2),
-                  ),
-                  padding: EdgeInsets.fromLTRB(6, 0, 6, 0),
-                  margin: EdgeInsets.fromLTRB(2, 6, 2, 6),
                 ),
                 //TaskTileTextField(Task(DateTime.now(), 'TEST', Priority.low, 1))
                 // ^ For testing TaskTileTextField keyboard issue
               ],
             ),
           ],
-          backgroundColor: theme.accent.withOpacity(0.85),
-          elevation: 1,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20.0))),
-          contentPadding: EdgeInsets.fromLTRB(14, 10, 14, 10),
-          insetPadding: EdgeInsets.symmetric(horizontal: 17.w, vertical: 10.h),
         ),
       ),
     );
@@ -110,18 +121,19 @@ class _TaskInputWidgetState extends State<TaskInputWidget> {
 
     return GestureDetector(
       onTap: () {
-        // Reset priority & time values to match what the radios display on default
+        // Reset priority & time values to match what the radios display on
+        // default
         priority = Priority.med;
         day = 1;
         createTaskWindow(context, theme);
       },
       child: Container(
+        padding: const EdgeInsets.all(6),
         child: Icon(
           Icons.add_circle_outline_rounded,
           color: theme.low,
           size: 7.2.h,
         ),
-        padding: EdgeInsets.all(6),
       ),
     );
   }

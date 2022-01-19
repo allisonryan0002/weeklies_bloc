@@ -4,7 +4,7 @@ import 'package:weeklies/models/models.dart';
 void main() {
   group('Priority', () {
     test('radio is correctly assigned from getter method', () {
-      final expectedRadio = PriorityRadio(false, '5');
+      final expectedRadio = PriorityRadio(radioNumText: '5', isSelected: false);
       final actualRadio = Priority.low.radio;
       expect(actualRadio is PriorityRadio, true);
       expect(actualRadio.isSelected, expectedRadio.isSelected);
@@ -24,11 +24,11 @@ void main() {
     });
 
     test('comparison between low_med and med_high returns 1', () {
-      expect(Priority.low_med.compareTo(Priority.med_high), 1);
+      expect(Priority.lowMed.compareTo(Priority.medHigh), 1);
     });
 
     test('comparison between med_high and low_med returns -1', () {
-      expect(Priority.med_high.compareTo(Priority.low_med), -1);
+      expect(Priority.medHigh.compareTo(Priority.lowMed), -1);
     });
 
     test('toJson method produces 0 on Priority.low', () {

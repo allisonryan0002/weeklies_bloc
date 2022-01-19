@@ -26,20 +26,22 @@ void main() {
     setUp(() async {
       themeBloc = MockThemeBloc();
       when(() => themeBloc.state).thenAnswer(
-        (_) => ThemeState(theme: ColorThemeOption.theme1),
+        (_) => const ThemeState(theme: ColorThemeOption.theme1),
       );
     });
 
     group('DayRadioIcon', () {
       testWidgets(
-        "renders correctly",
+        'renders correctly',
         (WidgetTester tester) async {
           await tester.pumpWidget(
             BlocProvider.value(
               value: themeBloc,
               child: MaterialApp(
                 home: Scaffold(
-                  body: DayRadioIcon(DayRadio(true, 'Today')),
+                  body: DayRadioIcon(
+                    DayRadio(dayText: 'Today', isSelected: true),
+                  ),
                 ),
               ),
             ),
@@ -52,12 +54,14 @@ void main() {
 
     group('DayRadioIconTileSize', () {
       testWidgets(
-        "renders correctly",
+        'renders correctly',
         (WidgetTester tester) async {
           await tester.pumpWidget(
             MaterialApp(
               home: Scaffold(
-                body: DayRadioIconTileSize(DayRadio(true, 'Today')),
+                body: DayRadioIconTileSize(
+                  DayRadio(dayText: 'Today', isSelected: true),
+                ),
               ),
             ),
           );
@@ -68,7 +72,7 @@ void main() {
     });
 
     group('CustomDayRadioWidget', () {
-      testWidgets("renders correctly", (WidgetTester tester) async {
+      testWidgets('renders correctly', (WidgetTester tester) async {
         await tester.pumpWidget(
           BlocProvider.value(
             value: themeBloc,
@@ -83,17 +87,20 @@ void main() {
         expect(find.byType(DayRadioIcon), findsNWidgets(8));
       });
 
-      testWidgets("callback function is called on tap",
+      testWidgets('callback function is called on tap',
           (WidgetTester tester) async {
-        bool called = false;
+        var called = false;
         await tester.pumpWidget(
           BlocProvider.value(
             value: themeBloc,
             child: MaterialApp(
               home: Scaffold(
-                body: CustomDayRadio((_) {
-                  called = true;
-                }, 1),
+                body: CustomDayRadio(
+                  (_) {
+                    called = true;
+                  },
+                  1,
+                ),
               ),
             ),
           ),

@@ -6,16 +6,16 @@ import 'package:weeklies/models/models.dart';
 
 // Custom [TextField] used to edit [Task]s in the [TaskListView] [ListTile]s
 class TaskTileTextField extends StatefulWidget {
+  const TaskTileTextField(this.item, {Key? key}) : super(key: key);
+
   final Task item;
 
-  TaskTileTextField(this.item);
-
   @override
-  _TaskTileTextFieldState createState() => _TaskTileTextFieldState();
+  TaskTileTextFieldState createState() => TaskTileTextFieldState();
 }
 
-class _TaskTileTextFieldState extends State<TaskTileTextField> {
-  final controller = new TextEditingController();
+class TaskTileTextFieldState extends State<TaskTileTextField> {
+  final controller = TextEditingController();
 
   // Initialize to display [Task] text and start editing at the end of the text
   @override
@@ -23,7 +23,8 @@ class _TaskTileTextFieldState extends State<TaskTileTextField> {
     super.initState();
     controller.text = widget.item.task;
     controller.selection = TextSelection.fromPosition(
-        TextPosition(offset: controller.text.length));
+      TextPosition(offset: controller.text.length),
+    );
   }
 
   @override
@@ -36,24 +37,32 @@ class _TaskTileTextFieldState extends State<TaskTileTextField> {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      controller: this.controller,
+      controller: controller,
       style: Theme.of(context).textTheme.bodyText1,
       textInputAction: TextInputAction.done,
       // Add [TaskUpdated] event with the modified [Task] to the [TasksBloc]
       onEditingComplete: () {
-        Task task = Task(widget.item.timeStamp, controller.text,
-            widget.item.priority, widget.item.day);
+        final task = Task(
+          widget.item.timeStamp,
+          controller.text,
+          widget.item.priority,
+          widget.item.day,
+        );
         BlocProvider.of<TasksBloc>(context).add(TaskUpdated(task));
       },
       onSubmitted: (_) {
-        Task task = Task(widget.item.timeStamp, controller.text,
-            widget.item.priority, widget.item.day);
+        final task = Task(
+          widget.item.timeStamp,
+          controller.text,
+          widget.item.priority,
+          widget.item.day,
+        );
         BlocProvider.of<TasksBloc>(context).add(TaskUpdated(task));
       },
       keyboardType: TextInputType.multiline,
       maxLines: null,
       textCapitalization: TextCapitalization.sentences,
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
         border: InputBorder.none,
         isDense: true,
         contentPadding: EdgeInsets.only(top: 3, bottom: 3),

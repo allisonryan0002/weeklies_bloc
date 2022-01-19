@@ -4,6 +4,8 @@ import 'package:weeklies/models/models.dart';
 
 void main() {
   group('TasksEvent', () {
+    final task = Task(DateTime(2021, 6), 'Test', Priority.low, 1);
+
     group('TasksLoaded', () {
       test('toString returns correct value', () {
         expect(
@@ -14,31 +16,40 @@ void main() {
     });
 
     group('TaskAdded', () {
+      test('supports value comparisons', () {
+        expect(TaskAdded(task), TaskAdded(task));
+      });
+
       test('toString returns correct value', () {
         expect(
-          TaskAdded(Task(DateTime(2021, 6, 1), 'Test', Priority.low, 1))
-              .toString(),
-          'TaskAdded { Task: ${Task(DateTime(2021, 6, 1), 'Test', Priority.low, 1)} }',
+          TaskAdded(task).toString(),
+          'TaskAdded { Task: $task }',
         );
       });
     });
 
     group('TaskUpdated', () {
+      test('supports value comparisons', () {
+        expect(TaskUpdated(task), TaskUpdated(task));
+      });
+
       test('toString returns correct value', () {
         expect(
-          TaskUpdated(Task(DateTime(2021, 6, 1), 'Test', Priority.low, 1))
-              .toString(),
-          'TaskUpdated { Task: ${Task(DateTime(2021, 6, 1), 'Test', Priority.low, 1)} }',
+          TaskUpdated(task).toString(),
+          'TaskUpdated { Task: $task }',
         );
       });
     });
 
     group('TaskDeleted', () {
+      test('supports value comparisons', () {
+        expect(TaskDeleted(task), TaskDeleted(task));
+      });
+
       test('toString returns correct value', () {
         expect(
-          TaskDeleted(Task(DateTime(2021, 6, 1), 'Test', Priority.low, 1))
-              .toString(),
-          'TaskDeleted { Task: ${Task(DateTime(2021, 6, 1), 'Test', Priority.low, 1)} }',
+          TaskDeleted(task).toString(),
+          'TaskDeleted { Task: $task }',
         );
       });
     });
